@@ -1,0 +1,7 @@
+tk
+psycopg2
+sqlalchemy
+flask
+pandas
+numpy
+matplotlib
