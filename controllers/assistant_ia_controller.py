@@ -32,3 +32,7 @@ def afficher_historique_generation():
 @router.get("/suggestions-modules", response_model=str)
 def suggestions_modules():
     return ia_service.suggestion_markdown_modules()
+
+@router.get("/ping-modules", response_model=List[str])
+def ping_modules():
+    return ia_service.ping_modules()

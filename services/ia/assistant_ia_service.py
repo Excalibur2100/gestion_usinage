@@ -6,11 +6,11 @@ from pathlib import Path
 from typing import List, Optional
 from pydantic import BaseModel
 
-# === MODELES ===
 
 class IAModule(BaseModel):
     nom: str
     elements: List[str]
+
 
 class IAModuleCheckResult(BaseModel):
     message: str
@@ -18,13 +18,135 @@ class IAModuleCheckResult(BaseModel):
     impact: Optional[str] = None
     created_at: datetime
 
+
 class ModeleDetecte(BaseModel):
     nom: str
     chemins_trouves: List[str] = []
 
-# === SERVICE ===
 
 class AssistantIAService:
+    def __init__(self, base_path: str = "."):
+        self.base_path = Path(base_path)
+
+    def fichier_existe(self, chemin_relatif: str) -> bool:
+        return (self.base_path / chemin_relatif).exists()
+
+    def generer_fichier_si_absent(self, chemin_relatif: str, contenu: str) -> str:
+        chemin_complet = self.base_path / chemin_relatif
+        if not chemin_complet.exists():
+            chemin_complet.parent.mkdir(parents=True, exist_ok=True)
+            with open(chemin_complet, "w", encoding="utf-8") as f:
+                f.write(contenu)
+            return f"[Créé] {chemin_relatif}"
+        else:
+            return f"[Ignoré] {chemin_relatif} existe déjà."
+
+    def analyser_composants_modules(self) -> List[ModeleDetecte]:
+        dossiers_a_verifier = {
+            "controllers": "_controller.py",
+            "services": "_service.py",
+            "views": "_view.py",
+        }
+        modules = []
+        modeles = self.extraire_modeles_db()
+        for modele in modeles:
+            composants_trouves = []
+            for dossier, suffixe in dossiers_a_verifier.items():
+                chemin_fichier = Path(f"{dossier}/{modele}{suffixe}")
+                if chemin_fichier.exists():
+                    composants_trouves.append(f"{dossier}/{modele}{suffixe}")
+            modules.append(ModeleDetecte(nom=modele, chemins_trouves=composants_trouves))
+        return modules
+
+    def extraire_modeles_db(self, models_path: str = "db/models") -> List[str]:
+        modeles = []
+        for fichier in Path(models_path).glob("*.py"):
+            contenu = fichier.read_text(encoding="utf-8")
+            arbre = ast.parse(contenu)
+            for noeud in arbre.body:
+                if isinstance(noeud, ast.ClassDef):
+                    bases = [b.id for b in noeud.bases if isinstance(b, ast.Name)]
+                    if "Base" in bases:
+                        modeles.append(noeud.name.lower())
+        return sorted(set(modeles))
+
+    def generer_composants_manquants(self) -> List[str]:
+        suffixes = {
+            "controllers": "_controller.py",
+            "services": "_service.py",
+            "views": "_view.py",
+        }
+        contenus = {
+            "controllers": "# Contrôleur généré automatiquement\n",
+            "services": "# Service généré automatiquement\n",
+            "views": "# Vue générée automatiquement\n",
+        }
+        modules_detectes = self.analyser_composants_modules()
+        fichiers_crees = []
+        for module in modules_detectes:
+            for dossier, suffixe in suffixes.items():
+                fichier = f"{dossier}/{module.nom}{suffixe}"
+                if not Path(fichier).exists():
+                    contenu = contenus[dossier] + f"# Module : {module.nom}\n"
+                    Path(fichier).parent.mkdir(parents=True, exist_ok=True)
+                    Path(fichier).write_text(contenu, encoding="utf-8")
+                    fichiers_crees.append(fichier)
+
+        if fichiers_crees:
+            log_path = Path("logs/intelligence/taches_a_completer.json")
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            log_entry = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "fichiers_crees": fichiers_crees
+            }
+            if log_path.exists():
+                existing_logs = json.loads(log_path.read_text(encoding="utf-8"))
+            else:
+                existing_logs = []
+            existing_logs.append(log_entry)
+            log_path.write_text(json.dumps(existing_logs, indent=2), encoding="utf-8")
+        return fichiers_crees
+
+    def organiser_et_structurer_modules(self) -> List[str]:
+        composants = self.analyser_composants_modules()
+        chemins = []
+
+        dossiers = {
+            "controllers": "controllers",
+            "services": "services",
+            "views": "views"
+        }
+
+        for module in composants:
+            for chemin in module.chemins_trouves:
+                nom_fichier = Path(chemin).name
+                dossier_cible = chemin.split("/")[0]
+                nom_module = module.nom
+                nouveau_dossier = f"{dossiers[dossier_cible]}/{nom_module}"
+                nouveau_chemin = f"{nouveau_dossier}/{nom_fichier}"
+
+                Path(nouveau_dossier).mkdir(parents=True, exist_ok=True)
+                ancien_chemin = Path(chemin)
+                if ancien_chemin.exists():
+                    ancien_chemin.rename(nouveau_chemin)
+                    chemins.append(nouveau_chemin)
+
+        return chemins
+
+    def lire_historique_generation(self) -> List[dict]:
+        log_path = Path("logs/intelligence/taches_a_completer.json")
+        if log_path.exists():
+            return json.loads(log_path.read_text(encoding="utf-8"))
+        return []
+
+    def suggestion_markdown_modules(self) -> str:
+        modules = self.analyser_composants_modules()
+        lignes = ["## Suggestions des modules", ""]
+        for module in modules:
+            lignes.append(f"- **{module.nom}** : {len(module.chemins_trouves)} composants")
+            for chemin in module.chemins_trouves:
+                lignes.append(f"  - {chemin}")
+        return "\n".join(lignes)
 
     def analyse_modules(self, modules: List[IAModule]) -> IAModuleCheckResult:
         attendus = {"controller", "service", "view"}
@@ -49,120 +171,12 @@ class AssistantIAService:
             created_at=datetime.utcnow()
         )
 
-    def extraire_modeles_db(self, models_path: str = "db/models") -> List[str]:
-        modeles = []
-        for fichier in Path(models_path).glob("*.py"):
-            contenu = fichier.read_text(encoding="utf-8")
-            arbre = ast.parse(contenu)
-            for noeud in arbre.body:
-                if isinstance(noeud, ast.ClassDef):
-                    bases = [b.id for b in noeud.bases if isinstance(b, ast.Name)]
-                    if "Base" in bases:
-                        modeles.append(noeud.name.lower())
-        return sorted(set(modeles))
-
-    def analyser_composants_modules(self) -> List[ModeleDetecte]:
-        suffixes = {
-            "controllers": "_controller.py",
-            "services": "_service.py",
-            "views": "_view.py"
-        }
-        modeles = self.extraire_modeles_db()
-        modules = []
-
-        for modele in modeles:
-            composants = []
-            for dossier, suffixe in suffixes.items():
-                chemin = Path(f"{dossier}/{modele}{suffixe}")
-                if chemin.exists():
-                    composants.append(str(chemin))
-            modules.append(ModeleDetecte(nom=modele, chemins_trouves=composants))
-        return modules
-
-    def generer_composants_manquants(self) -> List[str]:
-        suffixes = {
-            "controllers": "_controller.py",
-            "services": "_service.py",
-            "views": "_view.py"
-        }
-        contenus = {
-            "controllers": "# Contrôleur généré automatiquement\n",
-            "services": "# Service généré automatiquement\n",
-            "views": "# Vue générée automatiquement\n"
-        }
-
-        fichiers_crees = []
-        composants = self.analyser_composants_modules()
-
-        for module in composants:
-            for dossier, suffixe in suffixes.items():
-                chemin = Path(f"{dossier}/{module.nom}{suffixe}")
-                if not chemin.exists():
-                    contenu = contenus[dossier] + f"# Module : {module.nom}\n"
-                    chemin.parent.mkdir(parents=True, exist_ok=True)
-                    chemin.write_text(contenu, encoding="utf-8")
-                    fichiers_crees.append(str(chemin))
-
-        if fichiers_crees:
-            log_path = Path("logs/intelligence/taches_a_completer.json")
-            log_path.parent.mkdir(parents=True, exist_ok=True)
-
-            log_entry = {
-                "timestamp": datetime.utcnow().isoformat(),
-                "fichiers_crees": fichiers_crees
-            }
-
-            if log_path.exists():
-                logs = json.loads(log_path.read_text(encoding="utf-8"))
-            else:
-                logs = []
-
-            logs.append(log_entry)
-            log_path.write_text(json.dumps(logs, indent=2), encoding="utf-8")
-
-        return fichiers_crees
-
-    def organiser_et_structurer_modules(self) -> List[str]:
-        composants = self.analyser_composants_modules()
+    def ping_modules(self) -> List[str]:
+        """Liste tous les modules Python dans controllers/, services/ et views/"""
         chemins = []
-
-        dossiers = {
-            "controllers": "controllers",
-            "services": "services",
-            "views": "views"
-        }
-
-        for module in composants:
-            for chemin in module.chemins_trouves:
-                nom_fichier = Path(chemin).name
-                dossier_cible = chemin.split("/")[0]
-                nom_module = module.nom
-
-                nouveau_dossier = f"{dossiers[dossier_cible]}/{nom_module}"
-                nouveau_chemin = f"{nouveau_dossier}/{nom_fichier}"
-
-                Path(nouveau_dossier).mkdir(parents=True, exist_ok=True)
-
-                ancien_chemin = Path(chemin)
-                if ancien_chemin.exists():
-                    ancien_chemin.rename(nouveau_chemin)
-                    chemins.append(nouveau_chemin)
+        for dossier in ["controllers", "services", "views"]:
+            base_path = self.base_path / dossier
+            if base_path.exists():
+                fichiers = base_path.glob("**/*.py")
+                chemins += [str(f.relative_to(self.base_path)) for f in fichiers if f.is_file()]
         return chemins
-
-    def lire_historique_generation(self) -> List[dict]:
-        log_path = Path("logs/intelligence/taches_a_completer.json")
-        if log_path.exists():
-            return json.loads(log_path.read_text(encoding="utf-8"))
-        return []
-
-    def suggestion_markdown_modules(self) -> str:
-        composants = self.analyser_composants_modules()
-        lignes = ["## Suggestions de l'IA\n"]
-        for m in composants:
-            lignes.append(f"- **{m.nom}** :")
-            if m.chemins_trouves:
-                for chemin in m.chemins_trouves:
-                    lignes.append(f"  - {chemin}")
-            else:
-                lignes.append("  - Aucun fichier détecté")
-        return "\n".join(lignes)
