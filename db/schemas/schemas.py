@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
+from pydantic import BaseModel, ConfigDict
+
 
 # ========================= DROITS D'ACCÈS =========================
 class DroitAccesBase(BaseModel):
@@ -18,8 +20,9 @@ class DroitAccesRead(DroitAccesBase):
     id: int
     utilisateur_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= UTILISATEUR =========================
 class UtilisateurBase(BaseModel):
@@ -35,8 +38,9 @@ class UtilisateurRead(UtilisateurBase):
     id: int
     droits: Optional[List[DroitAccesRead]] = []
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= RH =========================
 class RHBase(BaseModel):
@@ -56,8 +60,9 @@ class RHRead(RHBase):
     id: int
     utilisateur_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 # ========================= CLIENT =========================
 class ClientBase(BaseModel):
     nom: str
@@ -76,8 +81,9 @@ class ClientCreate(ClientBase):
 class ClientRead(ClientBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= FOURNISSEUR =========================
 class FournisseurBase(BaseModel):
@@ -96,8 +102,9 @@ class FournisseurCreate(FournisseurBase):
 class FournisseurRead(FournisseurBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= ÉVALUATION FOURNISSEUR =========================
 class EvaluationFournisseurBase(BaseModel):
@@ -113,8 +120,9 @@ class EvaluationFournisseurRead(EvaluationFournisseurBase):
     id: int
     fournisseur_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= DEVIS =========================
 class DevisBase(BaseModel):
@@ -130,8 +138,9 @@ class DevisRead(DevisBase):
     id: int
     client_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= COMMANDE =========================
 class CommandeBase(BaseModel):
@@ -147,8 +156,9 @@ class CommandeRead(CommandeBase):
     id: int
     client_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= LIGNE DE COMMANDE (CommandePiece) =========================
 class CommandePieceBase(BaseModel):
@@ -163,8 +173,9 @@ class CommandePieceRead(CommandePieceBase):
     commande_id: int
     piece_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= PIECE =========================
 class PieceBase(BaseModel):
@@ -178,8 +189,9 @@ class PieceCreate(PieceBase):
 class PieceRead(PieceBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= GAMME PRODUCTION =========================
 class GammeProductionBase(BaseModel):
@@ -206,8 +218,9 @@ class GammeProductionRead(GammeProductionBase):
     outil_id: int
     materiau_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= MATERIAU =========================
 class MateriauBase(BaseModel):
@@ -226,8 +239,9 @@ class MateriauRead(MateriauBase):
     id: int
     fournisseur_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= COMMANDE PIECE =========================
 class CommandePieceBase(BaseModel):
@@ -242,8 +256,9 @@ class CommandePieceRead(CommandePieceBase):
     commande_id: int
     piece_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 # ========================= MACHINE =========================
@@ -266,8 +281,9 @@ class MachineCreate(MachineBase):
 class MachineRead(MachineBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= OUTIL =========================
 class OutilBase(BaseModel):
@@ -287,8 +303,9 @@ class OutilRead(OutilBase):
     id: int
     fournisseur_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= INSTRUMENT DE CONTROLE =========================
 class InstrumentControleBase(BaseModel):
@@ -306,8 +323,9 @@ class InstrumentControleCreate(InstrumentControleBase):
 class InstrumentControleRead(InstrumentControleBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= CONTROLE PIECE =========================
 class ControlePieceBase(BaseModel):
@@ -324,8 +342,9 @@ class ControlePieceRead(ControlePieceBase):
     instrument_id: int
     piece_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= FACTURE =========================
 class FactureBase(BaseModel):
@@ -347,8 +366,9 @@ class FactureRead(FactureBase):
     commande_id: int
     valide_par: Optional[int]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= PROGRAMME PIECE =========================
 class ProgrammePieceBase(BaseModel):
@@ -365,8 +385,13 @@ class ProgrammePieceRead(ProgrammePieceBase):
     piece_id: int
     postprocesseur_id: int
 
-    class Config:
-        orm_mode = True
+    # Ajout des relations enrichies
+    piece: Optional[PieceRead]
+    postprocesseur: Optional[UtilisateurRead]  # à renommer selon ton vrai schéma
+
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= POST-PROCESSEUR =========================
 class PostProcesseurBase(BaseModel):
@@ -383,8 +408,9 @@ class PostProcesseurRead(PostProcesseurBase):
     id: int
     machine_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= PLANNING MACHINE =========================
 class PlanningMachineBase(BaseModel):
@@ -403,8 +429,9 @@ class PlanningMachineRead(PlanningMachineBase):
     machine_id: int
     gamme_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= PLANNING EMPLOYÉ =========================
 class PlanningEmployeBase(BaseModel):
@@ -423,8 +450,9 @@ class PlanningEmployeRead(PlanningEmployeBase):
     utilisateur_id: int
     machine_id: Optional[int]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= POINTAGE =========================
 class PointageBase(BaseModel):
@@ -445,8 +473,9 @@ class PointageRead(PointageBase):
     machine_id: int
     gamme_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= MAINTENANCE =========================
 class MaintenanceBase(BaseModel):
@@ -466,8 +495,9 @@ class MaintenanceRead(MaintenanceBase):
     machine_id: int
     operateur_id: Optional[int]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= CHARGE MACHINE =========================
 class ChargeMachineBase(BaseModel):
@@ -482,8 +512,9 @@ class ChargeMachineRead(ChargeMachineBase):
     id: int
     machine_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= AUDIT QUALITÉ =========================
 class AuditQualiteBase(BaseModel):
@@ -500,8 +531,9 @@ class AuditQualiteRead(AuditQualiteBase):
     id: int
     document_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= NON CONFORMITÉ =========================
 class NonConformiteBase(BaseModel):
@@ -527,8 +559,9 @@ class NonConformiteRead(NonConformiteBase):
     outil_id: Optional[int]
     instrument_id: Optional[int]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= DOCUMENT QUALITÉ =========================
 class DocumentQualiteBase(BaseModel):
@@ -546,8 +579,9 @@ class DocumentQualiteCreate(DocumentQualiteBase):
 class DocumentQualiteRead(DocumentQualiteBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= DOCUMENT RÉGLEMENTAIRE =========================
 class DocumentReglementaireBase(BaseModel):
@@ -567,8 +601,9 @@ class DocumentReglementaireRead(DocumentReglementaireBase):
     id: int
     utilisateur_id: Optional[int]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= HISTORIQUE D'ACTION =========================
 class HistoriqueActionBase(BaseModel):
@@ -584,26 +619,28 @@ class HistoriqueActionRead(HistoriqueActionBase):
     id: int
     utilisateur_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= GESTION ACCÈS =========================
-class GestionAccesBase(BaseModel):
-    module: str
-    peut_lire: bool = False
-    peut_ecrire: bool = False
-    peut_supprimer: bool = False
-    peut_valider: bool = False
+# db/schemas/schemas.py
 
-class GestionAccesCreate(GestionAccesBase):
-    utilisateur_id: int
+from pydantic import BaseModel
+from typing import Optional
 
-class GestionAccesRead(GestionAccesBase):
-    id: int
-    utilisateur_id: int
+class GestionAccesCreate(BaseModel):
+    utilisateur_id: int  # L'ID de l'utilisateur
+    ressource: str        # La ressource à laquelle l'utilisateur a accès (par ex. "api" ou "database")
+    niveau_acces: str     # Le niveau d'accès (par ex. "read", "write", etc.)
+    horodatage: Optional[str] = None  # Date et heure d'accès, facultatif
 
-    class Config:
-        orm_mode = True
+class GestionAccesRead(GestionAccesCreate):
+    id: int  # L'ID de l'accès (auto-généré)
+
+    model_config = {
+        "from_attributes": True
+    }  # Permet de convertir les objets ORM en objets Pydantic
 
 # ========================= QR CODE OBJET =========================
 class QrCodeObjetBase(BaseModel):
@@ -618,8 +655,9 @@ class QrCodeObjetCreate(QrCodeObjetBase):
 class QrCodeObjetRead(QrCodeObjetBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= FINANCE =========================
 class FinanceBase(BaseModel):
@@ -657,8 +695,9 @@ class FinanceRead(FinanceBase):
     machine_id: Optional[int]
     facture_id: Optional[int]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # ========================= STATISTIQUES FINANCIÈRES =========================
 
@@ -679,8 +718,70 @@ class StatFinanceRead(StatFinanceBase):
     id: int
     source_finance_id: Optional[int]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
+
+# ========================= GESTION FILTRE =========================
+class GestionFiltrageBase(BaseModel):
+    nom_filtre: str
+    niveau: int
+    actif: bool
+    module: Optional[str] = None
+    cible_type: str
+    cible_id: Optional[int] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+class GestionFiltrageCreate(GestionFiltrageBase):
+    pass
+
+class GestionFiltrageRead(GestionFiltrageBase):
+    id: int
+
+# ========== SURVEILLANCE CAMÉRA ==========
+
+class SurveillanceCameraBase(BaseModel):
+    nom: str
+    emplacement: str
+    actif: bool = True
+
+    model_config = {
+        "from_attributes": True
+    }
+
+class SurveillanceCameraCreate(SurveillanceCameraBase):
+    pass
+
+class SurveillanceCameraRead(SurveillanceCameraBase):
+    id: int
+
+# ===================== Robotique =====================
+class RobotiqueBase(BaseModel):
+    nom_robot: str
+    fonction: str
+    statut: str
+    affectation: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+class RobotiqueRead(RobotiqueBase):
+    id: int
 
 
+# ===================== Contrôle Robot =====================
+class ControleRobotBase(BaseModel):
+    robot_id: int
+    action: str
+    statut: Optional[str] = None
+    date_execution: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ControleRobotCreate(ControleRobotBase):
+    pass
+
+class ControleRobotRead(ControleRobotBase):
+    id: int
+    robot: Optional[RobotiqueRead]
 

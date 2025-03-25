@@ -7,6 +7,9 @@ from datetime import datetime
 import os
 import bcrypt
 
+
+
+
 Base = declarative_base()
 
 # ========================= ASSOCIATION MACHINE ↔ OUTIL =========================
@@ -43,6 +46,7 @@ class Utilisateur(Base):
     documents = relationship("DocumentRH", back_populates="utilisateur")
     audits_realises = relationship("AuditQualite", foreign_keys="[AuditQualite.responsable]", backref="responsable_utilisateur")
     non_conformites = relationship("NonConformite", back_populates="utilisateur")
+    filtres = relationship("GestionFiltrage", back_populates="utilisateur")
 
     # Méthodes de sécurité
     def set_password(self, plain_password: str):
@@ -210,6 +214,7 @@ class Client(Base):
     devis = relationship("Devis", back_populates="client", cascade="all, delete-orphan")
     commandes = relationship("Commande", back_populates="client", cascade="all, delete-orphan")
     factures = relationship("Facture", back_populates="client", cascade="all, delete-orphan")
+    filtres = relationship("GestionFiltrage", back_populates="client")
 
 # ========================= FOURNISSEURS =========================
 class Fournisseur(Base):
@@ -228,6 +233,7 @@ class Fournisseur(Base):
     outils = relationship("Outil", back_populates="fournisseur")
     evaluations = relationship("EvaluationFournisseur", back_populates="fournisseur")
     finances = relationship("Finance", back_populates="fournisseur")
+    filtres = relationship("GestionFiltrage", back_populates="fournisseur")
 
 # =========================EVALUATION FOURNISSEURS =========================
 class EvaluationFournisseur(Base):
@@ -270,6 +276,7 @@ class Commande(Base):
     client = relationship("Client", back_populates="commandes")
     lignes = relationship("CommandePiece", back_populates="commande")
     facture = relationship("Facture", back_populates="commande", uselist=False)
+    filtres = relationship("GestionFiltrage", back_populates="commande")
 
 # ========================= COMMANDE PIECE =========================
 class CommandePiece(Base):
@@ -704,6 +711,28 @@ class Robotique(Base):
     statut = Column(String(50))
     affectation = Column(String(255))
 
+class SurveillanceCamera(Base):
+    __tablename__ = "surveillance_cameras"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nom = Column(String, nullable=False)
+    emplacement = Column(String, nullable=False)
+    actif = Column(Boolean, default=True)
+
+class ControleRobot(Base):
+    __tablename__ = "controle_robot"
+
+    id = Column(Integer, primary_key=True, index=True)
+    robot_id = Column(Integer, ForeignKey("robotique.id"), nullable=False)
+    action = Column(String, nullable=False)
+    statut = Column(String, nullable=True)
+    date_execution = Column(DateTime, default=datetime.utcnow)
+
+    robot = relationship("Robotique")
+
+
+
+
 # ========================= FINANCE/STATISTIQUE =========================
 
 # ========================= FINANCE =========================
@@ -830,6 +859,25 @@ class ChargeMachine(Base):
 
     machine = relationship("Machine")
     gamme = relationship("GammeProduction")
+
+# ========================= FILTRAGE =========================
+class GestionFiltrage(Base):
+    __tablename__ = "gestion_filtrage"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nom_filtre = Column(String, nullable=False)
+    niveau = Column(Integer, nullable=False)
+    actif = Column(Boolean, default=True)
+
+    # Relations facultatives vers les entités filtrables
+    utilisateur_id = Column(Integer, ForeignKey("utilisateur.id"), nullable=True)
+    client_id = Column(Integer, ForeignKey("client.id"), nullable=True)
+    commande_id = Column(Integer, ForeignKey("commande.id"), nullable=True)
+
+    utilisateur = relationship("Utilisateur", back_populates="filtres")
+    client = relationship("Client", back_populates="filtres")
+    commande = relationship("Commande", back_populates="filtres")
+    Fournisseur = relationship("Fournisseur", back_populates="filtres")
 
 # ========================= CONNEXION DB =========================
 DATABASE_URL = os.getenv(
