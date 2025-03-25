@@ -43,8 +43,3 @@ def maj(id: int, planning_data: PlanningEmployeCreate, db: Session = Depends(get
 def supprimer(id: int, db: Session = Depends(get_db)):
     supprimer_planning_employe(db, id)
     return
-
-
-@router.post("/", response_model=PlanningEmployeRead)
-def creer(planning_data: PlanningEmployeCreate, db: Session = Depends(get_db)):
-    return creer_planning_employe(db, planning_data)

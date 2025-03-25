@@ -1,0 +1,37 @@
+<!-- templates/dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Assistant IA - Dashboard</title>
+</head>
+
+<body>
+    <h1>Assistant IA - Analyse des modules</h1>
+
+    <form method="post" action="/ia/creer-fichiers">
+        <button type="submit">Créer les fichiers manquants</button>
+    </form>
+
+    <h2>Composants détectés :</h2>
+    <ul>
+        {% for composant in composants %}
+        <li>
+            <strong>{{ composant.nom }}</strong>
+            {% if composant.chemins_trouves %}
+            <ul>
+                {% for chemin in composant.chemins_trouves %}
+                <li>{{ chemin }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <em>Aucun composant trouvé.</em>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
