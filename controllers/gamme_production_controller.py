@@ -38,3 +38,4 @@ def maj(id: int, data: GammeProductionCreate, db: Session = Depends(get_db)):
 def supprimer(id: int, db: Session = Depends(get_db)):
     supprimer_gamme(db, id)
     return
+

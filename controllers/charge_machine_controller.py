@@ -38,3 +38,8 @@ def maj(id: int, charge_data: ChargeMachineCreate, db: Session = Depends(get_db)
 def supprimer(id: int, db: Session = Depends(get_db)):
     supprimer_charge_machine(db, id)
     return
+
+@router.get("/")
+async def get_charge_machine():
+    return {"message": "Liste des charges machines"}
+

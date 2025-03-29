@@ -1,0 +1,71 @@
+= SPEC-6: Fiche de Contrôle Qualité
+:sectnums:
+:toc:
+
+== Contexte
+
+La conformité des pièces est essentielle, en particulier pour les secteurs réglementés comme l'aéronautique ou le militaire. Une fiche de contrôle qualité doit être générée automatiquement dès qu'une commande est identifiée comme critique ou à fort enjeu qualité.
+
+== Exigences
+
+- (M) Générer automatiquement une fiche CQ si la commande est destinée à l'aéronautique ou au militaire.
+- (S) Demander une validation utilisateur pour les autres cas.
+- (C) Permettre à l'IA de générer une fiche même en cas de lecture partielle du plan, avec alerte.
+- (S) Permettre la génération manuelle de fiches CQ.
+- (S) Chaque gamme de pièce peut avoir une fiche spécifique.
+
+== Méthode
+
+La fiche CQ est générée par l'IA à partir du plan et des informations de chiffrage. Elle comprend :
+
+- Dimensions critiques et tolérancées
+- Tolérances géométriques et état de surface
+- Instruments de mesure recommandés
+- Échantillonnage (fréquence de contrôle)
+- Identité du responsable CQ
+- Références d'instrument et validité de calibration
+- QR code de validation opérateur
+- Signature numérique
+- Zone commentaire (anomalies, remarques)
+
+La fiche est générée au format numérique modifiable, et peut être imprimée ou utilisée depuis l'interface opérateur/tablette.
+
+[plantuml, fiche_cq_generation, svg]
+----
+@startuml
+actor "IA Chiffrage" as IA
+actor "Responsable CQ" as CQ
+database "Base de données" as DB
+entity "Plan PDF / CAO" as Plan
+
+IA --> Plan : Analyse dimensions / tolérances
+IA --> DB : Lit données machines / instruments
+IA -> CQ : Propose fiche CQ pré-remplie
+CQ --> DB : Valide ou modifie la fiche
+DB --> IA : Enregistre fiche CQ
+
+@enduml
+----
+
+== Mise en œuvre
+
+- Intégration dans le flux de génération devis → commande → CQ
+- Utilisation de l'OCR + parsing vectoriel pour extraire les données du plan
+- Ajout de la table `fiche_controle_qualite` liée à `commande`, `gamme_production`, et `instrument_controle`
+- Stockage PDF optionnel ou usage via interface (mobile ou tablette)
+
+== Jalons
+
+- Détection automatique des commandes critiques (militaire/aéronautique)
+- Génération fiche CQ basique
+- Extraction OCR + IA
+- Interface de modification manuelle
+- Intégration QR code opérateur
+- Alerte calibration et validation
+- Liaison avec lot/pièce contrôlée
+
+== Collecte des résultats
+
+- Taux de génération automatique réussie (sans intervention humaine)
+- Délai moyen de validation
+- Taux de rejet lors de la production vs fiche CQ

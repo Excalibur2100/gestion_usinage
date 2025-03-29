@@ -10,7 +10,7 @@ from services.commande.commande_piece_services import (
     supprimer_commande_piece
 )
 
-router = APIRouter(prefix="/commande-pieces", tags=["Commandes - Lignes"])
+router = APIRouter(prefix="/commande-piece", tags=["CommandePiece"])
 
 @router.post("/", response_model=CommandePieceRead)
 def creer(data: CommandePieceCreate, db: Session = Depends(get_db)):
@@ -38,3 +38,7 @@ def maj(id: int, data: CommandePieceCreate, db: Session = Depends(get_db)):
 def supprimer(id: int, db: Session = Depends(get_db)):
     supprimer_commande_piece(db, id)
     return
+
+@router.get("/")
+async def get_commande_pieces():
+    return {"message": "Liste des commandes de pièces"}

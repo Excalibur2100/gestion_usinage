@@ -1,0 +1,52 @@
+
+= SPEC1-Partie: Planning Machine
+:toc:
+:sectnums:
+
+== Planification des Machines
+
+La planification des machines repose sur les données de gamme de production, les délais client et les capacités machines.
+
+== Objectifs de ce module
+
+* Éviter les surcharges machines
+* Prendre en compte les absences opérateurs
+* Réagir aux imprévus (casse-outils, défaillance machine)
+* S'adapter automatiquement en fonction des urgences validées
+
+== Données nécessaires
+
+- Gammes de production avec numéro d'opération
+- Planning employé et opérateur affecté
+- État des stocks outils et disponibilité matière
+- Priorités définies dans les commandes
+
+== Fonctionnalités prévues
+
+* Planification automatique basée sur les disponibilités machines et opérateurs
+* Détection des conflits de planning
+* Prise en compte des urgences, uniquement après validation manuelle
+* Réallocation dynamique en cas d’absence ou casse-outil
+* Interface de visualisation drag-and-drop
+* Historique des réorganisations
+* Respect des délais : déclenchement de l’urgence automatique si délai dépassé
+* Affectation intelligente d'une nouvelle pièce si plus d’outils disponibles
+
+== Validation manuelle
+
+Toute réorganisation automatique déclenchée par absence ou casse-outil doit être validée par un responsable avant application.
+
+== Liaison avec les autres modules
+
+* Lié aux modules : commandes, outils, opérateurs, RH, urgences
+* Interagit avec la gestion des stocks pour vérifier la faisabilité
+* Connecté à l’IA pour optimisation du flux machine
+
+== QR Code et commentaire opérateur
+
+Chaque étape de planification est accompagnée d’un QR code pour validation par scan mobile ou PC, avec champ commentaire opérateur prévu.
+
+== Historisation
+
+Toutes les modifications (manuelles ou automatiques) sont historisées pour analyse ultérieure et traçabilité des décisions.
+

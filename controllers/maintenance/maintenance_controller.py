@@ -2,6 +2,6 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-@router.get("/maintenance/test")
-def test_rh():
-    return {"message": "MAINTENANCE OK"}
+@router.get("/maintenance")
+async def get_utilisateurs():
+    return {"message": "Liste des maintenance"}

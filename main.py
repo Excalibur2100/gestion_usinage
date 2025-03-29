@@ -24,6 +24,10 @@ from controllers.controle_robot_controller import router as controle_robot_route
 from controllers.assistant_ia_controller import router as assistant_ia_router
 from controllers.codegen_controller import router as codegen_router
 from controllers.ia.router_ia import router as router_ia
+from fastapi.staticfiles import StaticFiles
+from controllers.ia.metrics_controller import router as metrics_router
+from controllers.analyse_fichier_controller import router as analyse_fichier_router
+from controllers.usinage_controller import router as usinage_router
 
 app = FastAPI(
     title="API Gestion Usinage",
@@ -56,6 +60,10 @@ app.include_router(controle_robot_router)
 app.include_router(assistant_ia_router)
 app.include_router(codegen_router)
 app.include_router(router_ia)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(metrics_router, prefix="/api", tags=["Metrics"])
+app.include_router(analyse_fichier_router)
+app.include_router(usinage_router)
 
 # Test de vie de l’API
 @app.get("/")

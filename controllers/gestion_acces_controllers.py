@@ -45,3 +45,9 @@ def maj_acces(id: int, data: GestionAccesCreate, db: Session = Depends(get_db)):
 def supprimer(id: int, db: Session = Depends(get_db)):
     supprimer_gestion_acces(db, id)
     return
+
+router = APIRouter(prefix="/gestion-acces", tags=["GestionAcces"])
+
+@router.get("/")
+async def get_gestion_acces():
+    return {"message": "Liste des accès"}

@@ -1,0 +1,76 @@
+
+= SPEC-6: Contrôle Qualité & Non-Conformités
+:sectnums:
+:toc:
+
+== Contexte
+
+Ce module couvre les processus de contrôle qualité, de détection des défauts, de gestion des non-conformités et des demandes de dérogation. Il est conçu pour répondre aux exigences des secteurs critiques (aéronautique, militaire) et pour assurer une traçabilité complète des actions.
+
+== Exigences
+
+*Must Have*
+- Déclenchement automatique de contrôle selon le plan de contrôle défini (nombre de pièces / criticité)
+- Détection manuelle par opérateur ou IA (via QR code ou tablette)
+- Génération automatique d'une fiche de non-conformité
+- Association automatique aux pièces, gammes, instruments ou machines
+- Suggestion d’actions correctives basées sur l’IA et l’historique
+- Suivi du cycle de vie de la non-conformité jusqu’à résolution
+- Possibilité de demande de dérogation à la place d’une action corrective
+- Historique et justification conservés dans la base qualité
+
+*Should Have*
+- Interface web et mobile dédiée à la validation des non-conformités ou dérogations
+- Intégration à l’audit ISO ou MAS
+
+== Méthode
+
+[plantuml,controle_qualite_workflow,svg]
+----
+@startuml
+start
+:Détection manuelle ou automatique;
+if (Pièce critique ?) then (Oui)
+  :Génération auto de non-conformité;
+elseif (Anomalie détectée ?) then (Oui)
+  :Fiche NC générée;
+else
+  :Fin de contrôle;
+  stop
+endif
+:Proposition IA d'action corrective;
+if (Dérogation demandée ?) then (Oui)
+  :Génération fiche dérogation;
+  :Soumission validation manager;
+  if (Validé ?) then (Oui)
+    :Maintien de la pièce dans le flux;
+  else
+    :Reprise ou rebut;
+  endif
+else
+  :Application action corrective;
+endif
+:Clôture et journalisation;
+stop
+@enduml
+----
+
+== Mise en œuvre
+
+- Création automatique d’un enregistrement `NonConformite` lié à `ControlePiece`
+- Possibilité via interface de basculer en mode “demande de dérogation”
+- L’IA suggère automatiquement une action ou déclenche un processus de validation de dérogation
+- Archivage automatique dans `AuditQualite`
+
+== Jalons
+
+- Implémentation des schémas Pydantic et ORM
+- Intégration dans les vues / QR codes
+- Connexion au moteur IA pour suggestions
+- Tests unitaires
+
+== Collecte des résultats
+
+- Historique centralisé des NC et dérogations
+- Suivi en temps réel de l’état de chaque fiche
+- Alertes pour non-conformité critiques non traitées

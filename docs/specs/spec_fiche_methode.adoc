@@ -1,0 +1,22 @@
+
+=== Fiches méthode par opération
+
+Chaque opération d’usinage donne lieu à la génération (ou création manuelle) d’une fiche méthode dédiée. Cette fiche contient :
+
+- la désignation de l’opération (ex: débit, tournage OP10, fraisage OP20, traitement, etc.),
+- les paramètres machines associés (vitesses, avances, corrections outils),
+- la matière concernée et son état,
+- les outils requis avec leurs conditions de coupe,
+- les documents associés (plan, programme, configuration FAO),
+- le temps estimé,
+- les commentaires opérateurs, 
+- l’état de validation,
+- un QR Code ou bouton permettant de valider l’opération,
+- la quantité de pièces à produire.
+
+Les fiches sont **éditables à tout moment** par les utilisateurs disposant des droits adéquats, qu’elles aient été générées automatiquement ou créées manuellement.
+
+Une fois l’opération validée (via QR ou bouton PC), le système :
+- met à jour le stock matière et outils,
+- enregistre le temps de production réel,
+- alimente les statistiques de production et la rentabilité associée.

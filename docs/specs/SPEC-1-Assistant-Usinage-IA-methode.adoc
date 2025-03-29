@@ -1,0 +1,73 @@
+
+== Méthode
+
+=== Vue d'ensemble de l'architecture technique
+
+L'application repose sur une architecture modulaire orchestrée par une IA centrale capable de piloter les modules de chiffrage, méthode, planification, gestion de production, QHSE, RH et finance. Le système fonctionne en local via un serveur NAS et des clients (PCs, mobiles) qui y sont connectés.
+
+Les modules sont interconnectés via FastAPI en backend, SQLAlchemy pour l’ORM et une base PostgreSQL. L’IA se charge d’analyser chaque fichier plan (PDF/DXF/STEP) et en déduit toutes les caractéristiques nécessaires au chiffrage, planning et production.
+
+=== Fiche méthode IA et chiffrage assisté
+
+[plantuml]
+----
+@startuml
+title Génération IA : Chiffrage → Fiche Méthode → Production
+
+actor "Utilisateur (Métreur)" as M
+actor "IA (Analyseur plan)" as IA
+actor "Méthode" as MET
+actor "Programmeur" as PRG
+actor "Machine CNC" as CNC
+
+M --> IA : Upload plan(s)
+IA -> IA : Analyse plan (nomenclature, matière, tolérances, OPs)
+IA -> MET : Génère fiche méthode
+IA -> M : Propose 3 scénarios de devis
+M --> MET : Valide la fiche (ou modifie)
+MET --> PRG : Transmet fiche détaillée
+PRG -> CNC : Génère programme CNC
+CNC -> MET : Confirme chaque étape (via QR code)
+@enduml
+----
+
+=== Structure d’une fiche méthode générée automatiquement
+
+Chaque fiche méthode générée par l’IA contient :
+- La **liste complète des opérations** (OP10, OP20...).
+- Les **outils sélectionnés**, en stock si possible.
+- Les **machines utilisées** (présentes dans l’atelier uniquement).
+- Les **temps estimés** avec 10% de sécurité.
+- Les **conditions de coupe** proposées automatiquement ou récupérées via le fournisseur.
+- Les **matières** détectées sur le plan + certificat si critique (aéronautique, militaire...).
+- Le **descriptif pour la programmation FAO**, étape par étape.
+- Lien vers le **post-processeur FAO** le plus adapté.
+- Un **QR Code** pour valider chaque opération (débit, usinage...).
+- La **possibilité pour l’opérateur d’ajouter un commentaire** à chaque étape.
+
+=== Génération des devis (3 scénarios proposés)
+
+Lors de l’analyse IA d’un ou plusieurs plans, trois devis sont automatiquement générés :
+- **Standard** : basé sur le planning réel + ressources disponibles.
+- **Rapide (Express)** : priorité à la livraison rapide, prix majoré.
+- **Économique** : temps long mais prix réduit, sans descendre sous la marge minimum.
+
+L’IA prend en compte :
+- Le **stock actuel** (matière, outils, plaquettes).
+- Les **machines et FAO disponibles**.
+- Les **contraintes de production en cours**.
+- Les **certificats exigés** (ou non).
+- La **charge machine** et l’encombrement planning.
+
+Le devis est ensuite validé manuellement avant génération PDF.
+
+=== Module Méthode
+
+Un module spécifique permet à un profil "Méthode" de :
+- Modifier, valider ou enrichir une fiche générée automatiquement.
+- Ajouter des instructions, croquis, contraintes spécifiques.
+- Définir les priorités planning et affecter les machines/opérateurs.
+- Exporter la fiche vers FAO ou vers l’atelier.
+
+---
+

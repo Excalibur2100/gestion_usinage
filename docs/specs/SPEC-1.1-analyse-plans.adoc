@@ -1,0 +1,89 @@
+
+= SPEC-1.1: Analyse automatique de plans techniques
+:sectnums:
+:toc:
+
+== Contexte
+
+Dans un environnement industriel centré sur la fabrication mécanique, le traitement rapide et fiable des plans techniques envoyés par les clients est crucial pour automatiser le chiffrage, la planification et la production. Cette spécification concerne la capacité du système à analyser automatiquement des fichiers de plans (PDF, image, CAO) et à extraire les informations nécessaires à la création de devis et de gammes de fabrication.
+
+== Exigences
+
+*Must have*
+- Capacité à importer des fichiers de plans PDF, PNG, JPG, DWG, DXF, STEP, IGES
+- Extraction automatique de données du cartouche (nom pièce, n° plan, matière, traitement, date, client)
+- Détection automatique de :
+  - tolérances générales
+  - cotations importantes
+  - traitements thermiques / de surface
+  - symboles de soudure
+  - indication du standard (ISO/ANSI)
+- Détection du type d’usinage (fraisage, tournage, perçage...)
+- Association automatique avec les machines et outils disponibles en base
+- Génération de la ligne de devis automatiquement
+
+*Should have*
+- OCR performant (Tesseract + LayoutLMv3)
+- Moteur de parsing vectoriel (manifold, plan vectorisé)
+- Prise en compte des pièces multi-versions et familles de plans
+
+*Could have*
+- Détection de zones d’usinage critiques (surcotes, états de surface)
+- Annotation du plan avec les points clés reconnus
+- Pré-validation IA avec niveau de confiance
+
+== Méthode
+
+L’architecture de ce module repose sur une chaîne de traitement des fichiers comprenant les étapes suivantes :
+
+1. **Upload** dans le module "devis"
+2. **Reconnaissance du format** (PDF, image ou CAO) via signature MIME
+3. **Analyse OCR** via Tesseract (texte brut) puis LayoutLMv3 (mise en page cartouche)
+4. **Parsing vectoriel** (si fichier CAO / PDF vectoriel) pour détection des entités géométriques et annotations
+5. **Identification** des champs cartouche via IA supervisée
+6. **Interprétation** du contenu technique et création d’un objet métier (PlanAnalyse)
+7. **Génération automatique** de la ligne devis associée
+8. **Stockage en base** (pièce, matière, outil suggéré, temps estimé, programme FAO)
+9. **Rendu visuel** dans l’interface utilisateur (aperçu annoté et données extraites)
+
+```plantuml
+@startuml
+actor "Utilisateur" as U
+participant "Module Devis" as D
+participant "Moteur OCR + IA" as IA
+participant "Base de Données" as DB
+
+U -> D : Upload plan (PDF, image, CAO)
+D -> IA : Analyse fichier
+IA -> DB : Stocke données techniques (pièce, temps, matière, outil)
+IA -> D : Retourne données extraites
+D -> U : Affiche ligne devis + données extraites
+@enduml
+```
+
+== Mise en œuvre
+
+- Intégration de Tesseract en back-end pour OCR initial
+- Intégration de LayoutLMv3 pour extraction structurée du cartouche
+- Détection automatique de plan vectoriel avec pdfminer ou fitz (PyMuPDF)
+- Utilisation de PyMuPDF pour surlignage et preview visuel
+- Création d’un modèle `PlanAnalyse` pour stocker les données extraites
+- Lien automatique avec la base `Piece`, `Materiau`, `Machine`, `Outil`
+- Interface graphique dans `/devis/upload` avec aperçu + suggestions IA
+- Validation manuelle avant génération du devis
+
+== Jalons
+
+- M1 : Chargement et prévisualisation fichier plan (PDF/image/CAO)
+- M2 : Extraction automatique des métadonnées du cartouche
+- M3 : Détection usinage + génération ligne de devis
+- M4 : Lien avec base machines / outils
+- M5 : Validation et création automatique du devis
+- M6 : Intégration interface + preview utilisateur
+
+== Collecte des résultats
+
+- Comparaison temps humain vs temps IA pour validation plan
+- Taux de détection correcte cartouche > 95%
+- Taux d’erreur sur matière / traitement < 5%
+- Feedback utilisateur après visualisation

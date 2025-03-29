@@ -35,3 +35,7 @@ def update(id: int, data: GestionFiltrageCreate, db: Session = Depends(get_db)):
 @router.delete("/{id}", status_code=204)
 def delete(id: int, db: Session = Depends(get_db)):
     supprimer_filtrage(db, id)
+    
+@router.get("/")
+async def get_gestion_filtrage():
+    return {"message": "Liste des filtrages"}

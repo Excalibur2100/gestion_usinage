@@ -1,0 +1,51 @@
+== Instruments de contrôle et conformité métrologique
+
+=== 1. Suivi des instruments
+
+Chaque instrument est enregistré avec les informations suivantes :
+- Nom de l'instrument
+- Type (pied à coulisse, micromètre, colonne de mesure, etc.)
+- Numéro de série
+- Statut (en service, hors service, en maintenance)
+- Affectation à un poste de travail ou opérateur spécifique (optionnel)
+
+=== 2. Historique de calibration
+
+Pour chaque instrument, les données suivantes sont suivies :
+- Date du dernier calibrage
+- Date de la prochaine calibration obligatoire
+- Résultat du contrôle (conforme / non conforme)
+- Nom du prestataire ou du responsable qualité ayant réalisé la calibration
+
+=== 3. Alertes automatisées (IA)
+
+Une IA embarquée assure les contrôles suivants :
+- Notification automatique 30 jours avant expiration d'une calibration
+- Suggestions de prestataires qualifiés selon l'historique ou les préférences
+- Blocage automatique de l'instrument au-delà de la date limite (sauf dérogation manuelle par un responsable)
+
+=== 4. Vérification par QR Code
+
+À chaque utilisation, l'opérateur scanne le QR Code de l'instrument :
+- Le système vérifie sa validité (date, conformité)
+- Si l'instrument est non conforme ou périmé, une alerte est déclenchée
+- L'utilisation est enregistrée dans l'historique pour audit
+
+=== 5. Gestion physique du stock
+
+- Tous les instruments sont associés à un emplacement physique précis (armoire, tiroir, caisse)
+- L’IA peut optimiser le rangement (proximité des postes, fréquence d’utilisation)
+- Contrôle visuel assisté possible via caméra pour détection de présence/absence
+
+=== 6. Intégration aux normes qualité
+
+- Tous les enregistrements sont conformes aux normes ISO 9001, EN 9100, MAS, etc.
+- Les rapports sont exportables pour audit externe
+- L’IA peut simuler un audit pour anticiper d’éventuelles non-conformités
+
+=== 7. Cas des instruments non conformes
+
+- Blocage de leur utilisation sur une gamme de production
+- Notification automatique au responsable qualité
+- Proposition de remplacement immédiat si équivalent en stock
+- Génération automatique d’un bon de retour ou fiche de non-conformité

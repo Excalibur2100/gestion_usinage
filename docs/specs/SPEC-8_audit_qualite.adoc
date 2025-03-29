@@ -1,0 +1,106 @@
+= SPEC-8: Système de gestion des audits qualité et conformité
+:sectnums:
+:toc:
+:toclevels: 2
+:doctype: book
+:source-highlighter: pygments
+:icons: font
+
+== Contexte
+
+La gestion qualité est un pilier essentiel du système, notamment dans les environnements soumis à des exigences strictes comme l'aéronautique, le militaire ou le médical. Ce module d'audit et conformité permet d'assurer la conformité aux normes (ISO 9001, EN9100, MAS, etc.) en automatisant la traçabilité des audits, des non-conformités, des actions correctives et en centralisant les documents qualité.
+
+== Exigences
+
+*Must have* :
+- Possibilité de créer des audits internes et externes liés à un document ou à un événement
+- Historique complet de chaque audit (date, responsable, statut, remarques)
+- Liaison automatique avec les non-conformités détectées pendant l’audit
+- Liaison aux actions correctives validées
+- Génération d’un rapport PDF ou archive ZIP contenant tous les documents liés à un audit
+- Signature électronique sur les audits critiques (optionnelle)
+- Possibilité d'associer un audit à une norme ou un référentiel (ISO, MAS, etc.)
+- Adaptation des critères d’audit selon le secteur (aéronautique, militaire, etc.)
+- Visualisation statistique des performances qualité : taux de conformité, délais de résolution...
+
+*Should have* :
+- Système d’alerte pour audit à planifier ou dépassé
+- Champs personnalisables pour ajouter des remarques spécifiques
+- Interface de recherche et filtres dynamiques
+- Export automatique en cas de contrôle (archive prête à envoi)
+
+*Could have* :
+- Suggestions automatiques d’actions correctives basées sur l’historique
+- Suivi des audits par QR Code pour validation sur poste mobile
+
+== Méthode
+
+Chaque audit est une entité unique avec une relation :
+- à des non-conformités (0..n)
+- à des actions correctives (0..n)
+- à des documents qualité (0..n)
+- à un utilisateur responsable
+
+=== Schéma de base de données (extrait simplifié)
+[source,sql]
+----
+CREATE TABLE AuditQualite (
+    id SERIAL PRIMARY KEY,
+    date TIMESTAMP,
+    type_audit TEXT,
+    responsable TEXT,
+    statut TEXT,
+    remarques TEXT,
+    document_id INTEGER REFERENCES DocumentQualite(id)
+);
+
+CREATE TABLE ActionCorrective (
+    id SERIAL PRIMARY KEY,
+    description TEXT,
+    date_lancement TIMESTAMP,
+    date_cloture TIMESTAMP,
+    statut TEXT,
+    audit_id INTEGER REFERENCES AuditQualite(id)
+);
+----
+
+=== Diagramme de composants (plantuml)
+[plantuml]
+----
+@startuml
+package "Qualité" {
+  class AuditQualite
+  class NonConformite
+  class ActionCorrective
+  class DocumentQualite
+
+  AuditQualite --> NonConformite : détecte
+  AuditQualite --> ActionCorrective : déclenche
+  AuditQualite --> DocumentQualite : basé sur
+}
+@enduml
+----
+
+== Mise en œuvre
+
+- Interface web : formulaire de création d’audit avec possibilité de rattacher des documents et non-conformités
+- Génération automatique d’un pack qualité (ZIP)
+- Lien avec la signature électronique pour audits critiques
+- Indicateurs dynamiques dans un dashboard qualité
+- Scripts d’import/export pour communication externe (client, autorité)
+
+== Jalons
+
+- [x] Définition du modèle de données
+- [x] Création du formulaire de saisie d’audit
+- [ ] Intégration à la traçabilité des non-conformités
+- [ ] Génération d’archives qualité
+- [ ] Export en PDF/ZIP
+- [ ] Signature électronique
+- [ ] Tableau de bord qualité
+
+== Collecte des résultats
+
+- Vérification de la couverture des audits selon calendrier annuel
+- Suivi du traitement des actions correctives
+- Indicateurs de performance qualité (temps moyen de résolution, taux de conformité)

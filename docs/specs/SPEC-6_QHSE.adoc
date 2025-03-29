@@ -1,0 +1,51 @@
+
+== 6. Module Qualité, Audits et QHSE
+
+Ce module est conçu pour répondre aux exigences des normes ISO 9001, MAS, et autres normes spécifiques aux secteurs sensibles comme l’aéronautique et le militaire. Il intègre une gestion complète des audits, de la qualité, des non-conformités et du suivi des plans d’actions.
+
+=== 6.1 Audits qualité
+
+- Création d’audits planifiés ou ponctuels.
+- Types d’audit : interne, fournisseur, produit, process.
+- Affectation d’un responsable et rattachement à un document qualité.
+- Suivi des statuts : Planifié, En cours, Terminé.
+- Intégration de rapports PDF et commentaires.
+
+=== 6.2 Non-conformités
+
+- Origines détectables : opérateur, machine, matière, outil, instrument.
+- Liens avec des commandes, des opérations ou des gammes de production.
+- Classification par criticité (critique, majeur, mineur).
+- Système de déclenchement automatique sur pièces critiques (aéronautique, militaire).
+- Possibilité de demander une dérogation (soumise à validation).
+- Traçabilité complète des actions : détection, action corrective, validation.
+
+=== 6.3 Actions correctives et préventives
+
+- Plan d’action lié à chaque non-conformité ou audit.
+- Délais de traitement définissables.
+- Attribution à des responsables.
+- Journalisation automatique dans l’historique qualité.
+
+=== 6.4 Préparation des audits (mode Pré-audit)
+
+- Simulation d’un audit à blanc.
+- Analyse automatique des zones à risques par IA.
+- Recommandations et fiches d’amélioration continue.
+
+=== 6.5 Indicateurs qualité (KPI)
+
+- Taux de conformité fournisseurs.
+- Taux de non-conformité par mois/type.
+- Temps moyen de traitement d’une non-conformité.
+- Export possible en PDF ou CSV.
+
+=== 6.6 Liens transverses
+
+- Rattachement des audits et non-conformités aux :
+  - Fiches méthode
+  - Opérations
+  - Commandes
+  - Pièces
+- Intégration avec la planification (possibilité de bloquer une opération en cas de non-conformité critique).
+

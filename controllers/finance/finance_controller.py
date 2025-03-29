@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix="/finance", tags=["RH"])
 
-@router.get("/finance/test")
-def test_rh():
-    return {"message": "FINANCE OK"}
+@router.get("/")
+async def get_rh():
+    return {"message": "Endpoint Finance opérationnel"}

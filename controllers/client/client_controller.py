@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix="/client", tags=["RH"])
 
-@router.get("/client/test")
-def test_rh():
-    return {"message": "CLIENT OK"}
+@router.get("/")
+async def get_rh():
+    return {"message": "client RH opérationnel"}

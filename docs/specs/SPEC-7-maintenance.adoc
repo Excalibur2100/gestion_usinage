@@ -1,0 +1,88 @@
+
+= SPEC-7: Maintenance préventive et corrective
+:sectnums:
+:toc:
+
+== Contexte
+
+La gestion de la maintenance des machines-outils est essentielle pour garantir la continuité de production, prévenir les pannes et garantir la conformité aux exigences de qualité et de sécurité. Le système doit suivre les maintenances préventives planifiées ainsi que les maintenances correctives ou prédictives déclenchées automatiquement.
+
+== Exigences
+
+*Must Have* :
+- Enregistrement et suivi des maintenances préventives, correctives et prédictives.
+- Planification automatique des maintenances récurrentes selon des règles paramétrables.
+- Notification automatique des maintenances à venir à J-30.
+- Historique complet et horodaté des interventions.
+- Affectation des techniciens avec leur retour sur maintenance.
+
+*Should Have* :
+- Analyse automatique par l’IA des tendances de panne pour déclencher une maintenance prédictive.
+- Déclenchement automatique d'une intervention si capteur détecte un défaut ou sur retour opérateur.
+
+*Could Have* :
+- Visualisation planning de maintenance par machine.
+- Génération automatique de bon d'intervention PDF à chaque maintenance.
+
+*Won’t Have (pour le MVP)* :
+- Intégration directe avec système de capteurs industriels IoT.
+
+== Méthode
+
+Les opérations de maintenance sont modélisées via la table `maintenance` avec des contraintes sur les types, statuts et affectations. Une IA analyse les historiques de pannes pour détecter les machines à risque élevé de défaillance.
+
+Un moteur de planification permet de prédéfinir des règles récurrentes pour chaque machine (ex: toutes les 500 heures d’utilisation ou tous les 3 mois).
+
+=== Diagramme PlantUML de la logique de maintenance
+
+[plantuml]
+----
+@startuml
+entity "Machine" as M
+entity "Maintenance" as MA
+entity "Utilisateur (Opérateur)" as U
+
+M --o MA : concerne >
+U --o MA : réalise >
+
+MA : id
+MA : type_maintenance
+MA : date_planifiee
+MA : date_reelle
+MA : statut
+MA : remarques
+
+note right of MA
+- Préventive / Corrective / Prédictive
+- Planifiée / En cours / Réalisée
+@enduml
+----
+
+=== Algorithme IA pour maintenance prédictive
+
+- Analyse historique `maintenance`
+- Si même type de panne revient 3 fois en X mois → suggérer maintenance.
+- Croisement avec temps de cycle allongé sur gamme de production.
+- Calcul probabilité panne > seuil → déclenchement préventif automatique.
+
+== Mise en œuvre
+
+- Mise en place du module `maintenance_service` pour gestion CRUD + IA prédictive.
+- Création frontend planning de maintenance machine + alertes.
+- Ajout d’un worker planificateur tournant chaque nuit.
+- Intégration dans les vues opérateur pour validation post-maintenance.
+
+== Jalons
+
+1. Implémentation du modèle et des API de maintenance (préventif et correctif)
+2. Interface de planification + génération automatique des maintenances récurrentes
+3. Mécanisme de notification et de rappel à J-30
+4. Algorithme IA prédictif (analyse de pannes récurrentes)
+5. Visualisation calendrier par machine
+6. Génération fiche intervention PDF
+
+== Collecte des résultats
+
+- Taux de maintenance réalisée dans les délais
+- Réduction du nombre de pannes non planifiées
+- Satisfaction des opérateurs et techniciens via feedback intégré

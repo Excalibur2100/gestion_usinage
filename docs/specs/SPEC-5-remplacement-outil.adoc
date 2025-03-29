@@ -1,0 +1,26 @@
+= SPEC-5: Gestion de remplacement outil après casse
+:sectnums:
+:toc:
+
+== Contexte
+
+Cette section détaille le comportement attendu du système en cas de casse d’outil au cours d’une opération d’usinage. L’objectif est d’assurer une continuité de production sans interruption critique, tout en assurant la traçabilité et les bonnes pratiques industrielles.
+
+== Méthode
+
+=== Outil
+
+* En cas de casse outil :
+  * L’opérateur indique le **numéro de gamme** concerné.
+  * L’outil est automatiquement désaffecté de la gamme, avec enregistrement de l’incident.
+  * L’IA recherche dans le **stock** un **outil alternatif compatible** :
+    * Si trouvé : il est proposé avec adaptation automatique des conditions de coupe.
+    * L’opérateur peut :
+      * Valider le remplacement.
+      * Ajouter un **commentaire libre** pour les méthodes.
+      * Envoyer l’alerte à la cellule méthode si doute.
+  * Si aucun outil n’est disponible :
+    * Une **commande urgente** est préparée automatiquement (outil, quantité, fournisseur recommandé).
+    * **Validation obligatoire par un responsable** avant transmission au fournisseur.
+    * Le **planning de production est recalculé** temporairement jusqu’à réception.
+

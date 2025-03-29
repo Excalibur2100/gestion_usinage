@@ -1,0 +1,91 @@
+= SPEC-7: QHSE et Traçabilité
+:sectnums:
+:toc:
+:docdate: 2025-03-26
+
+== Contexte
+
+Le système doit assurer la conformité avec les exigences QHSE (Qualité, Hygiène, Sécurité, Environnement) dans des environnements industriels sensibles tels que l'aéronautique ou le militaire. Il doit garantir la traçabilité, la conformité réglementaire, et l'exécution contrôlée des tâches critiques.
+
+== Exigences
+
+*Must Have*
+- Génération automatique de fiches de sécurité pour les commandes militaires/aéronautiques.
+- Validation manuelle si pièce critique détectée par l’IA.
+- Traçabilité complète des pièces, opérations, instruments de mesure.
+- Rappel automatique des dates de calibration des instruments de mesure.
+- Détection automatique de non-conformité sur pièce critique.
+- Déclenchement automatique de non-conformité si défaut détecté.
+- Système de demande de dérogation intégré à la gestion des non-conformités.
+- Intégration des audits qualité (ISO 9001, MAS, etc.) avec calendrier et suivi des actions correctives.
+- Journalisation complète et centralisée des actions critiques.
+- Signature électronique requise uniquement pour les documents critiques liés à l’aéronautique, le militaire ou l’armement.
+
+*Should Have*
+- Fiches de sécurité générées à la validation de commande selon criticité.
+- Historique de chaque instrument de contrôle (état, calibrations, non-conformités).
+- Possibilité de joindre des photos ou documents aux non-conformités.
+
+*Could Have*
+- Intégration de dispositifs connectés pour détection automatique de risques (caméra, etc.).
+- Analyse automatique des causes de non-conformité par IA.
+
+== Méthode
+
+=== Architecture générale
+Les modules QHSE, Traçabilité, Audit et Non-Conformité seront étroitement intégrés avec les modules suivants : production, contrôle, gestion des utilisateurs et documents qualité.
+
+=== Fiches de sécurité
+- Générées automatiquement sur les commandes identifiées comme critiques (domaine : armement/aéronautique).
+- Validation manuelle activée si l’analyse IA identifie un doute ou une pièce non critique sensible.
+
+=== Instruments de mesure
+- Chaque instrument possède une fiche de vie avec :
+  - dates de calibration
+  - conformité QHSE
+  - alertes automatiques à J-30 de la prochaine calibration
+  - statut “en service” ou “hors service”
+
+=== Non-conformités
+- Déclenchées automatiquement sur détection IA ou par opérateur
+- Si la pièce est critique, blocage du processus et lancement automatique
+- Possibilité de demander une dérogation
+- Lien avec les opérations, utilisateurs, machine, outil, matière
+
+=== Audit
+- Calendrier d’audit planifié (mensuel, semestriel, annuel)
+- Checklist selon norme (ISO 9001, MAS…)
+- Suivi des actions correctives et exportable pour rapport d’audit
+
+=== Signature électronique
+- Obligatoire uniquement pour documents liés aux commandes militaires/aéronautiques
+- Basée sur clé privée cryptée par l’administrateur
+- Historique des signatures disponible pour audit
+
+=== Journalisation
+- Actions critiques (validation, modification gamme, rejet, non-conformité, etc.) journalisées
+- Stockées avec date, heure, utilisateur et nature de l’action
+
+== Mise en œuvre
+
+. Création des tables : instruments, audits, non-conformités, fiches de sécurité
+. Intégration au workflow commande / production / qualité
+. Système de notifications (email / dashboard)
+. Système de règles métiers pour déclenchements automatiques
+. Génération automatique des documents liés (PDF, markdown)
+
+== Jalons
+
+- [x] Intégration des instruments de mesure
+- [x] Déclencheur automatique de non-conformité
+- [x] Demande de dérogation
+- [ ] Module d’audit ISO
+- [ ] Intégration de signature électronique (partielle)
+- [ ] Finalisation des dashboards QHSE
+
+== Collecte des résultats
+
+- Vérification manuelle de conformité ISO
+- Export des logs QHSE pour audit externe
+- Vérification de couverture des cas critiques (militaire/aéronautique)
+

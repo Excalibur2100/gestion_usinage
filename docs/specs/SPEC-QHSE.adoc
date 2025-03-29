@@ -1,0 +1,54 @@
+=== 12. QHSE – Qualité, Hygiène, Sécurité, Environnement
+
+==== 12.1. Gestion documentaire et conformité
+
+Le système gère tous les documents liés à la qualité (ISO 9001, MAS, etc.) :
+
+- Documents Qualité : procédures, processus, certificats, audits.
+- Documents Réglementaires : fiches de sécurité, normes, exigences légales.
+- Historisation des versions, dates de validité et rappels automatiques avant expiration.
+- Lien avec les opérations et pièces critiques.
+
+==== 12.2. Suivi des audits
+
+- Planification des audits internes/externes.
+- Génération automatique de rapports.
+- Notifications des non-conformités détectées et affectation automatique à un responsable.
+- Conservation des historiques d’audit par secteur et par type.
+
+==== 12.3. Traçabilité des non-conformités
+
+- Détection manuelle ou automatique d’une non-conformité (ex. pièce critique non conforme).
+- Déclenchement automatique dans les cas critiques (aéronautique, armement).
+- Proposition de dérogation si besoin.
+- Archivage avec lien vers l’opération concernée, l’utilisateur, le type de pièce, la cause, etc.
+- Calcul d’un indicateur de taux de non-conformité.
+
+==== 12.4. Intégration au processus de production
+
+- Suivi des instruments de mesure (date de calibration, date prochaine, conformité).
+- Blocage automatique de l'utilisation de matériel non conforme ou non à jour.
+- Historique complet par instrument.
+
+==== 12.5. Suivi de la conformité par commande/pièce
+
+- Chaque commande ou pièce garde un historique QHSE :
+  - Date de contrôle
+  - Contrôleur responsable
+  - Résultat (conforme/non conforme)
+  - Documents associés (PDF, photo, fiche de contrôle)
+  - Liens vers fiches de non-conformités si applicable
+
+==== 12.6. Checklist d’audit intelligente
+
+- Générée par l’IA en fonction de l’activité de l’entreprise.
+- Inclut des points de contrôle spécifiques au secteur (ex : armement, médical, etc.).
+- Suivi automatique des points bloquants.
+- Suivi des échéances de certification.
+
+==== 12.7. Lien RH / Formations QHSE
+
+- Archivage des formations obligatoires pour chaque utilisateur.
+- Blocage des opérations sensibles si formation non valide.
+- Historique des habilitations (sécurité, contrôle, etc.).
+- Intégration avec la gestion des droits d’accès.

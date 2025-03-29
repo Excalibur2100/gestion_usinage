@@ -1,0 +1,43 @@
+== Module Programme Pièce
+
+=== Objectif
+Gérer efficacement les programmes d’usinage pour chaque pièce, en assurant leur traçabilité, leur validation, et leur association complète avec le matériel et les outils nécessaires.
+
+=== Fonctionnalités principales
+
+- Import de programmes issus de logiciels FAO (SolidCAM, Fusion360, TopSolid, etc.)
+- Association automatique à une pièce, un post-processeur, et une machine
+- Génération de QR code pour validation de programme ou téléchargement depuis la machine
+- Stockage du fichier source dans le système de fichiers et référence en base
+- Horodatage de l’importation
+- Statut du programme : `brouillon`, `à valider`, `validé`, `obsolète`
+- Signature numérique pour la validation (authenticité, conformité)
+- Multi-format accepté : `.nc`, `.tap`, `.iso`, `.gcode`, etc.
+- Lien vers les outils à utiliser dans le programme (liste d’outils référencés)
+- Visualisation possible du programme via simulateur (optionnel)
+- Support des langages FAO multiples avec détection d’extension automatique
+- Contrôle IA sur la cohérence entre la machine, les outils, et la matière
+- Vérification automatique de la présence des outils avant lancement
+- QR code activable pour validation opérateur ou lancement du programme sur CN
+
+=== Base de données
+
+- Table `programme_piece`
+  - `id`: identifiant unique
+  - `nom_programme`: nom lisible
+  - `fichier_path`: chemin de stockage sur le serveur NAS
+  - `postprocesseur_id`: FK vers post-processeur compatible
+  - `piece_id`: FK vers la pièce concernée
+  - `date_import`: horodatage
+  - `statut`: Enum (brouillon / validé / obsolète)
+  - `signature`: empreinte numérique du fichier (SHA256)
+  - `source_logiciel`: FAO d’origine (Fusion360, etc.)
+  - `extension`: format fichier (.nc, .tap, etc.)
+
+=== Sécurité
+- Contrôle d’accès au téléchargement et à la modification selon le rôle utilisateur
+- Accès réservé à la création et validation aux méthodes / responsables production
+
+=== Améliorations futures
+- Validation automatique via simulation IA du parcours outil
+- Vérification croisée avec planning machine et stock outil avant import

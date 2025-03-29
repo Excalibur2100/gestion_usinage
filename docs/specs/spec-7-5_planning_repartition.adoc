@@ -1,0 +1,40 @@
+
+= SPEC-7.5: Répartition et Gestion du Planning de Production
+:sectnums:
+:toc:
+
+== Gestion des absences et aléas
+
+* En cas d'absence d’un opérateur, l’IA :
+** détecte automatiquement le créneau vide ;
+** réattribue les opérations à un autre opérateur compétent ;
+** ajuste automatiquement les charges des autres postes.
+
+* En cas de casse-outils :
+** l’IA propose un outil équivalent en stock ;
+** si aucun outil n’est disponible, elle replanifie automatiquement l’opération après validation managériale.
+
+== Prise en compte des délais
+
+* Chaque commande comporte un champ `délai_livraison` (dans la base de données).
+* Le moteur d’ordonnancement IA :
+** priorise automatiquement les opérations selon les délais ;
+** fait évoluer une commande en "urgente" si le délai devient critique.
+
+== Réorganisation IA et validation
+
+* Toute réorganisation automatique du planning par l’IA doit être :
+** notifiée au responsable ;
+** validée avant application, sauf cas critiques.
+
+== Interface manuelle via glisser-déposer
+
+* Le planning de production est modifiable manuellement :
+** interface graphique interactive type *drag & drop* ;
+** modifications affectent directement la base de données ;
+** toute modification est historisée (utilisateur, date, opération).
+
+* Vue consolidée :
+** par jour, semaine, mois ;
+** par machine et par opérateur.
+

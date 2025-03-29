@@ -1,0 +1,88 @@
+
+= ARCHI-4: Gestion des post-processeurs
+:sectnums:
+:toc:
+:toclevels: 2
+:date: 2025-03-26
+
+== Contexte
+
+Le système doit permettre de gérer automatiquement les post-processeurs nécessaires à la génération des fichiers de production pour les machines-outils utilisées. Ces fichiers doivent être compatibles avec les logiciels FAO utilisés (ex. SolidCAM, TopSolid, Fusion 360), en tenant compte des spécificités de chaque machine.
+
+== Exigences
+
+*Must have*
+- Génération automatique de post-processeurs adaptés à chaque machine.
+- Association d’un post-processeur à une machine donnée.
+- Stockage des configurations FAO et extensions générées.
+- Validation manuelle avant déploiement sur machine.
+- Export du fichier compatible FAO (.nc, .tap, .cnc…).
+
+*Should have*
+- Interface de gestion des post-processeurs avec recherche et filtre.
+- Simulation de programme pour vérification avant usinage réel.
+- Affectation d’un post-processeur à une opération de gamme.
+
+*Could have*
+- Historique des versions et modifications du post-processeur.
+- Génération multi-format automatique.
+
+== Méthode
+
+Les entités `Machine`, `PostProcesseur` et `ProgrammePiece` de la base de données sont utilisées.
+
+Chaque post-processeur est lié à :
+- une machine
+- un logiciel FAO
+- une extension générée
+- une configuration unique
+
+Des scripts Python sont responsables de générer automatiquement le fichier post-processeur, à partir des caractéristiques de la machine.
+
+[source,python]
+----
+class PostProcesseur(Base):
+    nom: str
+    logiciel_fao: str
+    extension_sortie: Optional[str]
+    configuration: Optional[str]
+    machine_id: int
+----
+
+[source,python]
+----
+class ProgrammePiece(Base):
+    nom_programme: str
+    fichier_path: str
+    date_import: Optional[datetime]
+    piece_id: int
+    postprocesseur_id: int
+----
+
+== Ajouts validés
+
+- Association directe entre opérations de gamme et post-processeur.
+- Affectation d’un post-processeur par défaut par machine.
+- Simulation virtuelle possible avant validation.
+- Compatibilité multi-format (.cnc, .tap, .nc).
+- Gestion des versions FAO multiples.
+- Validation obligatoire par le service méthodes.
+
+== Mise en œuvre
+
+- Génération via un service Python en se basant sur les données `machine` et `logiciel_fao`.
+- Option de test automatique dans environnement simulé.
+- UI dans la partie "Méthode" pour sélectionner/visualiser les post-processeurs.
+
+== Jalons
+
+- [x] Schéma base de données validé
+- [ ] Générateur post-processeur développé
+- [ ] Interface de gestion intégrée
+- [ ] Fonction de simulation ajoutée
+
+== Collecte des résultats
+
+- Vérification manuelle du fichier généré par un responsable.
+- Simulation validée sans collision ni erreur.
+- Programmation FAO facilitée grâce aux fichiers générés automatiquement.

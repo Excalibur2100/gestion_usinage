@@ -1,0 +1,56 @@
+
+= SPEC-6: Collecte des Résultats Étendue
+:sectnums:
+:toc:
+
+== Collecte des Résultats
+
+La plateforme inclut une évaluation continue de la performance système, à travers des mécanismes automatiques et interactifs, pilotés par l’IA.
+
+=== Monitoring en temps réel
+
+* Suivi des paramètres machine : température, statut (ON/OFF), nombre de cycles
+* Affichage en temps réel de l’avancement des commandes : étape actuelle, heure de début/fin estimée
+* Alertes en cas :
+** de dépassement des délais prévus
+** d’arrêt machine inattendu
+** de non-utilisation prolongée d’un outil
+
+=== Dashboard de supervision multi-rôle
+
+* **Responsable** : vue consolidée, rentabilité, alertes critiques
+* **Qualité** : statut des audits, non-conformités, instruments à recalibrer
+* **Méthodes** : analyses d’outils, conditions de coupe utilisées, statistiques de programmation
+* **Production** : taux de charge, retards, ordres de fabrication en cours
+
+=== Analyse prédictive via IA
+
+* Prévision des surcharges machines à horizon glissant (7, 14, 30 jours)
+* Détection automatique des projets non-rentables basés sur l'historique
+* Identification d’anomalies dans les cadences opérateurs / machines
+
+=== Suivi IA vs Décision Humaine
+
+* Journal des recommandations générées par l’IA et leurs issues (acceptée/refusée)
+* Évolution de la confiance dans chaque module IA
+* Score d’autonomie IA par domaine (stock, chiffrage, planning, maintenance, etc.)
+
+=== Audit automatique mensuel
+
+* Génération d’un rapport interne au format `.pdf`
+* Export archivés sur le NAS dans `/audit/YYYY-MM.pdf`
+* Structure conforme à ISO 9001 ou MAS selon les profils d'entreprise cochés à l'installation
+
+=== Retour utilisateur par rôle (Feedback loop)
+
+* Interface rapide pour indiquer l’efficacité d’une suggestion ou d’un module
+* Base d'amélioration continue du moteur IA
+* Visualisation des scores de satisfaction dans le dashboard
+
+=== Auto-diagnostic des dépendances critiques
+
+* PostgreSQL
+* Accès fichiers
+* Scripts init, caméra, IA
+* Notification automatique en cas d’échec
+

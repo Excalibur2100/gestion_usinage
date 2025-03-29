@@ -1,0 +1,36 @@
+
+== Mise à jour : Gestion des délais client dans le chiffrage et les commandes
+
+Afin de permettre à l’IA et au moteur de planification de prioriser les fabrications en fonction des urgences réelles, les entités `Devis` et `Commande` sont enrichies avec un champ supplémentaire :
+
+[source,python]
+----
+date_livraison_souhaitee: Optional[datetime]
+----
+
+=== Impacts attendus
+
+- Classement automatique des demandes par ordre de priorité réelle.
+- Prise en compte du délai client dans :
+  * Le chiffrage (ajustement du prix selon la contrainte de délai)
+  * Le planning (vérification de faisabilité)
+  * Les alertes d’urgence (commande en retard ou impossible à tenir)
+- Possibilité d’étiqueter une commande comme *sur-urgence* si le délai est dépassé.
+
+=== Intégration technique
+
+Ajout de la propriété dans :
+
+[source,python]
+----
+class DevisBase(BaseModel):
+    ...
+    date_livraison_souhaitee: Optional[datetime]
+
+class CommandeBase(BaseModel):
+    ...
+    date_livraison_souhaitee: Optional[datetime]
+----
+
+Ce champ est synchronisé automatiquement du devis vers la commande lors de la validation.
+

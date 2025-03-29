@@ -2,9 +2,17 @@ import os
 import ast
 import json
 from datetime import datetime
+from datetime import timezone
 from pathlib import Path
 from typing import List, Optional
 from pydantic import BaseModel
+
+# Import des modules de core
+from ia.core.learning import Learning
+from ia.core.code_generation import CodeGenerator
+from ia.core.calculations import Calculator
+from ia.core.security import Security
+from ia.core.file_management import FileManager
 
 
 class IAModule(BaseModel):
@@ -27,6 +35,12 @@ class ModeleDetecte(BaseModel):
 class AssistantIAService:
     def __init__(self, base_path: str = "."):
         self.base_path = Path(base_path)
+        # Initialisation des modules de core
+        self.learning = Learning()
+        self.code_generator = CodeGenerator()
+        self.calculator = Calculator()
+        self.security = Security()
+        self.file_manager = FileManager()
 
     def fichier_existe(self, chemin_relatif: str) -> bool:
         return (self.base_path / chemin_relatif).exists()
@@ -96,7 +110,7 @@ class AssistantIAService:
             log_path = Path("logs/intelligence/taches_a_completer.json")
             log_path.parent.mkdir(parents=True, exist_ok=True)
             log_entry = {
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "fichiers_crees": fichiers_crees
             }
             if log_path.exists():
@@ -180,3 +194,7 @@ class AssistantIAService:
                 fichiers = base_path.glob("**/*.py")
                 chemins += [str(f.relative_to(self.base_path)) for f in fichiers if f.is_file()]
         return chemins
+
+    def effectuer_calcul_complexe(self, x: float, y: float) -> float:
+        """Exemple d'utilisation du module Calculator."""
+        return self.calculator.complex_calculation(x, y)

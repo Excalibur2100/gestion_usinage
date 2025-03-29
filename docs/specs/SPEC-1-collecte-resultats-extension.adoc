@@ -1,0 +1,32 @@
+= SPEC-1: Collecte des Résultats - Extension
+:sectnums:
+:toc:
+
+== Collecte des résultats
+
+=== 1. Conformité des exigences
+
+- Vérification que chaque exigence priorisée (Must/Should) a une trace de couverture fonctionnelle ou technique dans les modules développés.
+- Audit de code automatisé pour confirmer la présence de logique d’exécution par exigence.
+
+=== 2. Performance du système
+
+- Temps de réponse moyen des APIs critiques < 200ms.
+- Temps de traitement complet d’une commande (devis -> génération gamme -> validation prod) < 10s.
+
+=== 3. Pertinence des modules IA
+
+- Taux de reconnaissance correcte des éléments de plans (matière, opérations, tolérances, type d’usinage, traitements, etc.) > 95% pour des plans aux normes européennes ou US claires.
+- Taux d’utilisation effective des suggestions d’outils ou de matière faites par l’IA > 85%, hors cas de rupture ou non disponibilité catalogue.
+- Précision de la simulation d'usinage : écart entre temps simulé et temps réel < 15% dans 80% des cas.
+
+=== 4. Interactions humaines et satisfaction
+
+- Système de notation rapide ou commentaires intégré à chaque validation d’opération.
+- Objectif : note moyenne des utilisateurs (opérateurs, méthodes, planification) ≥ 4/5.
+
+=== 5. Suivi des adaptations automatiques
+
+- Mesure du taux de succès des réorganisations proposées par l’IA (validation humaine obligatoire).
+- Objectif : dans 90% des cas, les délais client sont respectés malgré ajustement planning.
+

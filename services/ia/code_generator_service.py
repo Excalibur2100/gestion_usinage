@@ -1,6 +1,6 @@
 # services/ia/code_generator_service.py
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pydantic import BaseModel
 
 
@@ -15,7 +15,7 @@ class CodeGenResponse(BaseModel):
     controller_code: str | None = None
     service_code: str | None = None
     message: str
-    created_at: datetime = datetime.utcnow()
+    created_at: datetime = datetime.now(timezone.utc)
 
 
 def generate_controller_code(entity_name: str) -> str:

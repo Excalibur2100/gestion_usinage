@@ -1,79 +1,62 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict
-
-
-# ========================= DROITS D'ACCÈS =========================
-class DroitAccesBase(BaseModel):
-    module: str
-    peut_lire: bool = False
-    peut_creer: bool = False
-    peut_modifier: bool = False
-    peut_supprimer: bool = False
-    acces_total: bool = False
-
-class DroitAccesCreate(DroitAccesBase):
-    utilisateur_id: int
-
-class DroitAccesRead(DroitAccesBase):
-    id: int
-    utilisateur_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
+from typing import Optional, List
+from pydantic import BaseModel, EmailStr, Field
 
 # ========================= UTILISATEUR =========================
+
 class UtilisateurBase(BaseModel):
     nom: str
     email: EmailStr
     role: str
-    actif: bool = True
 
 class UtilisateurCreate(UtilisateurBase):
-    mot_de_passe: str
+    mot_de_passe: str = Field(..., min_length=8)
 
-class UtilisateurRead(UtilisateurBase):
+class UtilisateurUpdate(BaseModel):
+    nom: Optional[str] = None
+    email: Optional[EmailStr] = None
+    mot_de_passe: Optional[str] = Field(None, min_length=8)
+    role: Optional[str] = None
+    actif: Optional[bool] = None
+
+class UtilisateurRead(BaseModel):
     id: int
-    droits: Optional[List[DroitAccesRead]] = []
+    nom: str
+    email: str
+    role: str
+    actif: bool
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True 
+        
 
-# ========================= RH =========================
-class RHBase(BaseModel):
-    poste: Optional[str]
-    contrat: Optional[str]
-    temps_travail: Optional[float]
-    est_cadre: Optional[bool]
-    date_debut: Optional[datetime]
-    salaire_brut: Optional[float]
-    statut_administratif: Optional[str]
-    remarques: Optional[str]
+# ========================= DROIT =========================
+class DroitBase(BaseModel):
+    module: str
+    autorisation: bool = False
 
-class RHCreate(RHBase):
+class DroitCreate(DroitBase):
     utilisateur_id: int
 
-class RHRead(RHBase):
+class DroitRead(DroitBase):
     id: int
     utilisateur_id: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True
+        
+
 # ========================= CLIENT =========================
 class ClientBase(BaseModel):
     nom: str
-    email: Optional[EmailStr] = None
-    telephone: Optional[str] = None
-    adresse: Optional[str] = None
-    siret: Optional[str] = None
-    tva_intracom: Optional[str] = None
-    secteur_activite: Optional[str] = None
-    site_web: Optional[str] = None
-    commentaire: Optional[str] = None
+    email: Optional[str]
+    telephone: Optional[str]
+    adresse: Optional[str]
+    siret: Optional[str]
+    tva_intracom: Optional[str]
+    secteur_activite: Optional[str]
+    site_web: Optional[str]
+    commentaire: Optional[str]
 
 class ClientCreate(ClientBase):
     pass
@@ -81,20 +64,20 @@ class ClientCreate(ClientBase):
 class ClientRead(ClientBase):
     id: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True
+        
 
 # ========================= FOURNISSEUR =========================
 class FournisseurBase(BaseModel):
     nom: str
-    contact: Optional[str] = None
-    email: Optional[EmailStr] = None
-    telephone: Optional[str] = None
-    adresse: Optional[str] = None
-    tva: Optional[str] = None
-    site_web: Optional[str] = None
-    catalogue_interactif: Optional[str] = None
+    contact: Optional[str]
+    email: Optional[str]
+    telephone: Optional[str]
+    adresse: Optional[str]
+    tva: Optional[str]
+    site_web: Optional[str]
+    catalogue_interactif: Optional[str]
 
 class FournisseurCreate(FournisseurBase):
     pass
@@ -102,85 +85,138 @@ class FournisseurCreate(FournisseurBase):
 class FournisseurRead(FournisseurBase):
     id: int
 
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= ÉVALUATION FOURNISSEUR =========================
-class EvaluationFournisseurBase(BaseModel):
-    date_evaluation: Optional[datetime] = None
-    critere: Optional[str]
-    note: Optional[float]
-    commentaire: Optional[str] = None
-
-class EvaluationFournisseurCreate(EvaluationFournisseurBase):
-    fournisseur_id: int
-
-class EvaluationFournisseurRead(EvaluationFournisseurBase):
-    id: int
-    fournisseur_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True
+        
 
 # ========================= DEVIS =========================
 class DevisBase(BaseModel):
-    date_devis: Optional[datetime] = None
-    montant_total: Optional[float] = None
-    statut: Optional[str] = None
-    scenarios: Optional[str] = None
+    client_id: int
+    date_devis: datetime
+    montant_total: float
+    statut: str
+    scenarios: Optional[str]
 
 class DevisCreate(DevisBase):
-    client_id: int
+    pass
 
 class DevisRead(DevisBase):
     id: int
-    client_id: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True
+        
 
 # ========================= COMMANDE =========================
 class CommandeBase(BaseModel):
-    statut: Optional[str] = "en attente"
-    date_commande: Optional[datetime] = None
-    bon_commande_client: Optional[str] = None
-    forcer_creation: Optional[bool] = False
+    client_id: int
+    statut: str = "en attente"
+    date_commande: datetime
+    bon_commande_client: Optional[str]
 
 class CommandeCreate(CommandeBase):
-    client_id: int
+    pass
 
 class CommandeRead(CommandeBase):
     id: int
+
+    class Config:
+        orm_mode = True
+        
+
+# ========================= FACTURE =========================
+class FactureBase(BaseModel):
+    numero_facture: str
     client_id: int
+    commande_id: Optional[int]
+    date_emission: datetime
+    date_echeance: Optional[datetime]
+    montant_total: float
+    statut: str = "En attente"
+    observations: Optional[str]
 
-    model_config = {
-        "from_attributes": True
-    }
+class FactureCreate(FactureBase):
+    pass
 
-# ========================= LIGNE DE COMMANDE (CommandePiece) =========================
-class CommandePieceBase(BaseModel):
-    quantite: int
-
-class CommandePieceCreate(CommandePieceBase):
-    commande_id: int
-    piece_id: int
-
-class CommandePieceRead(CommandePieceBase):
+class FactureRead(FactureBase):
     id: int
-    commande_id: int
-    piece_id: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True
+        
+
+# ========================= MACHINE =========================
+class MachineBase(BaseModel):
+    nom: str
+    type: str
+    vitesse_max: Optional[float]
+    puissance: Optional[float]
+
+class MachineCreate(MachineBase):
+    pass
+
+# ========================= PLANNING MACHINE =========================
+class PlanningMachineBase(BaseModel):
+    machine_id: int
+    date: datetime
+    plage_horaire: str
+    tache: Optional[str]
+
+class PlanningMachineCreate(PlanningMachineBase):
+    pass
+
+class PlanningMachineRead(PlanningMachineBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+        
+
+# ========================= PLANNING EMPLOYÉ =========================
+class PlanningEmployeBase(BaseModel):
+    utilisateur_id: int
+    machine_id: Optional[int]
+    date: datetime
+    plage_horaire: Optional[str]
+    tache: Optional[str]
+    statut: str = "Prévu"
+
+class PlanningEmployeCreate(PlanningEmployeBase):
+    pass
+
+class PlanningEmployeRead(PlanningEmployeBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+        
+
+# ========================= GAMME PRODUCTION =========================
+class GammeProductionBase(BaseModel):
+    piece_id: int
+    ordre: int
+    machine_id: Optional[int]
+    outil_id: Optional[int]
+    materiau_id: Optional[int]
+    operation: str
+    temps_prevu: Optional[float]
+    temps_reel: Optional[float]
+    statut: str = "En attente"
+
+class GammeProductionCreate(GammeProductionBase):
+    pass
+
+class GammeProductionRead(GammeProductionBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+        
 
 # ========================= PIECE =========================
 class PieceBase(BaseModel):
-    nom: Optional[str]
-    numero_plan: Optional[str]
+    nom: str
+    numero_plan: str
     description: Optional[str]
 
 class PieceCreate(PieceBase):
@@ -189,599 +225,124 @@ class PieceCreate(PieceBase):
 class PieceRead(PieceBase):
     id: int
 
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= GAMME PRODUCTION =========================
-class GammeProductionBase(BaseModel):
-    ordre: Optional[int]
-    operation: Optional[str]
-    temps_prevu: Optional[float]
-    temps_reel: Optional[float]
-    statut: Optional[str] = "En attente"
-    moyen_controle: Optional[str]
-    programme_piece: Optional[str]
-    longueur_debit: Optional[float]
-    nombre_debits: Optional[int]
-
-class GammeProductionCreate(GammeProductionBase):
-    piece_id: int
-    machine_id: int
-    outil_id: int
-    materiau_id: int
-
-class GammeProductionRead(GammeProductionBase):
-    id: int
-    piece_id: int
-    machine_id: int
-    outil_id: int
-    materiau_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= MATERIAU =========================
-class MateriauBase(BaseModel):
-    nom: str
-    afnor: Optional[str]
-    stock: Optional[int]
-    durete: Optional[str]
-    type: Optional[str] = "Acier"
-    est_aeronautique: Optional[bool] = False
-    certificat_matiere: Optional[str]
-
-class MateriauCreate(MateriauBase):
-    fournisseur_id: int
-
-class MateriauRead(MateriauBase):
-    id: int
-    fournisseur_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= COMMANDE PIECE =========================
-class CommandePieceBase(BaseModel):
-    quantite: int
-
-class CommandePieceCreate(CommandePieceBase):
-    commande_id: int
-    piece_id: int
-
-class CommandePieceRead(CommandePieceBase):
-    id: int
-    commande_id: int
-    piece_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-
-# ========================= MACHINE =========================
-class MachineBase(BaseModel):
-    nom: Optional[str]
-    type: Optional[str]
-    vitesse_max: Optional[float]
-    puissance: Optional[float]
-    nb_axes: Optional[int]
-    axe_x_max: Optional[float]
-    axe_y_max: Optional[float]
-    axe_z_max: Optional[float]
-    commande_numerique: Optional[str]
-    post_processeur: Optional[str]
-    logiciel_fao: Optional[str]
-
-class MachineCreate(MachineBase):
-    pass
-
-class MachineRead(MachineBase):
-    id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= OUTIL =========================
-class OutilBase(BaseModel):
-    nom: Optional[str]
-    type: Optional[str]
-    stock: Optional[int]
-    en_stock: Optional[bool]
-    diametre: Optional[float]
-    longueur: Optional[float]
-    ref_fournisseur: Optional[str]
-    catalogue_url: Optional[str]
-
-class OutilCreate(OutilBase):
-    fournisseur_id: int
-
-class OutilRead(OutilBase):
-    id: int
-    fournisseur_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= INSTRUMENT DE CONTROLE =========================
-class InstrumentControleBase(BaseModel):
-    nom: Optional[str]
-    type_instrument: Optional[str]
-    numero_serie: Optional[str]
-    date_calibrage: Optional[datetime]
-    date_prochaine_calibration: Optional[datetime]
-    conforme_qhse: Optional[bool] = True
-    en_service: Optional[bool] = True
-
-class InstrumentControleCreate(InstrumentControleBase):
-    pass
-
-class InstrumentControleRead(InstrumentControleBase):
-    id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= CONTROLE PIECE =========================
-class ControlePieceBase(BaseModel):
-    resultat: Optional[str]
-    date_controle: Optional[datetime]
-    remarque: Optional[str]
-
-class ControlePieceCreate(ControlePieceBase):
-    instrument_id: int
-    piece_id: int
-
-class ControlePieceRead(ControlePieceBase):
-    id: int
-    instrument_id: int
-    piece_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= FACTURE =========================
-class FactureBase(BaseModel):
-    numero_facture: str
-    date_emission: Optional[datetime]
-    date_echeance: Optional[datetime]
-    montant_total: Optional[float]
-    statut: Optional[str] = "En attente"
-    mode_generation: Optional[str] = "Automatique"
-    observations: Optional[str]
-
-class FactureCreate(FactureBase):
-    client_id: int
-    commande_id: int
-
-class FactureRead(FactureBase):
-    id: int
-    client_id: int
-    commande_id: int
-    valide_par: Optional[int]
-
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True
+        
 
 # ========================= PROGRAMME PIECE =========================
 class ProgrammePieceBase(BaseModel):
+    piece_id: int
     nom_programme: str
     fichier_path: str
-    date_import: Optional[datetime]
+    postprocesseur_id: Optional[int]
+    date_import: datetime
 
 class ProgrammePieceCreate(ProgrammePieceBase):
-    piece_id: int
-    postprocesseur_id: int
+    pass
 
 class ProgrammePieceRead(ProgrammePieceBase):
     id: int
-    piece_id: int
-    postprocesseur_id: int
 
-    # Ajout des relations enrichies
-    piece: Optional[PieceRead]
-    postprocesseur: Optional[UtilisateurRead]  # à renommer selon ton vrai schéma
+    class Config:
+        orm_mode = True
+        
 
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= POST-PROCESSEUR =========================
-class PostProcesseurBase(BaseModel):
+class CommandePieceCreate(BaseModel):
     nom: str
-    logiciel_fao: str
-    extension_sortie: Optional[str]
-    configuration: Optional[str]
-    date_creation: Optional[datetime]
+    description: str
 
-class PostProcesseurCreate(PostProcesseurBase):
-    machine_id: int
-
-class PostProcesseurRead(PostProcesseurBase):
+class CommandePieceRead(BaseModel):
     id: int
-    machine_id: int
+    nom: str
+    description: str
 
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= PLANNING MACHINE =========================
-class PlanningMachineBase(BaseModel):
-    date: datetime
-    plage_horaire: str
-    tache: Optional[str]
-    statut: Optional[str]
-    charge_estimee: Optional[float]
-
-class PlanningMachineCreate(PlanningMachineBase):
-    machine_id: int
-    gamme_id: int
-
-class PlanningMachineRead(PlanningMachineBase):
-    id: int
-    machine_id: int
-    gamme_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= PLANNING EMPLOYÉ =========================
-class PlanningEmployeBase(BaseModel):
-    date: datetime
-    plage_horaire: str
-    tache: Optional[str]
-    statut: Optional[str]
-    affectation_auto: Optional[bool] = True
-
-class PlanningEmployeCreate(PlanningEmployeBase):
-    utilisateur_id: int
-    machine_id: Optional[int]
-
-class PlanningEmployeRead(PlanningEmployeBase):
-    id: int
-    utilisateur_id: int
-    machine_id: Optional[int]
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= POINTAGE =========================
-class PointageBase(BaseModel):
-    date_pointage: Optional[datetime]
-    heure_debut: datetime
-    heure_fin: Optional[datetime]
-    duree_effective: Optional[float]
-    remarques: Optional[str]
-
-class PointageCreate(PointageBase):
-    utilisateur_id: int
-    machine_id: int
-    gamme_id: int
-
-class PointageRead(PointageBase):
-    id: int
-    utilisateur_id: int
-    machine_id: int
-    gamme_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= MAINTENANCE =========================
-class MaintenanceBase(BaseModel):
-    type_maintenance: str
-    date_planifiee: datetime
-    date_reelle: Optional[datetime]
-    statut: Optional[str]
-    description: Optional[str]
-    remarques: Optional[str]
-
-class MaintenanceCreate(MaintenanceBase):
-    machine_id: int
-    operateur_id: Optional[int]
-
-class MaintenanceRead(MaintenanceBase):
-    id: int
-    machine_id: int
-    operateur_id: Optional[int]
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= CHARGE MACHINE =========================
-class ChargeMachineBase(BaseModel):
-    date: datetime
-    charge_totale: float
-    seuil_surcharge: Optional[float] = 7.5
-
-class ChargeMachineCreate(ChargeMachineBase):
-    machine_id: int
-
-class ChargeMachineRead(ChargeMachineBase):
-    id: int
-    machine_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= AUDIT QUALITÉ =========================
-class AuditQualiteBase(BaseModel):
-    date: datetime
-    type_audit: str
-    responsable: str
-    remarques: Optional[str]
-    statut: Optional[str]
-
-class AuditQualiteCreate(AuditQualiteBase):
-    document_id: int
-
-class AuditQualiteRead(AuditQualiteBase):
-    id: int
-    document_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= NON CONFORMITÉ =========================
-class NonConformiteBase(BaseModel):
-    origine: str
-    description: Optional[str]
-    action_corrective: Optional[str]
-    date_detection: datetime
-    date_resolution: Optional[datetime]
-    statut: Optional[str] = "Ouvert"
-
-class NonConformiteCreate(NonConformiteBase):
-    utilisateur_id: int
-    machine_id: Optional[int]
-    materiau_id: Optional[int]
-    outil_id: Optional[int]
-    instrument_id: Optional[int]
-
-class NonConformiteRead(NonConformiteBase):
-    id: int
-    utilisateur_id: int
-    machine_id: Optional[int]
-    materiau_id: Optional[int]
-    outil_id: Optional[int]
-    instrument_id: Optional[int]
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= DOCUMENT QUALITÉ =========================
-class DocumentQualiteBase(BaseModel):
-    titre: str
-    type_document: str
-    reference_norme: Optional[str]
-    fichier_path: str
-    version: Optional[str]
-    date_ajout: Optional[datetime]
-    actif: Optional[bool] = True
-
-class DocumentQualiteCreate(DocumentQualiteBase):
-    pass
-
-class DocumentQualiteRead(DocumentQualiteBase):
-    id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= DOCUMENT RÉGLEMENTAIRE =========================
-class DocumentReglementaireBase(BaseModel):
-    titre: str
-    description: Optional[str]
-    type_document: str
-    date_edition: datetime
-    valide_jusquau: Optional[datetime]
-    fichier_stocke: str
-    conforme: Optional[bool] = True
-    norme_associee: Optional[str]
-
-class DocumentReglementaireCreate(DocumentReglementaireBase):
-    utilisateur_id: Optional[int]
-
-class DocumentReglementaireRead(DocumentReglementaireBase):
-    id: int
-    utilisateur_id: Optional[int]
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= HISTORIQUE D'ACTION =========================
-class HistoriqueActionBase(BaseModel):
-    module: str
-    action: str
-    details: Optional[str]
-    date_action: Optional[datetime]
-
-class HistoriqueActionCreate(HistoriqueActionBase):
-    utilisateur_id: int
-
-class HistoriqueActionRead(HistoriqueActionBase):
-    id: int
-    utilisateur_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= GESTION ACCÈS =========================
-# db/schemas/schemas.py
-
-from pydantic import BaseModel
-from typing import Optional
+    class Config:
+        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
 
 class GestionAccesCreate(BaseModel):
-    utilisateur_id: int  # L'ID de l'utilisateur
-    ressource: str        # La ressource à laquelle l'utilisateur a accès (par ex. "api" ou "database")
-    niveau_acces: str     # Le niveau d'accès (par ex. "read", "write", etc.)
-    horodatage: Optional[str] = None  # Date et heure d'accès, facultatif
-
-class GestionAccesRead(GestionAccesCreate):
-    id: int  # L'ID de l'accès (auto-généré)
-
-    model_config = {
-        "from_attributes": True
-    }  # Permet de convertir les objets ORM en objets Pydantic
-
-# ========================= QR CODE OBJET =========================
-class QrCodeObjetBase(BaseModel):
-    objet_type: str
-    objet_id: int
-    qr_code_data: str
-    date_creation: Optional[datetime]
-
-class QrCodeObjetCreate(QrCodeObjetBase):
-    pass
-
-class QrCodeObjetRead(QrCodeObjetBase):
-    id: int
-
-    model_config = {
-        "from_attributes": True
-    }
-
-# ========================= FINANCE =========================
-class FinanceBase(BaseModel):
-    type_transaction: str
-    categorie: Optional[str]
-    sous_categorie: Optional[str]
-    description: Optional[str]
-    montant: float
-    devise: Optional[str] = "EUR"
-    date: Optional[datetime]
-    periode: Optional[str]  # Format "YYYY-MM"
-    statut: Optional[str] = "Validé"
-    moyen_paiement: Optional[str]
-    justificatif: Optional[str]
-    reference_facture: Optional[str]
-
-class FinanceCreate(FinanceBase):
     utilisateur_id: int
-    fournisseur_id: Optional[int]
-    materiau_id: Optional[int]
-    piece_id: Optional[int]
-    instrument_id: Optional[int]
-    outil_id: Optional[int]
-    machine_id: Optional[int]
-    facture_id: Optional[int]
+    role: str
 
-class FinanceRead(FinanceBase):
+class GestionAccesRead(BaseModel):
     id: int
     utilisateur_id: int
-    fournisseur_id: Optional[int]
-    materiau_id: Optional[int]
-    piece_id: Optional[int]
-    instrument_id: Optional[int]
-    outil_id: Optional[int]
-    machine_id: Optional[int]
-    facture_id: Optional[int]
+    role: str
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
 
-# ========================= STATISTIQUES FINANCIÈRES =========================
+class PlanningMachineCreate(BaseModel):
+    debut: datetime
+    fin: datetime
+    machine_id: int
 
-class StatFinanceBase(BaseModel):
-    periode: str
-    type_stat: str
-    categorie: Optional[str]
-    sous_categorie: Optional[str]
-    montant_total: float
-    devise: Optional[str] = "EUR"
-    precision: Optional[str] = "mois"
-    date_calcul: Optional[datetime]
-
-class StatFinanceCreate(StatFinanceBase):
-    source_finance_id: Optional[int] = None
-
-class StatFinanceRead(StatFinanceBase):
+class PlanningMachineRead(BaseModel):
     id: int
-    source_finance_id: Optional[int]
+    debut: datetime
+    fin: datetime
+    machine_id: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    class Config:
+        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
 
-# ========================= GESTION FILTRE =========================
-class GestionFiltrageBase(BaseModel):
-    nom_filtre: str
-    niveau: int
-    actif: bool
-    module: Optional[str] = None
-    cible_type: str
-    cible_id: Optional[int] = None
+class GestionFiltrageCreate(BaseModel):
+    filtre: str
+    valeur: str
 
-    model_config = ConfigDict(from_attributes=True)
-
-class GestionFiltrageCreate(GestionFiltrageBase):
-    pass
-
-class GestionFiltrageRead(GestionFiltrageBase):
+class GestionFiltrageRead(BaseModel):
     id: int
+    filtre: str
+    valeur: str
 
-# ========== SURVEILLANCE CAMÉRA ==========
+    class Config:
+        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+        
+class ChargeMachineCreate(BaseModel):
+    machine_id: int
+    charge: float
+    date: datetime
 
-class SurveillanceCameraBase(BaseModel):
-    nom: str
+class ChargeMachineRead(BaseModel):
+    id: int
+    machine_id: int
+    charge: float
+    date: datetime
+
+    class Config:
+        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+
+class SurveillanceCameraCreate(BaseModel):
+    camera_id: int
     emplacement: str
-    actif: bool = True
-
-    model_config = {
-        "from_attributes": True
-    }
-
-class SurveillanceCameraCreate(SurveillanceCameraBase):
-    pass
-
-class SurveillanceCameraRead(SurveillanceCameraBase):
-    id: int
-
-# ===================== Robotique =====================
-class RobotiqueBase(BaseModel):
-    nom_robot: str
-    fonction: str
     statut: str
-    affectation: str
 
-    model_config = ConfigDict(from_attributes=True)
-
-class RobotiqueRead(RobotiqueBase):
+class SurveillanceCameraRead(BaseModel):
     id: int
+    camera_id: int
+    emplacement: str
+    statut: str
 
+    class Config:
+        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
 
-# ===================== Contrôle Robot =====================
-class ControleRobotBase(BaseModel):
+class ControleRobotCreate(BaseModel):
     robot_id: int
     action: str
-    statut: Optional[str] = None
-    date_execution: Optional[datetime] = None
+    statut: str
 
-    model_config = ConfigDict(from_attributes=True)
-
-class ControleRobotCreate(ControleRobotBase):
-    pass
-
-class ControleRobotRead(ControleRobotBase):
+class ControleRobotRead(BaseModel):
     id: int
-    robot: Optional[RobotiqueRead]
+    robot_id: int
+    action: str
+    statut: str
+
+    class Config:
+        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+
+class MachineRead(BaseModel):
+    id: int
+    nom: str
+
+    class Config:
+        orm_mode = True
 

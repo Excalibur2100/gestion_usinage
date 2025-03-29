@@ -44,7 +44,7 @@ class Utilisateur(Base):
     affectations = relationship("AffectationMachine", back_populates="utilisateur")
     finances = relationship("Finance", back_populates="utilisateur")
     documents = relationship("DocumentRH", back_populates="utilisateur")
-    audits_realises = relationship("AuditQualite", foreign_keys="[AuditQualite.responsable]", backref="responsable_utilisateur")
+    audits_realises = relationship("AuditQualite", back_populates="responsable_utilisateur")
     non_conformites = relationship("NonConformite", back_populates="utilisateur")
     filtres = relationship("GestionFiltrage", back_populates="utilisateur")
 
@@ -376,8 +376,8 @@ class PostProcesseur(Base):
 # ========================= MACHINES =========================
 class Machine(Base):
     __tablename__ = 'machines'
-    id = Column(Integer, primary_key=True)
-    nom = Column(String(100))
+    id = Column(Integer, primary_key=True, index=True)
+    nom = Column(String(100), nullable=False)
     type = Column(String(100))
     vitesse_max = Column(Float)
     puissance = Column(Float)
@@ -387,6 +387,8 @@ class Machine(Base):
     axe_z_max = Column(Float)
     commande_numerique = Column(String(100))  # Siemens, Fanuc, etc.
     logiciel_fao = Column(String(100))  # SolidCam, TopSolid, Fusion360, etc.
+    temperature_max = Column(Float)  # Température maximale autorisée
+    vibration_max = Column(Float)   # Vibration maximale autorisée
 
     affectations = relationship("AffectationMachine", back_populates="machine")
     gammes = relationship("GammeProduction", back_populates="machine")
@@ -395,6 +397,18 @@ class Machine(Base):
     plannings = relationship("PlanningMachine", back_populates="machine")
     charges = relationship("ChargeMachine", back_populates="machine")
     postprocesseurs = relationship("PostProcesseur", back_populates="machine")
+    metrics = relationship("MetricsMachine", back_populates="machine")
+
+# ========================= Metrics MACHINES =========================
+class MetricsMachine(Base):
+    __tablename__ = "metrics_machine"
+    id = Column(Integer, primary_key=True, index=True)
+    machine_id = Column(Integer, ForeignKey("machines.id"), nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    temperature = Column(Float, nullable=False)
+    vibration = Column(Float, nullable=False)
+
+    machine = relationship("Machine", back_populates="metrics")
 
 # ========================= MAINTENANCE =========================
 class Maintenance(Base):
@@ -408,6 +422,7 @@ class Maintenance(Base):
     operateur_id = Column(Integer, ForeignKey("utilisateurs.id"))
     description = Column(Text)
     remarques = Column(Text)
+    planifie_par_ia = Column(Boolean, default=False)
 
     machine = relationship("Machine", back_populates="maintenances")
     operateur = relationship("Utilisateur")
@@ -453,6 +468,7 @@ class Materiau(Base):
     qhse = relationship("QHSE", back_populates="materiau")
     finance = relationship("Finance", back_populates="materiau")
     non_conformites = relationship("NonConformite", back_populates="materiau")
+    qhse = relationship("QHSE", back_populates="materiau")
 
 # ========================= GAMME PRODUCTION =========================
 class GammeProduction(Base):
@@ -515,6 +531,7 @@ class PlanningMachine(Base):
     statut = Column(String(50), default="Prévu", nullable=False)
     charge_estimee = Column(Float)
     gamme_id = Column(Integer, ForeignKey("gammes_production.id"))
+    optimise_par_ia = Column(Boolean, default=False)
 
     machine = relationship("Machine", back_populates="plannings")
     gamme = relationship("GammeProduction")
@@ -618,7 +635,7 @@ class QHSE(Base):
     instrument_controle_id = Column(Integer, ForeignKey("instruments_controle.id"), nullable=True)
     epi_id = Column(Integer, ForeignKey("epi.id"), nullable=True)
     materiau_id = Column(Integer, ForeignKey("materiaux.id"), nullable=True)
-
+    materiau = relationship("Materiau", back_populates="qhse")
     instrument = relationship("InstrumentControle", back_populates="qhse")
     # Relations avec EPI et Materiau peuvent être ajoutées selon besoin
 
@@ -640,13 +657,14 @@ class AuditQualite(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, default=datetime.utcnow, nullable=False)
     type_audit = Column(String(100), nullable=False)
-    responsable_nom = Column(String(100), nullable=False)
+    responsable = Column(Integer, ForeignKey("utilisateurs.id"), nullable=False)
     remarques = Column(Text)
     statut = Column(String(50), nullable=False)
 
     document_id = Column(Integer, ForeignKey("documents_qualite.id"), nullable=False)
     document = relationship("DocumentQualite", back_populates="audits")
-
+    responsable_utilisateur = relationship("Utilisateur", back_populates="audits_realises")
+    
 # ========================= DOCUMENT QUALITE =========================
 class DocumentQualite(Base):
     __tablename__ = "documents_qualite"
@@ -689,6 +707,7 @@ class NonConformite(Base):
     date_detection = Column(DateTime, default=datetime.utcnow, nullable=False)
     date_resolution = Column(DateTime)
     statut = Column(String(50), default="Ouvert", nullable=False)
+    detecte_par_ia = Column(Boolean, default=False)
 
     utilisateur_id = Column(Integer, ForeignKey("utilisateurs.id"), nullable=False)
     machine_id = Column(Integer, ForeignKey("machines.id"), nullable=True)
@@ -856,6 +875,8 @@ class ChargeMachine(Base):
     date_debut = Column(DateTime, nullable=False)
     date_fin = Column(DateTime, nullable=False)
     statut = Column(String(50), default="planifié", nullable=False)  # planifié, en cours, terminé
+    temperature = Column(Float)  # Température mesurée
+    vibration = Column(Float)    # Vibration mesurée
 
     machine = relationship("Machine")
     gamme = relationship("GammeProduction")
@@ -870,14 +891,23 @@ class GestionFiltrage(Base):
     actif = Column(Boolean, default=True)
 
     # Relations facultatives vers les entités filtrables
-    utilisateur_id = Column(Integer, ForeignKey("utilisateur.id"), nullable=True)
-    client_id = Column(Integer, ForeignKey("client.id"), nullable=True)
-    commande_id = Column(Integer, ForeignKey("commande.id"), nullable=True)
+    utilisateur_id = Column(Integer, ForeignKey("utilisateurs.id"), nullable=True)  # Correction ici
+    client_id = Column(Integer, ForeignKey("clients.id"), nullable=True)            # Correction ici
+    commande_id = Column(Integer, ForeignKey("commandes.id"), nullable=True)        # Correction ici
+    fournisseur_id = Column(Integer, ForeignKey("fournisseurs.id"), nullable=True)
 
     utilisateur = relationship("Utilisateur", back_populates="filtres")
     client = relationship("Client", back_populates="filtres")
     commande = relationship("Commande", back_populates="filtres")
-    Fournisseur = relationship("Fournisseur", back_populates="filtres")
+    fournisseur = relationship("Fournisseur", back_populates="filtres")
+
+# ========================= IAL LOG =========================
+class IALog(Base):
+    __tablename__ = "ia_logs"
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+    action = Column(String(255), nullable=False)  # Ex: "Détection d'anomalie"
+    details = Column(Text)  # Détails de l'action
 
 # ========================= CONNEXION DB =========================
 DATABASE_URL = os.getenv(

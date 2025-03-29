@@ -1,0 +1,28 @@
+Metadata-Version: 2.1
+Name: cadquery-ocp
+Version: 7.7.2
+Summary: OCP+VTK wheel with shared library dependencies bundled.
+Home-page: https://github.com/CadQuery/OCP
+Download-URL: https://github.com/jmwright/ocp-build-system/releases
+Author: adam-urbanczyk, fp473 (wheel generation), roipoussiere (wheel generation)
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# ocp-build-system
+
+This repository is used to build wheels for OCP, which is CadQuery's bindings to the OpenCASCADE CAD kernel. There are two GitHub Actions available as part of this repo.
+
+* Build (Create Python wheel using Conda)
+* Releases
+
+The Build workflow is triggered manually by a developer, and sets up conda environments for each of the wheels to be built, builds the wheels, and then uploads them as artifacts to the GitHub Action. The Releases workflow is run when a tag is created, and takes the wheels attached to the latest build and uploads them to PyPi. Each time a new version of OCP is released these Actions, along with the setup.py file, need to be modified to build and release the new version.

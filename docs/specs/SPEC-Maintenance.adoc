@@ -1,0 +1,80 @@
+
+= SPEC-Maintenance: Gestion des maintenances machines
+:sectnums:
+:toc:
+:toclevels: 3
+
+== Contexte
+
+La maintenance préventive, corrective ou prédictive est essentielle dans un environnement industriel pour garantir le bon fonctionnement des équipements. Ce module assure la planification, le suivi, la traçabilité et l'intégration intelligente des opérations de maintenance.
+
+== Exigences
+
+*Must have*
+- Enregistrement des maintenances par machine
+- Historique des interventions
+- Types de maintenance (Préventive, Corrective, Prédictive)
+- Statuts (Planifiée, En cours, Réalisée)
+- Affectation d’un opérateur
+- Date prévue et date réelle
+- Description et remarques
+
+*Should have*
+- Génération automatique des maintenances préventives par IA
+- Alertes de maintenance à échéance ou en retard
+- Liaison avec les incidents ou non-conformités machine
+- Notifications email/app à l’opérateur ou au superviseur
+
+*Could have*
+- Suggestion de plan de maintenance prédictif basé sur l’usage réel
+- Détection automatique via capteurs ou log machine (à venir)
+- Interface mobile de déclaration de maintenance (QR code ou app)
+
+== Méthode
+
+Le module repose sur un modèle SQLAlchemy `Maintenance` relié aux modèles `Machine` et `Utilisateur`. Chaque maintenance est enregistrée avec son type, statut, opérateur et dates. L’IA pourra générer de façon proactive des maintenances préventives ou suggérer des correctives selon les historiques ou anomalies.
+
+=== Diagramme de classes PlantUML
+
+[plantuml]
+----
+@startuml
+class Machine
+class Utilisateur
+class Maintenance {
+  id: int
+  type_maintenance: str
+  date_planifiee: datetime
+  date_reelle: datetime
+  statut: str
+  description: str
+  remarques: str
+}
+
+Machine --> Maintenance
+Utilisateur --> Maintenance
+@enduml
+----
+
+== Mise en œuvre
+
+- Modèle SQLAlchemy `Maintenance` (déjà existant)
+- API REST : GET, POST, PUT, DELETE pour les maintenances
+- Interface utilisateur : saisie manuelle ou lecture via QR code
+- Liaison au module de planification pour vérifier les indisponibilités machines
+- Notification de rappel si non réalisée 24h avant la date planifiée
+
+== Jalons
+
+- [x] Modèle ORM défini
+- [ ] Génération de l’API REST (controller + service)
+- [ ] Interface admin + opérateur (validation via QR ou écran)
+- [ ] Moteur d’alerte intelligent basé sur les dates / fréquences
+- [ ] Liaison avec incidents machine
+
+== Collecte des résultats
+
+- Vérification de l’historique complet par machine
+- Rapport exportable des maintenances mensuelles
+- Taux de respect des maintenances planifiées
+- Retour opérateur sur l'efficacité de l'intervention

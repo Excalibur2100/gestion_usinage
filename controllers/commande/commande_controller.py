@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix="/commande", tags=["RH"])
 
-@router.get("/commande/test")
-def test_rh():
-    return {"message": "COMMANDE OK"}
+@router.get("/")
+async def get_rh():
+    return {"message": "Endpoint Commande opérationnel"}

@@ -35,3 +35,17 @@ def supprimer_planning_machine(db: Session, planning_id: int) -> None:
     if planning:
         db.delete(planning)
         db.commit()
+
+def verifier_conflits_planning(planning):
+    """
+    Vérifie les conflits dans un planning donné.
+    :param planning: Liste des tâches ou des événements.
+    :return: Liste des conflits détectés.
+    """
+    conflits = []
+    # Exemple de logique pour détecter les conflits
+    for i, tache1 in enumerate(planning):
+        for j, tache2 in enumerate(planning):
+            if i != j and tache1["debut"] < tache2["fin"] and tache1["fin"] > tache2["debut"]:
+                conflits.append((tache1, tache2))
+    return conflits

@@ -38,3 +38,7 @@ def update(id: int, data: SurveillanceCameraCreate, db: Session = Depends(get_db
 def delete(id: int, db: Session = Depends(get_db)):
     supprimer_camera(db, id)
     return
+
+@router.get("/")
+async def get_surveillance_cameras():
+    return {"message": "Liste des caméras de surveillance"}

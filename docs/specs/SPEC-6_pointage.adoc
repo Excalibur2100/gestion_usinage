@@ -1,0 +1,32 @@
+= SPEC-6: Gestion du pointage et ajustements intelligents
+:sectnums:
+:toc:
+:docdate: 2025-03-26
+
+== Méthode
+
+La gestion du pointage dans le logiciel repose sur un système souple, à la fois automatisé via les QR codes et contrôlable par l'opérateur en cas de modification manuelle. Voici les éléments clés intégrés :
+
+- Démarrage et fin de chaque opération par scan de QR Code ou bouton sur PC.
+- Attribution automatique des temps d'opération dans la gamme.
+- Validation du nombre de pièces produites (avec tolérance ou rejet si non-conforme).
+- Possibilité d'ajouter un **commentaire opérateur** à chaque pointage.
+
+=== Ajustement dynamique
+
+- Si un opérateur est absent, **l'IA réattribue automatiquement ses tâches** à un autre opérateur disponible, selon la charge machine et les priorités.
+- En cas de **casse outil** ou de **rupture matière**, le système peut :
+  - Proposer un outil/matière alternatif si présent en stock.
+  - Réorganiser automatiquement le planning pour enchâsser une autre opération/commande prioritaire.
+  - Marquer une commande comme **urgente** si les délais sont en dépassement.
+  - **Validation requise d’un responsable** pour tout ajustement automatique généré.
+
+=== Suggestions complémentaires
+
+- Possibilité de **mettre en pause** une opération avec un motif (panne, attente, pause réglementaire).
+- Calcul automatique des **écarts entre temps prévu et réel**, avec alertes IA si écart significatif.
+- Génération de **rapports de pointage** par opérateur, machine, gamme.
+- Export en **PDF ou Excel** pour usage RH ou audit.
+- Croisement des heures de pointage avec les **badges d'entrée/sortie** si système de contrôle d'accès présent.
+- Vue temps réel du **monitoring des opérations en cours**.
+

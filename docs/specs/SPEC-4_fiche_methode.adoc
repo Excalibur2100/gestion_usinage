@@ -1,0 +1,86 @@
+= SPEC-4: Génération et gestion des fiches méthode
+:sectnums:
+:toc:
+
+
+== Contexte
+
+Les fiches méthode sont des documents techniques essentiels décrivant étape par étape le processus de fabrication d’une pièce, en lien direct avec la gamme de production et les opérations d’usinage. Afin d’optimiser le flux de production, une fiche méthode doit être générée automatiquement à partir du chiffrage, du plan et des informations disponibles sur les machines, outils, matières et conditions de coupe. Cette fiche doit aussi pouvoir être modifiée manuellement à tout moment par un utilisateur autorisé.
+
+== Exigences
+
+*Must have*:
+- Génération automatique d’une fiche méthode par opération d’usinage.
+- Possibilité de modification manuelle des fiches méthode, même après génération automatique.
+- Historique des modifications.
+- Accès restreint aux utilisateurs autorisés uniquement pour modification.
+- Prise en compte des données machines, outils, matières, traitements, conditions de coupe.
+
+*Should have*:
+- Possibilité de créer une fiche méthode entièrement manuellement.
+- Système de validation visuelle par responsable méthode avant envoi à la production.
+
+*Could have*:
+- Versionnage automatique des fiches méthode.
+- Génération d'une version imprimable ou visualisable facilement sur interface mobile/atelier.
+
+== Méthode
+
+Chaque opération de gamme génère sa propre fiche méthode, contenant :
+- Description de l’opération
+- Machine assignée
+- Outils nécessaires avec références
+- Conditions de coupe (extraite de l’IA ou définie manuellement)
+- Temps prévu d’usinage
+- Plan de travail pour la programmation FAO
+- Commentaire opérateur post-exécution (suggéré via QR code ou interface PC)
+- Possibilité d’attacher un fichier externe (ex. simulation, PDF complémentaire)
+
+=== Diagramme d’accès
+
+[plantuml]
+----
+@startuml
+actor Utilisateur
+actor ResponsableMéthode
+package "Fiche Méthode" {
+  class FicheMethode {
+    +voir()
+    +modifier()
+  }
+
+  FicheMethode --> "0..*" Operation
+}
+
+Utilisateur --> FicheMethode : voir()
+ResponsableMéthode --> FicheMethode : modifier()
+
+note right of FicheMethode
+  Seul le Responsable Méthode
+  ou un profil autorisé peut modifier
+  les fiches méthode.
+end note
+@enduml
+----
+
+== Mise en œuvre
+
+- Génération automatisée déclenchée à la validation d’un devis.
+- Stockage dans la table `fiches_methodes` (à créer) avec lien vers l’opération.
+- Ajout d’un contrôle RBAC (Role-Based Access Control) pour sécuriser l’accès aux modifications.
+- Affichage dans l’interface opérateur (PC/QR code).
+- Historisation des modifications avec date/auteur.
+
+== Jalons
+
+- [x] Définition du modèle de donnée `FicheMethode`
+- [ ] Génération automatique de la fiche par opération
+- [ ] Interface de visualisation et édition restreinte
+- [ ] Ajout QR code et système de commentaires opérateurs
+- [ ] Historique de modification activé
+
+== Collecte des résultats
+
+- Vérification du taux de fiches méthode complètes par opération.
+- Validation utilisateur sur facilité de modification.
+- Analyse des commentaires opérateurs et intégration continue dans les versions futures.
