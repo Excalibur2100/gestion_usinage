@@ -14,11 +14,10 @@ from services.utilisateur.utilisateur_service import (
 router = APIRouter(prefix="/utilisateurs", tags=["Utilisateurs"])
 
 # Endpoint : Créer un nouvel utilisateur
-@router.post("/", response_model=UtilisateurRead, operation_id="create_utilisateur_v1")
+# filepath: /home/excalibur/gestion_usinage/controllers/utilisateur/utilisateur_controller.py
+@router.post("/", response_model=UtilisateurRead)
 def creer(utilisateur_data: UtilisateurCreate, db: Session = Depends(get_db)):
     utilisateur = creer_utilisateur(db, utilisateur_data)
-    if not isinstance(utilisateur, dict):
-        utilisateur = UtilisateurRead.from_orm(utilisateur).dict()
     return utilisateur
 
 # Endpoint : Récupérer tous les utilisateurs

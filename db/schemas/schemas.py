@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, ConfigDict, Field 
 
 # ========================= UTILISATEUR =========================
 
@@ -22,12 +22,10 @@ class UtilisateurUpdate(BaseModel):
 class UtilisateurRead(BaseModel):
     id: int
     nom: str
-    email: str
+    email: EmailStr
     role: str
-    actif: bool
 
-    class Config:
-        orm_mode = True 
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= DROIT =========================
@@ -42,8 +40,8 @@ class DroitRead(DroitBase):
     id: int
     utilisateur_id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= CLIENT =========================
@@ -64,8 +62,8 @@ class ClientCreate(ClientBase):
 class ClientRead(ClientBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= FOURNISSEUR =========================
@@ -85,8 +83,8 @@ class FournisseurCreate(FournisseurBase):
 class FournisseurRead(FournisseurBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= DEVIS =========================
@@ -103,8 +101,8 @@ class DevisCreate(DevisBase):
 class DevisRead(DevisBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= COMMANDE =========================
@@ -120,8 +118,8 @@ class CommandeCreate(CommandeBase):
 class CommandeRead(CommandeBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= FACTURE =========================
@@ -141,8 +139,8 @@ class FactureCreate(FactureBase):
 class FactureRead(FactureBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= MACHINE =========================
@@ -168,8 +166,8 @@ class PlanningMachineCreate(PlanningMachineBase):
 class PlanningMachineRead(PlanningMachineBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= PLANNING EMPLOYÉ =========================
@@ -187,8 +185,8 @@ class PlanningEmployeCreate(PlanningEmployeBase):
 class PlanningEmployeRead(PlanningEmployeBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= GAMME PRODUCTION =========================
@@ -209,8 +207,8 @@ class GammeProductionCreate(GammeProductionBase):
 class GammeProductionRead(GammeProductionBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= PIECE =========================
@@ -225,8 +223,21 @@ class PieceCreate(PieceBase):
 class PieceRead(PieceBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PieceUsinage(BaseModel):
+    longueur: float
+    largeur: float
+    hauteur: float
+    materiau: str
+    operations: List[str]
+    outils: List[str]
+    outils_disponibles: List[str]  # Ajout de ce champ
+    machines_disponibles: List[str]  # Ajout de ce champ
+
+    model_config = ConfigDict(from_attributes=True)
         
 
 # ========================= PROGRAMME PIECE =========================
@@ -243,8 +254,8 @@ class ProgrammePieceCreate(ProgrammePieceBase):
 class ProgrammePieceRead(ProgrammePieceBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
         
 
 class CommandePieceCreate(BaseModel):
@@ -256,8 +267,8 @@ class CommandePieceRead(BaseModel):
     nom: str
     description: str
 
-    class Config:
-        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+    
+    model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
 
 class GestionAccesCreate(BaseModel):
     utilisateur_id: int
@@ -268,8 +279,8 @@ class GestionAccesRead(BaseModel):
     utilisateur_id: int
     role: str
 
-    class Config:
-        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+    
+    model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
 
 class PlanningMachineCreate(BaseModel):
     debut: datetime
@@ -282,8 +293,8 @@ class PlanningMachineRead(BaseModel):
     fin: datetime
     machine_id: int
 
-    class Config:
-        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+    
+    model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
 
 class GestionFiltrageCreate(BaseModel):
     filtre: str
@@ -294,8 +305,8 @@ class GestionFiltrageRead(BaseModel):
     filtre: str
     valeur: str
 
-    class Config:
-        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+    
+    model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
         
 class ChargeMachineCreate(BaseModel):
     machine_id: int
@@ -308,8 +319,8 @@ class ChargeMachineRead(BaseModel):
     charge: float
     date: datetime
 
-    class Config:
-        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+    
+    model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
 
 class SurveillanceCameraCreate(BaseModel):
     camera_id: int
@@ -322,8 +333,8 @@ class SurveillanceCameraRead(BaseModel):
     emplacement: str
     statut: str
 
-    class Config:
-        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+    
+    model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
 
 class ControleRobotCreate(BaseModel):
     robot_id: int
@@ -336,13 +347,13 @@ class ControleRobotRead(BaseModel):
     action: str
     statut: str
 
-    class Config:
-        orm_mode = True  # Remplace `orm_mode` dans Pydantic v2
+    
+    model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
 
 class MachineRead(BaseModel):
     id: int
     nom: str
 
-    class Config:
-        orm_mode = True
+    
+    model_config = ConfigDict(from_attributes=True)
 

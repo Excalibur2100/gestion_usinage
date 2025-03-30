@@ -909,6 +909,13 @@ class IALog(Base):
     action = Column(String(255), nullable=False)  # Ex: "Détection d'anomalie"
     details = Column(Text)  # Détails de l'action
 
+# ========================= IA ANALYSE FICHIER =========================
+class AnalyseFichier(Base):
+    __tablename__ = "analyse_fichiers"
+    id = Column(Integer, primary_key=True, index=True)
+    type_fichier = Column(String, index=True)
+    contenu = Column(Text)
+
 # ========================= CONNEXION DB =========================
 DATABASE_URL = os.getenv(
     "DATABASE_URL",

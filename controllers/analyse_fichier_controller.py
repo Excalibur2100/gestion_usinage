@@ -10,3 +10,16 @@ async def analyser_fichier_endpoint(fichier: UploadFile):
         return {"status": "success", "data": resultat}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@router.post("/", summary="Analyser un fichier", description="Analyse un fichier PDF ou DXF et retourne son contenu.")
+async def analyser_fichier_endpoint(fichier: UploadFile):
+    """
+    Analyse un fichier PDF ou DXF et retourne son contenu.
+
+    - **fichier** : Le fichier à analyser.
+    """
+    try:
+        resultat = analyser_fichier(fichier)
+        return {"status": "success", "data": resultat}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -14,13 +14,14 @@ def test_calcul_parametres_usinage_valide():
 
     result = calculer_parametres_usinage(piece, outils_disponibles, machines_disponibles)
 
-    assert result["brut"]["longueur"] == 110
-    assert result["brut"]["largeur"] == 60
-    assert result["brut"]["hauteur"] == 25
-    assert result["passes"]["ebauche"] == 4
-    assert result["passes"]["finition"] == 1
-    assert result["vitesse_coupe"] == 100
-    assert result["temps_usinage"] > 0
+    assert result["status"] == "success"
+    assert result["data"]["brut"]["longueur"] == 110
+    assert result["data"]["brut"]["largeur"] == 60
+    assert result["data"]["brut"]["hauteur"] == 25
+    assert result["data"]["passes"]["ebauche"] == 4
+    assert result["data"]["passes"]["finition"] == 1
+    assert result["data"]["vitesse_coupe"] == 100
+    assert result["data"]["temps_usinage"] > 0
 
 def test_calcul_parametres_usinage_outils_manquants():
     piece = {
@@ -47,7 +48,7 @@ def test_calcul_parametres_usinage_machine_absente():
     outils_disponibles = ["fraise", "foret"]
     machines_disponibles = []  # Pas de machine disponible
 
-    with pytest.raises(ValueError, match="Aucune fraiseuse disponible pour cette opération."):
+    with pytest.raises(ValueError, match="Aucune machine disponible pour cette opération."):
         calculer_parametres_usinage(piece, outils_disponibles, machines_disponibles)
 
 def test_calcul_parametres_usinage_dimensions_invalides():

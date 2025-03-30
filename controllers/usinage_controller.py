@@ -1,20 +1,17 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from db.schemas.schemas import PieceUsinage
 from services.usinage.usinage_service import calculer_parametres_usinage
 
 router = APIRouter(prefix="/usinage", tags=["Usinage"])
 
-class PieceData(BaseModel):
-    longueur: float
-    largeur: float
-    hauteur: float
-    materiau: str
-    operations: list[str]  # Exemple : ["fraisage", "perçage"]
-
 @router.post("/calcul-parametres")
-def calculer_parametres(piece: PieceData):
+def calcul_parametres_usinage(piece: PieceUsinage):
     try:
-        resultats = calculer_parametres_usinage(piece.dict())
+        resultats = calculer_parametres_usinage(
+            piece.model_dump(),
+            piece.outils_disponibles,  # Accès corrigé
+            piece.machines_disponibles  # Accès corrigé
+        )
         return {"status": "success", "data": resultats}
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

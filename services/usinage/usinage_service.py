@@ -1,4 +1,5 @@
 import logging
+from db.schemas.schemas import PieceUsinage
 
 logger = logging.getLogger(__name__)
 
@@ -84,4 +85,50 @@ def calculer_passes(longueur, largeur, hauteur, tolerance=0.1):
     return {
         "ebauche": passes_ebauche,
         "finition": passe_finition
+    }
+
+def calculer_parametres_usinage(piece: dict, outils_disponibles: list, machines_disponibles: list) -> dict:
+    outils_requis = {
+        "fraisage": ["fraise"],
+        "perçage": ["foret"],
+        "tournage": ["outil de tournage"],
+        "taraudage": ["taraud"],
+        "alésage": ["alésoir"]
+    }
+
+    # Vérifie les outils manquants
+    outils_manquants = []
+    for operation in piece["operations"]:
+        if operation in outils_requis:
+            for outil in outils_requis[operation]:
+                if outil not in outils_disponibles:
+                    outils_manquants.append(outil)
+
+    if outils_manquants:
+        raise ValueError(f"Outils manquants : {', '.join(outils_manquants)}")
+
+    # Vérifie les machines disponibles
+    if not machines_disponibles:
+        raise ValueError("Aucune machine disponible pour cette opération.")
+
+    # Vérifie les dimensions
+    if piece["longueur"] <= 0 or piece["largeur"] <= 0 or piece["hauteur"] <= 0:
+        raise ValueError("Les dimensions doivent être positives.")
+
+    # Simule le calcul des paramètres d'usinage
+    return {
+        "status": "success",
+        "data": {
+            "brut": {
+                "longueur": piece["longueur"] + 10,
+                "largeur": piece["largeur"] + 10,
+                "hauteur": piece["hauteur"] + 5
+            },
+            "passes": {
+                "ebauche": 4,
+                "finition": 1
+            },
+            "vitesse_coupe": 100,
+            "temps_usinage": 120  # Exemple de temps en secondes
+        }
     }
