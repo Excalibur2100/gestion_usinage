@@ -1,22 +1,15 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 import os
 
-# URL de la base de données
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://excalibur:Christopher@localhost:5432/gestion_usinage"  # URL par défaut
-)
+# Charger les variables d'environnement
+load_dotenv()
 
-# Création de l'engine SQLAlchemy
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/db_name")
+
 engine = create_engine(DATABASE_URL, echo=False, future=True)
-
-# Création de la session locale
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-
-# Base pour les modèles SQLAlchemy
-Base = declarative_base()
-
 # Dépendance FastAPI pour obtenir une session DB
 def get_db():
     db = SessionLocal()

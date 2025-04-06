@@ -9,7 +9,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 # Import de la base et des modèles
-from db.models.models import Base
+from db.models.database import Base, engine
 
 # Alembic Config
 config = context.config
