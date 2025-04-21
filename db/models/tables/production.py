@@ -1,55 +1,94 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    ForeignKey,
+    CheckConstraint,
+)
 from sqlalchemy.orm import relationship
-from db.models.base import Base
 from datetime import datetime
+from db.models.base import Base
 
-# ========================= PIECES =========================
-class Piece(Base):
-    __tablename__ = "pieces"
+
+# ========================= PRODUCTION =========================
+class Production(Base):
+    """
+    Classe Production représentant une production dans le système.
+
+    Attributs :
+        - piece_id : ID de la pièce produite.
+        - machine_id : ID de la machine utilisée pour la production.
+        - employe_id : ID de l'employé responsable de la production.
+        - date_debut : Date de début de la production.
+        - date_fin : Date de fin de la production (optionnelle).
+        - statut : Statut de la production (en cours, terminée, annulée).
+        - description : Description de la production (optionnelle).
+    """
+    __tablename__ = "production"
+    __table_args__ = (
+        CheckConstraint(
+            "statut IN ('en cours', 'terminée', 'annulée')",
+            name="check_statut_production",
+        ),
+        {
+            "comment": "Table des productions",
+            "extend_existing": True,
+        },
+    )
+
     id = Column(Integer, primary_key=True)
-    nom = Column(String(100), nullable=False)
-    description = Column(Text, nullable=True)
-    date_creation = Column(DateTime, default=datetime.utcnow)
-    client_id = Column(Integer, ForeignKey("clients.id"))
+    piece_id = Column(
+        Integer,
+        ForeignKey("pieces.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+        comment="ID de la pièce produite",
+    )
+    machine_id = Column(
+        Integer,
+        ForeignKey("machines.id", ondelete="SET NULL"),
+        nullable=True,
+        comment="ID de la machine utilisée pour la production",
+    )
+    employe_id = Column(
+        Integer,
+        ForeignKey("employes.id", ondelete="SET NULL"),
+        nullable=True,
+        comment="ID de l'employé responsable de la production",
+    )
+    date_debut = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.now,  # Définit la date actuelle par défaut
+        comment="Date de début de la production",
+    )
+    date_fin = Column(DateTime, nullable=True, comment="Date de fin de la production")
+    statut = Column(
+        String(50),
+        nullable=False,
+        comment="Statut de la production (en cours, terminée, annulée)",
+    )
 
-    client = relationship("Client", back_populates="pieces")
-    programmes = relationship("ProgrammePiece", back_populates="piece")
-    non_conformites = relationship("NonConformite", back_populates="piece")
+    # Relations
+    piece = relationship("Piece", back_populates="productions")
+    machine = relationship("Machine", back_populates="productions")
+    employe = relationship("Employe", back_populates="productions")
 
-# ========================= MACHINES =========================
-class Machine(Base):
-    __tablename__ = "machines"
-    id = Column(Integer, primary_key=True)
-    nom = Column(String(100), nullable=False)
-    type_machine = Column(String(50), nullable=False)
-    vitesse_max = Column(Float, nullable=True)
-    puissance = Column(Float, nullable=True)
-    nb_axes = Column(Integer, nullable=True)
+    # Méthodes utilitaires
+    def __repr__(self):
+        return f"<Production(id={self.id}, piece_id={self.piece_id}, statut='{self.statut}')>"
 
-    postprocesseurs = relationship("PostProcesseur", back_populates="machine")
-    maintenances = relationship("Maintenance", back_populates="machine")
-    gammes = relationship("GammeProduction", back_populates="machine")
+    def is_terminee(self):
+        """Vérifie si la production est terminée."""
+        return self.statut == "terminée"
 
-# ========================= GAMME PRODUCTION =========================
-class GammeProduction(Base):
-    __tablename__ = "gammes_production"
-    id = Column(Integer, primary_key=True)
-    piece_id = Column(Integer, ForeignKey("pieces.id"))
-    machine_id = Column(Integer, ForeignKey("machines.id"))
-    operation = Column(String(100), nullable=False)
-    temps_estime = Column(Float, nullable=False)
+    def is_annulee(self):
+        """Vérifie si la production est annulée."""
+        return self.statut == "annulée"
 
-    piece = relationship("Piece", back_populates="gammes")
-    machine = relationship("Machine", back_populates="gammes")
-
-# ========================= TRACABILITE =========================
-class Tracabilite(Base):
-    __tablename__ = "tracabilite"
-    id = Column(Integer, primary_key=True)
-    piece_id = Column(Integer, ForeignKey("pieces.id"))
-    utilisateur_id = Column(Integer, ForeignKey("utilisateurs.id"))
-    date_action = Column(DateTime, default=datetime.utcnow)
-    action = Column(String(255), nullable=False)
-
-    piece = relationship("Piece", back_populates="tracabilites")
-    utilisateur = relationship("Utilisateur", back_populates="tracabilites")
+    def duree_production(self):
+        """Calcule la durée de la production en heures."""
+        if self.date_fin and self.date_debut:
+            return (self.date_fin - self.date_debut).total_seconds() / 3600
+        return None
