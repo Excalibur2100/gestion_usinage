@@ -51,9 +51,10 @@ class Production(Base):
         nullable=True,
         comment="ID de la machine utilisée pour la production",
     )
+    id = Column(Integer, primary_key=True)
     employe_id = Column(
         Integer,
-        ForeignKey("employes.id", ondelete="SET NULL"),
+        ForeignKey("employes.id", ondelete="SET NULL"),  # Assure-toi que le nom de la table est correct
         nullable=True,
         comment="ID de l'employé responsable de la production",
     )

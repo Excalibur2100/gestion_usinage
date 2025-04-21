@@ -1,28 +1,39 @@
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 from alembic import context
 import os
 import sys
+from dotenv import load_dotenv
 
-# Permet d'importer db.models depuis le chemin actuel
+# Charger les variables d'environnement depuis config.env
+load_dotenv(dotenv_path="config.env")
+
+# Ajouter le chemin du projet pour permettre l'import des modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-# Import de la base et des modèles
-from db.models.database import Base, engine
+# Importer la base et les modèles
+from db.models.base import Base
 
-# Alembic Config
+# Configuration Alembic
 config = context.config
 
-# Logging
+# Charger DATABASE_URL depuis les variables d'environnement
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL n'est pas configurée dans config.env")
+
+# Configurer l'URL de la base de données pour Alembic
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
+
+# Configurer le logging
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Cible pour l'autogénération
+# Cible pour l'autogénération des migrations
 target_metadata = Base.metadata
 
 def run_migrations_offline() -> None:
-    """Migrations en mode hors-ligne"""
+    """Exécuter les migrations en mode hors-ligne."""
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
@@ -35,7 +46,7 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 def run_migrations_online() -> None:
-    """Migrations en mode en-ligne"""
+    """Exécuter les migrations en mode en-ligne."""
     connectable = engine_from_config(
         config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",
@@ -52,6 +63,7 @@ def run_migrations_online() -> None:
         with context.begin_transaction():
             context.run_migrations()
 
+# Déterminer le mode d'exécution (hors-ligne ou en-ligne)
 if context.is_offline_mode():
     run_migrations_offline()
 else:

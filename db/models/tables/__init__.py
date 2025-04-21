@@ -16,6 +16,7 @@ from .sanction import Sanction
 from .entretien import Entretien
 from .notationrh import NotationRH
 from .document_rh import DocumentRH
+from .employe import Employe
 
 # ========================= CLIENTS ET FOURNISSEURS =========================
 from .clients import Client

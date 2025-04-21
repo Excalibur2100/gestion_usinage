@@ -48,3 +48,4 @@ class AnalyseFichier(Base):
     machine = relationship("Machine", back_populates="analyses")
     piece = relationship("Piece", back_populates="analyses")
     programme = relationship("ProgrammePiece", back_populates="analyses")
+

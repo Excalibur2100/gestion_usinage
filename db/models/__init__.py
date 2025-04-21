@@ -40,3 +40,5 @@ from .tables.gammes_production import GammeProduction
 from .tables.tracabilite import Tracabilite
 from .tables.production import Production
 from .tables.liaison import machine_outil
+from .tables.employe import Employe
+

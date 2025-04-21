@@ -6,7 +6,7 @@ from datetime import datetime
 
 # ========================= PROGRAMME PIECE =========================
 class ProgrammePiece(Base):
-    __tablename__ = "programmes_piece"
+    __tablename__ = "programme_pieces"
 
     id = Column(Integer, primary_key=True)
     piece_id = Column(
@@ -35,3 +35,4 @@ class ProgrammePiece(Base):
     # Relations
     piece = relationship("Piece", back_populates="programmes")
     postprocesseur = relationship("PostProcesseur", back_populates="programmes")
+    analyses = relationship("AnalyseFichier", back_populates="programme")
