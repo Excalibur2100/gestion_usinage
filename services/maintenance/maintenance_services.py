@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.models import Maintenance
+from db.models.tables import Maintenance
 from db.schemas.schemas import MaintenanceCreate
 from typing import List, Optional
 

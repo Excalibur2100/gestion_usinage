@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Assistant IA - Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <h1>Assistant IA - Dashboard</h1>
+
+    <!-- Section Statistiques -->
+    <h2>Statistiques Modules</h2>
+    <div class="info-box">
+        <p>Modules détectés : <strong>{{ nb_modules }}</strong></p>
+        <p>Modules incomplets : <strong class="module-incomplet">{{ nb_incomplets }}</strong></p>
+    </div>
+
+    <!-- Actions -->
+    <form method="post" action="/ia/creer-fichiers">
+        <button type="submit">Créer les fichiers manquants</button>
+    </form>
+    <form method="post" action="/ia/organiser-composants">
+        <button type="submit">Organiser les composants</button>
+    </form>
+
+    <!-- Détail des modules -->
+    <h2>Détail des modules</h2>
+    <ul>
+        {% for module in composants %}
+        <li>
+            {{ module.nom }}
+            {% if module.chemins_trouves | length < 3 %} <span class="badge">Incomplet</span>
+                {% else %}
+                <span class="badge" style="background-color: green; color: white;">Complet</span>
+                {% endif %}
+                <ul>
+                    {% for chemin in module.chemins_trouves %}
+                    <li>{{ chemin }}</li>
+                    {% endfor %}
+                </ul>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Derniers fichiers générés -->
+    <h2>Derniers fichiers générés</h2>
+    <div class="info-box">
+        <ul>
+            {% for log in logs %}
+            <li>
+                <strong>{{ log.timestamp }}</strong>
+                <ul>
+                    {% for fichier in log.fichiers_crees %}
+                    <li>{{ fichier }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Section Tests API -->
+    <h2>Tests de l'API</h2>
+    <div class="info-box">
+        <form id="api-test-form">
+            <label for="endpoint">Endpoint :</label>
+            <input type="text" id="endpoint" name="endpoint" placeholder="/api/endpoint" required>
+            <label for="method">Méthode :</label>
+            <select id="method" name="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+            </select>
+            <label for="payload">Payload (JSON) :</label>
+            <textarea id="payload" name="payload" placeholder='{"key": "value"}'></textarea>
+            <button type="button" onclick="testApi()">Tester</button>
+        </form>
+        <h3>Résultat :</h3>
+        <pre id="api-result"></pre>
+    </div>
+
+    <!-- Autres fonctionnalités -->
+    <h2>Autres fonctionnalités</h2>
+    <a href="/ia/taches-a-completer">Voir les tâches à compléter</a><br>
+    <a href="/ia/historique-generation">Voir l'historique de génération</a>
+
+    <script>
+        async function testApi() {
+            const endpoint = document.getElementById("endpoint").value;
+            const method = document.getElementById("method").value;
+            const payload = document.getElementById("payload").value;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: method !== "GET" && method !== "DELETE" ? payload : null,
+                });
+
+                const result = await response.json();
+                document.getElementById("api-result").textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById("api-result").textContent = `Erreur : ${error.message}`;
+            }
+        }
+    </script>
+</body>
+
+</html>

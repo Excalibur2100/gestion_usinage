@@ -33,3 +33,4 @@ class Devis(Base):
     commandes = relationship(
         "Commande", back_populates="devis", cascade="all, delete-orphan"
     )
+    

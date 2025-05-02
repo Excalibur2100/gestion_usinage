@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/machine", tags=["RH"])
+router = APIRouter(prefix="/machine", tags=["machine"])
 
 @router.get("/")
-async def get_rh():
-    return {"message": "Endpoint machine opérationnel"}
+async def get_machine():
+    return {"message": "Machine opérationnelle"}

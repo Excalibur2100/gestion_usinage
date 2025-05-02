@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session
-from db.models.models import Devis
-from db.schemas.schemas import DevisCreate
+from db.models.tables import Devis
+from db.schemas.devis_schemas import DevisCreate
 from typing import List, Optional
+from db.schemas.devis_schemas import DevisCreate, DevisUpdate
+
+
 
 # ========== CRÉATION ==========
 def creer_devis(db: Session, devis_data: DevisCreate) -> Devis:
@@ -35,3 +38,18 @@ def supprimer_devis(db: Session, devis_id: int) -> None:
     if devis:
         db.delete(devis)
         db.commit()
+
+
+
+# ========== MISE À JOUR ==========
+def update_devis(db: Session, devis_id: int, devis_data: DevisUpdate) -> Optional[Devis]:
+    """
+    Met à jour un devis existant.
+    """
+    devis = db.query(Devis).filter(Devis.id == devis_id).first()
+    if devis:
+        for key, value in devis_data.dict(exclude_unset=True).items():
+            setattr(devis, key, value)
+        db.commit()
+        db.refresh(devis)
+    return devis

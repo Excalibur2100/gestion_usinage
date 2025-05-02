@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from db.models.models import GestionFiltrage
+from db.models.tables import GestionFiltrage
 from db.schemas.schemas import GestionFiltrageCreate
 
 def creer_filtrage(db: Session, data: GestionFiltrageCreate) -> GestionFiltrage:

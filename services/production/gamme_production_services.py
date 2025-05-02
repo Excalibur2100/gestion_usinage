@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.models import GammeProduction
+from db.models.tables import GammeProduction
 from db.schemas.schemas import GammeProductionCreate
 from typing import List, Optional
 

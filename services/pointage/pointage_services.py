@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.models import Pointage
+from db.models.tables import Pointage
 from db.schemas.schemas import PointageCreate
 from typing import List, Optional
 

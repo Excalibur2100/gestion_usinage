@@ -275,9 +275,9 @@ class GestionAccesCreate(BaseModel):
     role: str
 
 class GestionAccesRead(BaseModel):
-    id: int
+    id: int  # Added id field
     utilisateur_id: int
-    role: str
+    role: str  # Added role field
 
     
     model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
@@ -336,19 +336,6 @@ class SurveillanceCameraRead(BaseModel):
     
     model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
 
-class ControleRobotCreate(BaseModel):
-    robot_id: int
-    action: str
-    statut: str
-
-class ControleRobotRead(BaseModel):
-    id: int
-    robot_id: int
-    action: str
-    statut: str
-
-    
-    model_config = ConfigDict(from_attributes=True)  # Remplace `orm_mode` dans Pydantic v2
 
 class MachineRead(BaseModel):
     id: int
@@ -356,4 +343,5 @@ class MachineRead(BaseModel):
 
     
     model_config = ConfigDict(from_attributes=True)
+
 

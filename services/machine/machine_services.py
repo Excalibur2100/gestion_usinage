@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from db.models.models import Machine
+from db.models.tables import Machine
 from db.schemas.schemas import MachineCreate
 
 def creer_machine(db: Session, machine_data: MachineCreate) -> Machine:

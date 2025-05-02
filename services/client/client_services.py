@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.models import Client
+from db.models.tables import Client
 from db.schemas.schemas import ClientCreate
 from typing import List, Optional
 

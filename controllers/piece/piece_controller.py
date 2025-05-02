@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/piece", tags=["RH"])
+router = APIRouter(prefix="/piece", tags=["piece"])
 
-@router.get("/")
-async def get_rh():
+@router.get("/details")
+async def get_piece_details():
     return {"message": "Endpoint pièce opérationnel"}

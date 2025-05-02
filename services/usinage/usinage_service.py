@@ -1,6 +1,7 @@
 import logging
 from db.schemas.schemas import PieceUsinage
 
+
 logger = logging.getLogger(__name__)
 
 def calculer_parametres_usinage(piece, outils_disponibles=None, machines_disponibles=None):

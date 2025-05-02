@@ -50,3 +50,4 @@ class Utilisateur(Base):
     def get_email(self) -> str:
         return self.email
     
+

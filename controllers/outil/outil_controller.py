@@ -1,8 +1,8 @@
 
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/outil", tags=["RH"])
+router = APIRouter(prefix="/outil", tags=["outil"])
 
-@router.get("/")
-async def get_rh():
+@router.get("/details")
+async def get_outil():
     return {"message": "Endpoint outil opérationnel"}

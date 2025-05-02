@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.models import Fournisseur
+from db.models.tables import Fournisseur
 from db.schemas.schemas import FournisseurCreate
 from typing import List, Optional
 

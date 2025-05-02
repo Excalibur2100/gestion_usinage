@@ -1,7 +1,7 @@
 # services/gestion_acces_services.py
 
 from sqlalchemy.orm import Session
-from db.models.models import GestionAcces
+from db.models.tables import GestionAcces
 from db.schemas.schemas import GestionAccesCreate
 from typing import List, Optional
 

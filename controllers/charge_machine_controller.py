@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.models.database import get_db
-from db.schemas.schemas import ChargeMachineCreate, ChargeMachineRead
-from services.charge_machine.charge_machine_services import (
+from db.schemas.charge_machine_schemas import ChargeMachineCreate, ChargeMachineRead
+from services.charge_machine.charges_machines_services import (
     creer_charge_machine,
     get_charges_machine,
     get_charge_machine_par_id,
@@ -38,8 +38,3 @@ def maj(id: int, charge_data: ChargeMachineCreate, db: Session = Depends(get_db)
 def supprimer(id: int, db: Session = Depends(get_db)):
     supprimer_charge_machine(db, id)
     return
-
-@router.get("/")
-async def get_charge_machine():
-    return {"message": "Liste des charges machines"}
-

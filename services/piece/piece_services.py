@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from db.models.models import Piece
+from db.models.tables import Piece
 from db.schemas.schemas import PieceCreate
 
 def creer_piece(db: Session, piece_data: PieceCreate) -> Piece:

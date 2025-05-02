@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/pointage", tags=["RH"])
+router = APIRouter(prefix="/pointage", tags=["pointage"])
 
-@router.get("/")
-async def get_rh():
-    return {"message": "Endpoint pointage opérationnel"}
+@router.get("/details")
+async def get_pointage_details():
+    return {"message": "Détails du pointage opérationnel"}

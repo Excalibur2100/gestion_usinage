@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.models.database import get_db
-from db.schemas.schemas import UtilisateurCreate, UtilisateurUpdate, UtilisateurRead
+from db.schemas.utilisateur_schemas import UtilisateurCreate, UtilisateurUpdate, UtilisateurRead
 from services.utilisateur.utilisateur_service import (
     creer_utilisateur,
     get_utilisateurs,
@@ -46,3 +46,4 @@ def maj(id: int, utilisateur_data: UtilisateurUpdate, db: Session = Depends(get_
 def supprimer(id: int, db: Session = Depends(get_db)):
     supprimer_utilisateur(db, id)
     return
+

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.models import ProgrammePiece
+from db.models.tables import ProgrammePiece
 from db.schemas.schemas import ProgrammePieceCreate
 from typing import List, Optional
 

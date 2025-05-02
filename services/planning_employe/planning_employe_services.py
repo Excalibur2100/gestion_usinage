@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.models import PlanningEmploye
+from db.models.tables import PlanningEmploye
 from db.schemas.schemas import PlanningEmployeCreate
 
 def verifier_conflits_planning_employe(db: Session, data: PlanningEmployeCreate, exclude_id: int = None):

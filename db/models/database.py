@@ -9,11 +9,11 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Charger les variables d'environnement
-load_dotenv()
+# Charger les variables d'environnement depuis le fichier .env
+load_dotenv(dotenv_path="config.env")
 
 # Charger l'URL de la base de données
-DATABASE_URL = os.getenv("DATABASE_URL", None)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
     logger.error("DATABASE_URL n'est pas configurée. Vérifiez votre fichier .env.")
@@ -32,7 +32,6 @@ except Exception as e:
 # Configurer la session
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
-
 # Dépendance FastAPI pour obtenir une session DB
 def get_db() -> Generator[Session, None, None]:
     """
@@ -43,4 +42,3 @@ def get_db() -> Generator[Session, None, None]:
         yield db
     finally:
         db.close()
-        
