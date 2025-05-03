@@ -50,3 +50,4 @@ class Piece(Base):
 
     def get_programmes(self):
         return [programme.nom for programme in self.programmes]
+    

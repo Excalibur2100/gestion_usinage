@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables import RH
-from db.schemas.rh_schemas import RHCreate
+from db.schemas.rh_schemas import RHCreate, RHUpdate
 from typing import List, Optional
 
 # ========== CRÉATION ==========
@@ -20,10 +20,13 @@ def get_rh_par_id(db: Session, rh_id: int) -> Optional[RH]:
     return db.query(RH).filter(RH.id == rh_id).first()
 
 # ========== MISE À JOUR ==========
-def update_rh(db: Session, rh_id: int, rh_data: RHCreate) -> Optional[RH]:
+def update_rh(db: Session, rh_id: int, rh_data: RHUpdate) -> Optional[RH]:
+    """
+    Met à jour un employé RH existant.
+    """
     rh = db.query(RH).filter(RH.id == rh_id).first()
     if rh:
-        for key, value in rh_data.dict().items():
+        for key, value in rh_data.dict(exclude_unset=True).items():
             setattr(rh, key, value)
         db.commit()
         db.refresh(rh)
