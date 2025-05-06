@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}UCL - Interface{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+
+    <!-- En-tête -->
+    {% include "includes/header.html" %}
+
+    <div style="display: flex; min-height: 90vh;">
+
+        <!-- Menu latéral -->
+        {% include "includes/sidebar.html" %}
+
+        <!-- Contenu principal -->
+        <main style="flex: 1; padding: 2em;">
+            <h1>{% block page_title %}Accueil{% endblock %}</h1>
+            <hr style="margin-bottom: 1.5em;">
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+
+    <!-- Pied de page -->
+    {% include "includes/footer.html" %}
+
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+{% extends "base_template.html" %}
+
+{% block title %}UCL – Tableau de bord{% endblock %}
+
+{% block page_title %}📊 Tableau de bord{% endblock %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5em;">
+    <div style="background-color: #f0f8ff; padding: 1.5em; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <h2>Modules actifs</h2>
+        <p>{{ nb_modules }} modules détectés</p>
+    </div>
+
+    <div style="background-color: #fff0f5; padding: 1.5em; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <h2>Modules incomplets</h2>
+        <p>{{ nb_incomplets }} modules avec erreurs</p>
+    </div>
+</div>
+
+<hr>
+
+<h2>Logs de génération</h2>
+<ul>
+    {% for log in logs %}
+    <li>
+        <strong>{{ log.timestamp }} :</strong>
+        fichiers générés :
+        <ul>
+            {% for f in log.fichiers_crees %}
+            <li>{{ f }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

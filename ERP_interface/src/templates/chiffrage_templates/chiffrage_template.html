@@ -1,0 +1,38 @@
+{% extends "base_template.html" %}
+
+{% block title %}UCL – Chiffrage{% endblock %}
+{% block page_title %}Module Chiffrage{% endblock %}
+
+{% block content %}
+
+<form method="post" action="/chiffrage/calculer">
+    <div class="info-box">
+        <h2>Paramètres de Chiffrage</h2>
+
+        <label>Coût matière (€) :</label><br>
+        <input type="number" step="0.01" name="matiere"><br><br>
+
+        <label>Temps machine (heures) :</label><br>
+        <input type="number" step="0.1" name="machine"><br><br>
+
+        <label>Taux horaire machine (€) :</label><br>
+        <input type="number" step="0.01" name="taux_machine"><br><br>
+
+        <label>Temps opérateur (heures) :</label><br>
+        <input type="number" step="0.1" name="main_oeuvre"><br><br>
+
+        <label>Taux horaire MO (€) :</label><br>
+        <input type="number" step="0.01" name="taux_mo"><br><br>
+
+        <button type="submit">Calculer</button>
+    </div>
+</form>
+
+{% if total %}
+<div class="info-box">
+    <h2>Résultat</h2>
+    <p><strong>Coût total :</strong> {{ total }} €</p>
+</div>
+{% endif %}
+
+{% endblock %}

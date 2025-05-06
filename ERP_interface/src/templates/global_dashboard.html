@@ -1,0 +1,61 @@
+{% extends "base_template.html" %}
+
+{% block title %}UCL – Tableau de bord{% endblock %}
+
+{% block page_title %}Tableau de bord du logiciel{% endblock %}
+
+{% block content %}
+
+<div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5em;">
+
+    <div class="info-box">
+        <h2>🏭 Production</h2>
+        <p>Statut : Actif</p>
+        <a href="/production"><button>Accéder</button></a>
+    </div>
+
+    <div class="info-box">
+        <h2>✅ QSE</h2>
+        <p>Audits en attente : 3</p>
+        <a href="/qse"><button>Accéder</button></a>
+    </div>
+
+    <div class="info-box">
+        <h2>👥 Ressources Humaines</h2>
+        <p>Absences en cours : 2</p>
+        <a href="/rh"><button>Accéder</button></a>
+    </div>
+
+    <div class="info-box">
+        <h2>📦 Stock</h2>
+        <p>Articles critiques : 5</p>
+        <a href="/stock"><button>Accéder</button></a>
+    </div>
+
+    <div class="info-box">
+        <h2>🔐 Sécurité</h2>
+        <p>Dernier incident : 12/04/2025</p>
+        <a href="/securite"><button>Accéder</button></a>
+    </div>
+
+    <div class="info-box">
+        <h2>🤖 Assistant IA</h2>
+        <p>Modules détectés : 10</p>
+        <a href="/ia"><button>Accéder</button></a>
+    </div>
+
+    <div class="info-box">
+        <h2>💹 Chiffrage</h2>
+        <p>Estimation des coûts par pièce</p>
+        <a href="/chiffrage"><button>Accéder</button></a>
+    </div>
+
+    <div class="info-box">
+        <h2>💰 Finance</h2>
+        <p>Factures impayées : 7</p>
+        <a href="/finance"><button>Accéder</button></a>
+    </div>
+
+</div>
+
+{% endblock %}

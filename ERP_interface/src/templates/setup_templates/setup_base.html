@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Configuration - UCL{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body style="margin: 4em; font-family: Arial, sans-serif;">
+    <main>
+        <h1 style="color: #004080;">{% block page_title %}Configuration du logiciel{% endblock %}</h1>
+        <hr style="margin-bottom: 2em;">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+
+</html>
