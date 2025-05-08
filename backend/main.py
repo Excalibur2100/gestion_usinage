@@ -21,10 +21,10 @@ from backend.controllers.planningmachine.planning_machine_controller import rout
 from backend.controllers.gestion_filtrage.gestion_filtrage_controller import router as gestion_filtrage_router
 from backend.controllers.pointage.pointage_controller import router as pointage_router
 from backend.controllers.maintenance.maintenance_controller import router as maintenance_router
-from backend.controllers.charge_machine_controller import router as charge_machine_router
+from backend.controllers.charges_machines.charges_machine_controller import router as charge_machine_router
 from backend.controllers.surveillancecamera.surveillancecamera_controller import router as surveillance_camera_router
 from backend.controllers.controlerobot.controle_robot_controller import router as controle_robot_router
-from backend.controllers.assistant_ia_controller import router as assistant_ia_router
+from backend.controllers.ia.assistant_ia_controller import router as assistant_ia_router
 from backend.controllers.codegen_controller import router as codegen_router
 from backend.controllers.ia.router_ia import router as router_ia
 from fastapi.staticfiles import StaticFiles
