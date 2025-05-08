@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.services.analyse_fichiers.analyse_fichiers_services import (
+from db.models.database import get_db
+from services.analyse_fichiers.analyse_fichiers_services import (
     get_analyses_fichiers,
     get_analyse_fichier_by_id,
     create_analyse_fichier,

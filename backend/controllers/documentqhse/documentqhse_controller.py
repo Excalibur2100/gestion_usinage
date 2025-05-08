@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.services.documentqhse.documentqhse_service import (
+from db.models.database import get_db
+from services.documentqhse.documentqhse_service import (
     get_documents_qhse,
     get_document_qhse_by_id,
     create_document_qhse,

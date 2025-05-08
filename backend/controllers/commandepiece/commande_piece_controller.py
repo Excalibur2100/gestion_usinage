@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.db.schemas.commande_piece_schemas import CommandePieceCreate, CommandePieceRead, CommandePieceUpdate
-from backend.services.commandepiece.commande_piece_services import (
+from db.models.database import get_db
+from db.schemas.commande_piece_schemas import CommandePieceCreate, CommandePieceRead, CommandePieceUpdate
+from services.commandepiece.commande_piece_services import (
     creer_commande_piece,
     get_toutes_commandes_pieces,
     get_commande_piece_par_id,

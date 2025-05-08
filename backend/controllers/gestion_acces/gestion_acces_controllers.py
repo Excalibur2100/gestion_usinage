@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from backend.db.schemas.gestion_acces_schemas import GestionAccesCreate, GestionAccesRead, GestionAccesUpdate
-from backend.db.models.database import get_db
-from backend.services.gestionacces.gestionacces_service import (
+from db.schemas.gestion_acces_schemas import GestionAccesCreate, GestionAccesRead, GestionAccesUpdate
+from db.models.database import get_db
+from services.gestionacces.gestionacces_service import (
     creer_gestion_acces,
     get_toutes_gestions_acces,
     get_gestion_acces,

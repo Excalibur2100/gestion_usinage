@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.services.controlepiece.controlepiece_service import (
+from db.models.database import get_db
+from services.controlepiece.controlepiece_service import (
     get_controles_pieces,
     get_controle_piece_by_id,
     create_controle_piece,

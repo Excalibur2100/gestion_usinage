@@ -1,6 +1,3 @@
-# Service généré automatiquement
-# Module : documentqhse
-
 from sqlalchemy.orm import Session
 from db.models.tables.documents_qhse import DocumentsQHSE
 from db.schemas.documents_qhse_schemas import DocumentsQHSECreate, DocumentsQHSEUpdate

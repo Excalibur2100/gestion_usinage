@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from backend.db.schemas.materiaux_schemas import MateriauCreate, MateriauRead, MateriauUpdate
-from backend.db.models.database import get_db
-from backend.services.materiau.materiau_services import (
+from db.schemas.materiaux_schemas import MateriauCreate, MateriauRead, MateriauUpdate
+from db.models.database import get_db
+from services.materiau.materiau_services import (
     creer_materiau,
     get_tous_materiaux,
     get_materiau_par_id,

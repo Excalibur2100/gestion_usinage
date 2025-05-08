@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.db.schemas.gamme_production_schemas import GammeProductionCreate, GammeProductionRead
-from backend.services.production.gamme_production_services import (
+from db.models.database import get_db
+from db.schemas.gamme_production_schemas import GammeProductionCreate, GammeProductionRead
+from services.production.gamme_production_services import (
     creer_gamme,
     get_toutes_gammes,
     get_gamme_par_id,

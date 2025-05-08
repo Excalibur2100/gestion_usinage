@@ -27,10 +27,11 @@ echo "🔧 Activation de l'environnement virtuel Python..."
 source venv/bin/activate || { echo "❌ Erreur : impossible d'activer venv"; exit 1; }
 
 echo "🚀 Lancement du back-end Python (FastAPI)..."
-cd Backend/backend || exit
-uvicorn app:app --host 0.0.0.0 --port 8000 &
+cd backend || exit
+uvicorn main:app --host 0.0.0.0 --port 8000 &
 BACK_PID=$!
-cd ../../
+cd ..
+
 
 echo "🌐 Lancement du front-end Tauri..."
 cd Front-end/ERP_interface || exit

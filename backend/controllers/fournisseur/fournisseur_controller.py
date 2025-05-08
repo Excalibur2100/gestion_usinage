@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from backend.db.schemas.fournisseur_schemas import FournisseurCreate, FournisseurRead
-from backend.db.models.database import get_db
-from backend.services.fournisseur.fournisseur_services import (
+from db.schemas.fournisseur_schemas import FournisseurCreate, FournisseurRead
+from db.models.database import get_db
+from services.fournisseur.fournisseur_services import (
     creer_fournisseur,
     get_tous_fournisseurs,
     get_fournisseur_par_id,

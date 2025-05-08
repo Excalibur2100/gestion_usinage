@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.services.absence.absence_service import (
+from db.models.database import get_db
+from services.absence.absence_service import (
     get_absences,
     get_absence_by_id,
     create_absence,

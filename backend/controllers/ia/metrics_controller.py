@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.models.database import SessionLocal
-from backend.services.metrics.metrics_service import add_metric
+from db.models.database import SessionLocal
+from services.metrics.metrics_service import add_metric
 
 router = APIRouter()
 

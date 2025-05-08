@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from db.models.tables.surveillance_cameras import SurveillanceCamera
-from db.schemas.schemas import SurveillanceCameraCreate
+from db.schemas.surveillance_camera_schemas import SurveillanceCameraCreate
 
 def creer_camera(db: Session, camera_data: SurveillanceCameraCreate) -> SurveillanceCamera:
     """

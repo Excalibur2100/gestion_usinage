@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from backend.db.schemas.gestion_filtrage_schemas import GestionFiltrageCreate, GestionFiltrageRead
-from backend.db.models.database import get_db
-from backend.services.gestionfiltrage.gestionfiltrage_service import (
+from db.schemas.gestion_filtrage_schemas import GestionFiltrageCreate, GestionFiltrageRead
+from db.models.database import get_db
+from services.gestionfiltrage.gestionfiltrage_service import (
     creer_filtrage,
     get_tous_filtrages,
     get_filtrage_par_id,

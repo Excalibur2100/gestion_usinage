@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from backend.db.schemas.machine_schemas import MachineCreate, MachineRead, MachineUpdate
-from backend.db.models.database import get_db
-from backend.services.machine.machine_services import (
+from db.schemas.machine_schemas import MachineCreate, MachineRead, MachineUpdate
+from db.models.database import get_db
+from services.machine.machine_services import (
     creer_machine,
     get_toutes_machines,
     get_machine_par_id,

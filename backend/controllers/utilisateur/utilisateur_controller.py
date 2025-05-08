@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.db.schemas.utilisateur_schemas import UtilisateurCreate, UtilisateurUpdate, UtilisateurRead
-from backend.services.utilisateur.utilisateur_service import (
+from db.models.database import get_db
+from db.schemas.utilisateur_schemas import UtilisateurCreate, UtilisateurUpdate, UtilisateurRead
+from services.utilisateur.utilisateur_service import (
     creer_utilisateur,
     get_utilisateurs,
     get_utilisateur_par_id,

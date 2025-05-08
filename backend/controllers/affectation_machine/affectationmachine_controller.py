@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.services.affectationmachine.affectationmachine_service import (
+from db.models.database import get_db
+from services.affectationmachine.affectationmachine_service import (
     get_affectations_machines,
     get_affectation_machine_by_id,
     create_affectation_machine,

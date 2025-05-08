@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.services.auditqualite.auditqualite_service import (
+from db.models.database import get_db
+from services.auditqualite.auditqualite_service import (
     get_audits_qualite,
     get_audit_qualite_by_id,
     create_audit_qualite,

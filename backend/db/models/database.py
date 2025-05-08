@@ -1,28 +1,18 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from dotenv import load_dotenv
 from typing import Generator
-import os
 import logging
 
+# Récupère la configuration depuis config.py
+from config import DATABASE_URL, LOG_LEVEL
+
 # Configurer les logs
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
-
-# Charger les variables d'environnement depuis le fichier .env
-load_dotenv(dotenv_path="config.env")
-
-# Charger l'URL de la base de données
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-if not DATABASE_URL:
-    logger.error("DATABASE_URL n'est pas configurée. Vérifiez votre fichier .env.")
-    raise ValueError("DATABASE_URL n'est pas configurée dans le fichier .env")
 
 # Créer le moteur SQLAlchemy
 try:
     engine = create_engine(DATABASE_URL, echo=False, future=True)
-    # Vérifier la connexion à la base de données
     with engine.connect() as connection:
         logger.info("Connexion à la base de données réussie.")
 except Exception as e:
@@ -42,3 +32,4 @@ def get_db() -> Generator[Session, None, None]:
         yield db
     finally:
         db.close()
+

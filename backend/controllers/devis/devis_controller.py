@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from backend.db.schemas.devis_schemas import DevisCreate, DevisRead, DevisUpdate
-from backend.db.models.database import get_db
-from backend.services.devis.devis_services import (
+from db.schemas.devis_schemas import DevisCreate, DevisRead, DevisUpdate
+from db.models.database import get_db
+from services.devis.devis_services import (
     creer_devis,
     get_tous_devis,
     get_devis_par_id,

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.db.schemas.surveillance_camera_schemas import SurveillanceCameraCreate, SurveillanceCameraRead
-from backend.services.surveillance_camera.surveillancecamera_service import (
+from db.models.database import get_db
+from db.schemas.surveillance_camera_schemas import SurveillanceCameraCreate, SurveillanceCameraRead
+from services.surveillance_camera.surveillancecamera_service import (
     creer_camera,
     get_cameras,
     get_camera_par_id,

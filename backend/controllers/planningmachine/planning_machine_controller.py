@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.services.planning_machine.planning_machine_service import verifier_conflits_planning
-from backend.db.schemas.planning_machine_schemas import PlanningMachineCreate, PlanningMachineRead
-from backend.services.planning_machine.planning_machine_service import (
+from db.models.database import get_db
+from services.planning_machine.planning_machine_service import verifier_conflits_planning
+from db.schemas.planning_machine_schemas import PlanningMachineCreate, PlanningMachineRead
+from services.planning_machine.planning_machine_service import (
     creer_planning_machine,
     get_tous_plannings_machine,
     get_planning_machine_par_id,

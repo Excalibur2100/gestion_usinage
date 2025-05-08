@@ -1,5 +1,3 @@
-# Service généré automatiquement
-# Module : chargemachine
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from db.models.tables.charges_machine import ChargeMachine

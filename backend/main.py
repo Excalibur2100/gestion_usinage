@@ -2,36 +2,37 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from backend.controllers.utilisateur.utilisateur_controller import router as utilisateur_router
-from backend.controllers.rh.rh_controller import router as rh_router
-from backend.controllers.client.client_controller import router as client_router
-from backend.controllers.fournisseur.fournisseur_controller import router as fournisseur_router
-from backend.controllers.commande.commande_controller import router as commande_router
-from backend.controllers.devis.devis_controller import router as devis_router
-from backend.controllers.piece.piece_controller import router as piece_router
-from backend.controllers.machine.machine_controller import router as machine_router
-from backend.controllers.outil.outil_controller import router as outil_router
-from backend.controllers.materiau.materiau_controller import router as materiau_router
-from backend.controllers.commandepiece.commande_piece_controller import router as commande_piece_router
-from backend.controllers.programmepiece.programme_piece_controller import router as programme_router
-from backend.controllers.gammeproduction.gamme_production_controller import router as gamme_router
-from backend.controllers.gestion_acces.gestion_acces_controllers import router as gestion_acces_router
-from backend.controllers.planningemploye.planning_employe_controller import router as planning_employe_router
-from backend.controllers.planningmachine.planning_machine_controller import router as planning_machine_router
-from backend.controllers.gestion_filtrage.gestion_filtrage_controller import router as gestion_filtrage_router
-from backend.controllers.pointage.pointage_controller import router as pointage_router
-from backend.controllers.maintenance.maintenance_controller import router as maintenance_router
-from backend.controllers.charges_machines.charges_machine_controller import router as charge_machine_router
-from backend.controllers.surveillancecamera.surveillancecamera_controller import router as surveillance_camera_router
-from backend.controllers.controlerobot.controle_robot_controller import router as controle_robot_router
-from backend.controllers.ia.assistant_ia_controller import router as assistant_ia_router
-from backend.controllers.codegen_controller import router as codegen_router
-from backend.controllers.ia.router_ia import router as router_ia
+from controllers.utilisateur.utilisateur_controller import router as utilisateur_router
+from controllers.rh.rh_controller import router as rh_router
+from controllers.client.client_controller import router as client_router
+from controllers.fournisseur.fournisseur_controller import router as fournisseur_router
+from controllers.commande.commande_controller import router as commande_router
+from controllers.devis.devis_controller import router as devis_router
+from controllers.piece.piece_controller import router as piece_router
+from controllers.machine.machine_controller import router as machine_router
+from controllers.outil.outil_controller import router as outil_router
+from controllers.materiau.materiau_controller import router as materiau_router
+from controllers.commandepiece.commande_piece_controller import router as commande_piece_router
+from controllers.programmepiece.programme_piece_controller import router as programme_router
+from controllers.gammeproduction.gamme_production_controller import router as gamme_router
+from controllers.gestion_acces.gestion_acces_controllers import router as gestion_acces_router
+from controllers.planningemploye.planning_employe_controller import router as planning_employe_router
+from controllers.planningmachine.planning_machine_controller import router as planning_machine_router
+from controllers.gestion_filtrage.gestion_filtrage_controller import router as gestion_filtrage_router
+from controllers.pointage.pointage_controller import router as pointage_router
+from controllers.maintenance.maintenance_controller import router as maintenance_router
+from controllers.charges_machines.charges_machine_controller import router as charge_machine_router
+from controllers.surveillancecamera.surveillancecamera_controller import router as surveillance_camera_router
+from controllers.controlerobot.controle_robot_controller import router as controle_robot_router
+from controllers.ia.assistant_ia_controller import router as assistant_ia_router
+from controllers.codegen_controller import router as codegen_router
+from controllers.ia.router_ia import router as router_ia
 from fastapi.staticfiles import StaticFiles
-from backend.controllers.ia.metrics_controller import router as metrics_router
-from backend.controllers.analyse_fichier_controller.analyse_fichier_controller import router as analyse_fichier_router
-from backend.controllers.usinage_controller import router as usinage_router
-from backend.controllers.securite.securite_controller import router as securite_router
+from controllers.ia.metrics_controller import router as metrics_router
+from controllers.analyse_fichier_controller.analyse_fichier_controller import router as analyse_fichier_router
+from controllers.usinage_controller import router as usinage_router
+from controllers.securite.securite_controller import router as securite_router
+from controllers.ia.copilot_controller import router as copilot_router
 
 app = FastAPI(
     title="API Gestion Usinage",
@@ -78,6 +79,7 @@ app.include_router(metrics_router, prefix="/api", tags=["Metrics"])
 app.include_router(analyse_fichier_router)
 app.include_router(usinage_router)
 app.include_router(securite_router)
+app.include_router(copilot_router)
 
 # Test de vie de l’API
 #@app.get("/")
@@ -142,20 +144,37 @@ async def rediriger_si_non_configure(request: Request, call_next):
     return await call_next(request)
 
 
-from  backend.views.dashboard_ia.dashboard_views import router as dashboard_router
+from  views.dashboard_ia.dashboard_views import router as dashboard_router
 app.include_router(dashboard_router)
 
-from  backend.views.dashboard.global_dashboard import router as global_dashboard_router
+from  views.dashboard.global_dashboard import router as global_dashboard_router
 app.include_router(global_dashboard_router)
 
-from  backend.views.chiffrage.chiffrage_view import router as chiffrage_router
+from  views.chiffrage.chiffrage_view import router as chiffrage_router
 app.include_router(chiffrage_router)
 
-from  backend.views.setup_view.setup_view import router as setup_router
+from  views.setup_view.setup_view import router as setup_router
 app.include_router(setup_router)
 
-from  backend.views.parametres_view.parametres_view import router as parametres_router
+from  views.parametres_view.parametres_view import router as parametres_router
 app.include_router(parametres_router)
 
-from  backend.views.planningemploye.planning_employe_view import router as planning_employe_view_router
+from  views.planningemploye.planning_employe_view import router as planning_employe_view_router
 app.include_router(planning_employe_view_router)
+
+
+from fastapi import FastAPI
+
+app = FastAPI(
+    title="ERP Usinage",
+    description="API de gestion des opérations d'usinage pour l'ERP multi-entreprise.",
+    version="1.0.0",
+    contact={
+        "name": "Ton Nom",
+        "email": "ton.email@example.com",
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+)

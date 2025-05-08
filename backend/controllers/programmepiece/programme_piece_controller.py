@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
-from backend.db.schemas.programme_piece_schemas import ProgrammePieceCreate, ProgrammePieceRead
+from db.models.database import get_db
+from db.schemas.programme_piece_schemas import ProgrammePieceCreate, ProgrammePieceRead
 from services.production.programme_piece_services import (
     creer_programme,
     get_tous_programmes,

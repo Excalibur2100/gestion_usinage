@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.db.models.database import get_db
+from db.models.database import get_db
 from typing import List, Optional
-from backend.db.schemas.charge_machine_schemas import ChargeMachineCreate, ChargeMachineRead
-from backend.services.chargemachine.chargemachine_service import (
+from db.schemas.charge_machine_schemas import ChargeMachineCreate, ChargeMachineRead
+from services.chargemachine.chargemachine_service import (
     creer_charge_machine,
     get_charges_machine,
     get_charge_machine_par_id,
