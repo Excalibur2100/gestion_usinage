@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
@@ -22,7 +26,7 @@ from controllers.gestion_filtrage.gestion_filtrage_controller import router as g
 from controllers.pointage.pointage_controller import router as pointage_router
 from controllers.maintenance.maintenance_controller import router as maintenance_router
 from controllers.charges_machines.charges_machine_controller import router as charge_machine_router
-from controllers.surveillancecamera.surveillancecamera_controller import router as surveillance_camera_router
+from controllers.surveillancecamera.surveillance_camera_controller import router as surveillance_camera_router
 from controllers.controlerobot.controle_robot_controller import router as controle_robot_router
 from controllers.ia.assistant_ia_controller import router as assistant_ia_router
 from controllers.codegen_controller import router as codegen_router
@@ -33,6 +37,7 @@ from controllers.analyse_fichier_controller.analyse_fichier_controller import ro
 from controllers.usinage_controller import router as usinage_router
 from controllers.securite.securite_controller import router as securite_router
 from controllers.ia.copilot_controller import router as copilot_router
+from controllers.formation.formation_controller import router as formation_router
 
 app = FastAPI(
     title="API Gestion Usinage",
@@ -80,6 +85,7 @@ app.include_router(analyse_fichier_router)
 app.include_router(usinage_router)
 app.include_router(securite_router)
 app.include_router(copilot_router)
+app.include_router(formation_router)
 
 # Test de vie de l’API
 #@app.get("/")

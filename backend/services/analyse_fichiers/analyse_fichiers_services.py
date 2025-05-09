@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables.analyse_fichiers import AnalyseFichier
-from db.schemas.analyse_fichier_schemas import AnalyseFichierCreate, AnalyseFichierUpdate
+from backend.db.schemas.analyse_fichier_schemas.analyse_fichier_schemas import AnalyseFichierCreate, AnalyseFichierUpdate
 from fastapi import HTTPException
 
 def get_analyses_fichiers(db: Session, skip: int = 0, limit: int = 10):

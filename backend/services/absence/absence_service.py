@@ -1,8 +1,8 @@
 # Service généré automatiquement
 # Module : absence
 from sqlalchemy.orm import Session
-from db.models.tables.absence import Absence
-from db.schemas.absence_schemas import AbsenceCreate, AbsenceUpdate
+from  db.models.tables.absence import Absence
+from backend.db.schemas.absence_schemas.absence_schemas import AbsenceCreate, AbsenceUpdate
 from fastapi import HTTPException
 
 def get_absences(db: Session, skip: int = 0, limit: int = 10):

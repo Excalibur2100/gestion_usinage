@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables.document_rh import DocumentRH
-from db.schemas.documents_rh_schemas import DocumentRHCreate, DocumentRHUpdate
+from backend.db.schemas.documents_rh_schemas.documents_rh_schemas import DocumentRHCreate, DocumentRHUpdate
 from fastapi import HTTPException
 
 def get_documents_rh(db: Session, skip: int = 0, limit: int = 10):

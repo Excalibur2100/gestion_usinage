@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from db.models.tables.outils import Outil
-from db.schemas.outils_schemas import OutilCreate, OutilUpdate
+from backend.db.schemas.outils_schemas.outils_schemas import OutilCreate, OutilUpdate
 
 def creer_outil(db: Session, outil_data: OutilCreate) -> Outil:
     """

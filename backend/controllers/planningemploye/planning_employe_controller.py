@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.models.database import get_db
-from db.schemas.planning_employé_schemas import PlanningEmployeCreate, PlanningEmployeRead
+from backend.db.schemas.planning_employé_schemas.planning_employé_schemas import PlanningEmployeCreate, PlanningEmployeRead
 from services.planning_employe.planning_employe_services import (
     creer_planning_employe,
     get_tous_plannings_employe,

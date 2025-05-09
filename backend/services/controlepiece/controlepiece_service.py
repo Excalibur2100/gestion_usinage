@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables.controle_piece import ControlePiece
-from db.schemas.controle_pieces_schemas import ControlePieceCreate, ControlePieceUpdate
+from backend.db.schemas.controle_pieces_schemas.controle_pieces_schemas import ControlePieceCreate, ControlePieceUpdate
 from fastapi import HTTPException
 
 def get_controles_pieces(db: Session, skip: int = 0, limit: int = 10):

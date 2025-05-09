@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables.audit_qualite import AuditQualite
-from db.schemas.audit_qualite_schemas import AuditQualiteCreate, AuditQualiteUpdate
+from backend.db.schemas.audit_qualite_schemas.audit_qualite_schemas import AuditQualiteCreate, AuditQualiteUpdate
 from fastapi import HTTPException
 
 def get_audits_qualite(db: Session, skip: int = 0, limit: int = 10):

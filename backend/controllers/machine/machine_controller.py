@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from db.schemas.machine_schemas import MachineCreate, MachineRead, MachineUpdate
+from backend.db.schemas.machine_schemas.machine_schemas import MachineCreate, MachineRead, MachineUpdate
 from db.models.database import get_db
 from services.machine.machine_services import (
     creer_machine,

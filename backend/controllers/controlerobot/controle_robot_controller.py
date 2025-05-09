@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.models.database import get_db
-from db.schemas.controle_robot_schemas import ControleRobotCreate, ControleRobotRead
+from backend.db.schemas.controle_robot_schemas.controle_robot_schemas import ControleRobotCreate, ControleRobotRead
 from services.controlerobot.controle_robot_service import (
     creer_controle_robot,
     get_tous_controles_robot,

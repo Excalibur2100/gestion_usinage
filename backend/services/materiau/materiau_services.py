@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from db.models.tables.materiau import Materiau
-from db.schemas.materiaux_schemas import MateriauCreate, MateriauUpdate
+from backend.db.schemas.materiaux_schemas.materiaux_schemas import MateriauCreate, MateriauUpdate
 
 def creer_materiau(db: Session, materiau_data: MateriauCreate) -> Materiau:
     """

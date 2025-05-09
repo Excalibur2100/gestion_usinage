@@ -1,7 +1,7 @@
-from sqlalchemy.orm import Session
+ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from db.models.tables.utilisateur import Utilisateur
-from db.schemas.utilisateur_schemas import UtilisateurCreate, UtilisateurUpdate
+from backend.db.schemas.utilisateur_schemas.utilisateur_schemas import UtilisateurCreate, UtilisateurUpdate
 from passlib.context import CryptContext
 
 # Configuration de Passlib pour le hachage des mots de passe

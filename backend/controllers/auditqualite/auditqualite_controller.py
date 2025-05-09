@@ -8,7 +8,7 @@ from services.auditqualite.auditqualite_service import (
     update_audit_qualite,
     delete_audit_qualite,
 )
-from db.schemas.audit_qualite_schemas import AuditQualiteCreate, AuditQualiteUpdate
+from backend.db.schemas.audit_qualite_schemas.audit_qualite_schemas import AuditQualiteCreate, AuditQualiteUpdate
 
 router = APIRouter(prefix="/audit_qualite", tags=["Audit Qualité"])
 

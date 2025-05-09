@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from db.models.database import get_db
-from services.documentrh.documentrh_service import (
+from  db.models.database import get_db
+from  services.documentrh.documentrh_service import (
     get_documents_rh,
     get_document_rh_by_id,
     create_document_rh,
     update_document_rh,
     delete_document_rh,
 )
-from db.schemas.documents_rh_schemas import DocumentRHCreate, DocumentRHUpdate
+from backend.db.schemas.documents_rh_schemas.documents_rh_schemas import DocumentRHCreate, DocumentRHUpdate
 
 router = APIRouter(prefix="/documentrh", tags=["Document RH"])
 

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables.affectation_machine import AffectationMachine
-from db.schemas.affectation_machine_schemas import AffectationMachineCreate, AffectationMachineUpdate
+from backend.db.schemas.affectation_machine_schemas.affectation_machine_schemas import AffectationMachineCreate, AffectationMachineUpdate
 from fastapi import HTTPException
 
 def get_affectations_machines(db: Session, skip: int = 0, limit: int = 10):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from db.schemas.devis_schemas import DevisCreate, DevisRead, DevisUpdate
+from backend.db.schemas.devis_schemas.devis_schemas import DevisCreate, DevisRead, DevisUpdate
 from db.models.database import get_db
 from services.devis.devis_services import (
     creer_devis,

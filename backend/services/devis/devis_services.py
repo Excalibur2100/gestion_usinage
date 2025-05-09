@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from db.models.tables import Devis
-from db.schemas.devis_schemas import DevisCreate
+from backend.db.schemas.devis_schemas.devis_schemas import DevisCreate
 from typing import List, Optional
-from db.schemas.devis_schemas import DevisCreate, DevisUpdate
+from backend.db.schemas.devis_schemas.devis_schemas import DevisCreate, DevisUpdate
 
 
 

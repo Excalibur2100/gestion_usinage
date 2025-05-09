@@ -8,7 +8,7 @@ from services.analyse_fichiers.analyse_fichiers_services import (
     update_analyse_fichier,
     delete_analyse_fichier,
 )
-from db.schemas.analyse_fichier_schemas import AnalyseFichierCreate, AnalyseFichierUpdate
+from backend.db.schemas.analyse_fichier_schemas.analyse_fichier_schemas import AnalyseFichierCreate, AnalyseFichierUpdate
 
 router = APIRouter(prefix="/analyse_fichier", tags=["Analyse Fichier"])
 

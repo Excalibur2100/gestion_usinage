@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from db.schemas.pointage_schemas import PointageCreate, PointageRead, PointageUpdate
+from backend.db.schemas.pointage_schemas.pointage_schemas import PointageCreate, PointageRead, PointageUpdate
 from db.models.database import get_db
 from services.pointage.pointage_services import (
     creer_pointage,

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables.documents_qhse import DocumentsQHSE
-from db.schemas.documents_qhse_schemas import DocumentsQHSECreate, DocumentsQHSEUpdate
+from backend.db.schemas.documents_qhse_schemas.documents_qhse_schemas import DocumentsQHSECreate, DocumentsQHSEUpdate
 from fastapi import HTTPException
 
 def get_documents_qhse(db: Session, skip: int = 0, limit: int = 10):

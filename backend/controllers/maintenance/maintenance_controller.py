@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from db.schemas.maintenance_schemas import MaintenanceCreate, MaintenanceRead, MaintenanceUpdate
+from backend.db.schemas.maintenance_schemas.maintenance_schemas import MaintenanceCreate, MaintenanceRead, MaintenanceUpdate
 from db.models.database import get_db
 from services.maintenance.maintenance_services import (
     creer_maintenance,

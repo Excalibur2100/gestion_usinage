@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from db.schemas.outils_schemas import OutilCreate, OutilRead, OutilUpdate
+from backend.db.schemas.outils_schemas.outils_schemas import OutilCreate, OutilRead, OutilUpdate
 from db.models.database import get_db
 from services.outil.outil_services import (
     creer_outil,

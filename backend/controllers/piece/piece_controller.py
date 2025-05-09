@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from db.schemas.piece_schemas import PieceCreate, PieceRead
+from backend.db.schemas.piece_schemas.piece_schemas import PieceCreate, PieceRead
 from db.models.database import get_db
 from services.piece.piece_services import (
     creer_piece,

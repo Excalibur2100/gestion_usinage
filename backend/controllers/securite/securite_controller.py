@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 from db.models.database import get_db
-from db.schemas.securite_schemas import LogsSecuriteCreate, LogsSecuriteRead
+from backend.db.schemas.securite_schemas.securite_schemas import LogsSecuriteCreate, LogsSecuriteRead
 from services.securite.securite_service import (
     creer_log_securite,
     get_tous_logs_securite,

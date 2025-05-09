@@ -8,7 +8,7 @@ from services.controlepiece.controlepiece_service import (
     update_controle_piece,
     delete_controle_piece,
 )
-from db.schemas.controle_pieces_schemas import ControlePieceCreate, ControlePieceUpdate
+from backend.db.schemas.controle_pieces_schemas.controle_pieces_schemas import ControlePieceCreate, ControlePieceUpdate
 
 router = APIRouter(prefix="/controle_piece", tags=["Contrôle Pièce"])
 

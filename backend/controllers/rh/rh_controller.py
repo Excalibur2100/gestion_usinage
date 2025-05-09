@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from db.schemas.rh_schemas import RHCreate, RHRead, RHUpdate
+from backend.db.schemas.rh_schemas.rh_schemas import RHCreate, RHRead, RHUpdate
 from db.models.database import get_db
 from services.rh.rh_services import (
     creer_rh,

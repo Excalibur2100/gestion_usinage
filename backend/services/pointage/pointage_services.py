@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from db.models.tables.pointages import Pointage
-from db.schemas.pointage_schemas import PointageCreate, PointageUpdate
+from backend.db.schemas.pointage_schemas.pointage_schemas import PointageCreate, PointageUpdate
 
 def creer_pointage(db: Session, pointage_data: PointageCreate) -> Pointage:
     """

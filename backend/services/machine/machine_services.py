@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from db.models.tables.machine import Machine
-from db.schemas.machine_schemas import MachineCreate, MachineUpdate
+from backend.db.schemas.machine_schemas.machine_schemas import MachineCreate, MachineUpdate
 
 def creer_machine(db: Session, machine_data: MachineCreate) -> Machine:
     """

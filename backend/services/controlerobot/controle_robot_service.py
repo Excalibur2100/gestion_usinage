@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from db.models.tables.controle_robot import ControleRobot
-from db.schemas.controle_robot_schemas import ControleRobotCreate
+from backend.db.schemas.controle_robot_schemas.controle_robot_schemas import ControleRobotCreate
 
 
 # ========== CRÉATION ==========

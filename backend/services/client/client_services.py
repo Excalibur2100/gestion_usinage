@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables.clients import Client
-from db.schemas.client_schemas import ClientCreate, ClientRead
+from backend.db.schemas.client_schemas.client_schemas import ClientCreate, ClientRead
 from typing import List, Optional
 from fastapi import HTTPException
 

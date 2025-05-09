@@ -8,7 +8,7 @@ from services.documentqhse.documentqhse_service import (
     update_document_qhse,
     delete_document_qhse,
 )
-from db.schemas.documents_qhse_schemas import DocumentsQHSECreate, DocumentsQHSEUpdate
+from backend.db.schemas.documents_qhse_schemas.documents_qhse_schemas import DocumentsQHSECreate, DocumentsQHSEUpdate
 
 router = APIRouter(prefix="/documentqhse", tags=["Document QHSE"])
 

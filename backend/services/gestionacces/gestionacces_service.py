@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from db.models.tables.gestion_acces import GestionAcces
-from db.schemas.gestion_acces_schemas import GestionAccesCreate, GestionAccesUpdate
+from backend.db.schemas.gestion_acces_schemas.gestion_acces_schemas import GestionAccesCreate, GestionAccesUpdate
 
 def creer_gestion_acces(db: Session, data: GestionAccesCreate) -> GestionAcces:
     """

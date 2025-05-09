@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from db.schemas.commande_schemas import CommandeCreate, CommandeRead, CommandeUpdate
+from backend.db.schemas.commande_schemas.commande_schemas import CommandeCreate, CommandeRead, CommandeUpdate
 from db.models.database import get_db
 from services.commande.commande_services import (
     creer_commande,

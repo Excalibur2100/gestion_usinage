@@ -8,7 +8,7 @@ from services.absence.absence_service import (
     update_absence,
     delete_absence,
 )
-from db.schemas.absence_schemas import AbsenceCreate, AbsenceUpdate
+from backend.db.schemas.absence_schemas.absence_schemas import AbsenceCreate, AbsenceUpdate
 
 router = APIRouter(prefix="/absence", tags=["absence"])
 

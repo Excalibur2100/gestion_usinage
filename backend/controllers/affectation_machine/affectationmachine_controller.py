@@ -8,7 +8,7 @@ from services.affectationmachine.affectationmachine_service import (
     update_affectation_machine,
     delete_affectation_machine,
 )
-from db.schemas.affectation_machine_schemas import AffectationMachineCreate, AffectationMachineUpdate
+from backend.db.schemas.affectation_machine_schemas.affectation_machine_schemas import AffectationMachineCreate, AffectationMachineUpdate
 
 router = APIRouter(prefix="/affectation_machine", tags=["Affectation Machine"])
 

@@ -8,7 +8,7 @@ from services.client.client_services import (
     update_client,
     supprimer_client,
 )
-from db.schemas.client_schemas import ClientCreate, ClientRead
+from backend.db.schemas.client_schemas.client_schemas import ClientCreate, ClientRead
 
 router = APIRouter(
     prefix="/clients",
