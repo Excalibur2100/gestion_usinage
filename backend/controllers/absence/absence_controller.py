@@ -1,34 +1,42 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.models.database import get_db
+from db.schemas.absence_schemas.absence_schemas import AbsenceCreate, AbsenceUpdate, AbsenceRead
 from services.absence.absence_service import (
-    get_absences,
-    get_absence_by_id,
     create_absence,
+    get_all_absences,
+    get_absence_by_id,
     update_absence,
-    delete_absence,
+    delete_absence
 )
-from backend.db.schemas.absence_schemas.absence_schemas import AbsenceCreate, AbsenceUpdate
 
-router = APIRouter(prefix="/absence", tags=["absence"])
+router = APIRouter(prefix="/api/absences", tags=["Absences"])
 
-@router.get("/", response_model=list)
-def list_absences(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return get_absences(db, skip=skip, limit=limit)
+@router.post("/", response_model=AbsenceRead)
+def create(data: AbsenceCreate, db: Session = Depends(get_db)):
+    return create_absence(db, data)
 
-@router.get("/{absence_id}", response_model=dict)
-def get_absence(absence_id: int, db: Session = Depends(get_db)):
-    return get_absence_by_id(db, absence_id)
+@router.get("/", response_model=list[AbsenceRead])
+def read_all(db: Session = Depends(get_db)):
+    return get_all_absences(db)
 
-@router.post("/", response_model=dict)
-def create_new_absence(absence_data: AbsenceCreate, db: Session = Depends(get_db)):
-    return create_absence(db, absence_data)
+@router.get("/{absence_id}", response_model=AbsenceRead)
+def read_one(absence_id: int, db: Session = Depends(get_db)):
+    absence = get_absence_by_id(db, absence_id)
+    if not absence:
+        raise HTTPException(status_code=404, detail="Absence non trouvée")
+    return absence
 
-@router.put("/{absence_id}", response_model=dict)
-def update_existing_absence(absence_id: int, absence_data: AbsenceUpdate, db: Session = Depends(get_db)):
-    return update_absence(db, absence_id, absence_data)
+@router.put("/{absence_id}", response_model=AbsenceRead)
+def update(absence_id: int, data: AbsenceUpdate, db: Session = Depends(get_db)):
+    absence = update_absence(db, absence_id, data)
+    if not absence:
+        raise HTTPException(status_code=404, detail="Absence non trouvée")
+    return absence
 
 @router.delete("/{absence_id}")
-def delete_existing_absence(absence_id: int, db: Session = Depends(get_db)):
-    delete_absence(db, absence_id)
-    return {"message": "Absence deleted successfully"}
+def delete(absence_id: int, db: Session = Depends(get_db)):
+    success = delete_absence(db, absence_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Absence non trouvée")
+    return {"detail": "Absence supprimée"}

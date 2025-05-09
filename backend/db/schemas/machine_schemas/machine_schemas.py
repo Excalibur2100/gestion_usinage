@@ -1,41 +1,30 @@
-from datetime import datetime
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field
+from datetime import date
 
 class MachineBase(BaseModel):
-    """
-    Schéma de base pour une machine.
-    """
-    nom: str = Field(..., description="Nom unique de la machine")
-    type_machine: str = Field(..., description="Type de la machine (ex: CNC, imprimante 3D)")
-    vitesse_max: Optional[float] = Field(None, description="Vitesse maximale de la machine")
-    puissance: Optional[float] = Field(None, description="Puissance de la machine (en kW)")
-    nb_axes: Optional[int] = Field(None, description="Nombre d'axes de la machine")
+    nom: str = Field(..., description="Nom ou code de la machine")
+    type_machine: str = Field(..., description="Type de machine : CNC, tour, fraiseuse...")
+    etat: Optional[str] = Field("opérationnelle", description="État de la machine")
+    date_installation: Optional[date] = Field(None, description="Date d'installation")
+    emplacement: Optional[str] = Field(None, description="Emplacement physique")
+    statut: Optional[str] = Field("active", description="Statut : active, arrêt, maintenance")
+    description: Optional[str] = Field(None, description="Détails techniques ou remarques")
 
 class MachineCreate(MachineBase):
-    """
-    Schéma pour la création d'une machine.
-    """
     pass
 
-class MachineRead(MachineBase):
-    """
-    Schéma pour la lecture d'une machine.
-    """
-    id: int = Field(..., description="ID unique de la machine")
-    created_at: datetime = Field(..., description="Date de création de la machine")
-    updated_at: Optional[datetime] = Field(None, description="Date de dernière mise à jour de la machine")
-
-    model_config = ConfigDict(from_attributes=True)
-
 class MachineUpdate(BaseModel):
-    """
-    Schéma pour la mise à jour d'une machine.
-    """
-    nom: Optional[str] = Field(None, description="Nom unique de la machine")
-    type_machine: Optional[str] = Field(None, description="Type de la machine (ex: CNC, imprimante 3D)")
-    vitesse_max: Optional[float] = Field(None, description="Vitesse maximale de la machine")
-    puissance: Optional[float] = Field(None, description="Puissance de la machine (en kW)")
-    nb_axes: Optional[int] = Field(None, description="Nombre d'axes de la machine")
+    nom: Optional[str] = None
+    type_machine: Optional[str] = None
+    etat: Optional[str] = None
+    date_installation: Optional[date] = None
+    emplacement: Optional[str] = None
+    statut: Optional[str] = None
+    description: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True)
+class MachineRead(MachineBase):
+    id: int = Field(..., description="ID unique de la machine")
+
+    class Config:
+        model_config = ConfigDict(from_attributes=True)

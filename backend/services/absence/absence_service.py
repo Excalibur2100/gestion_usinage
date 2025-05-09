@@ -1,62 +1,33 @@
-# Service généré automatiquement
-# Module : absence
 from sqlalchemy.orm import Session
-from  db.models.tables.absence import Absence
-from backend.db.schemas.absence_schemas.absence_schemas import AbsenceCreate, AbsenceUpdate
-from fastapi import HTTPException
+from db.models.tables.absence import Absence
+from db.schemas.absence_schemas.absence_schemas import AbsenceCreate, AbsenceUpdate
 
-def get_absences(db: Session, skip: int = 0, limit: int = 10):
-    """
-    Récupère une liste paginée d'absences.
-    """
-    return db.query(Absence).offset(skip).limit(limit).all()
-
-def get_absence_by_id(db: Session, absence_id: int):
-    """
-    Récupère une absence par son ID.
-    """
-    absence = db.query(Absence).filter(Absence.id == absence_id).first()
-    if not absence:
-        raise HTTPException(status_code=404, detail="Absence non trouvée")
-    return absence
-
-def create_absence(db: Session, absence_data: AbsenceCreate):
-    """
-    Crée une nouvelle absence.
-    """
-    absence = Absence(
-        utilisateur_id=absence_data.utilisateur_id,
-        date_debut=absence_data.date_debut,
-        date_fin=absence_data.date_fin,
-        type_absence=absence_data.type_absence,
-        commentaire=absence_data.commentaire,
-    )
+def create_absence(db: Session, data: AbsenceCreate) -> Absence:
+    absence = Absence(**data.model_dump())
     db.add(absence)
     db.commit()
     db.refresh(absence)
     return absence
 
-def update_absence(db: Session, absence_id: int, absence_data: AbsenceUpdate):
-    """
-    Met à jour une absence existante.
-    """
+def get_all_absences(db: Session, skip: int = 0, limit: int = 100) -> list[Absence]:
+    return db.query(Absence).offset(skip).limit(limit).all()
+
+def get_absence_by_id(db: Session, absence_id: int) -> Absence | None:
+    return db.query(Absence).filter(Absence.id == absence_id).first()
+
+def update_absence(db: Session, absence_id: int, data: AbsenceUpdate) -> Absence | None:
     absence = get_absence_by_id(db, absence_id)
-    if absence_data.date_debut:
-        absence.date_debut = absence_data.date_debut
-    if absence_data.date_fin:
-        absence.date_fin = absence_data.date_fin
-    if absence_data.type_absence:
-        absence.type_absence = absence_data.type_absence
-    if absence_data.commentaire:
-        absence.commentaire = absence_data.commentaire
-    db.commit()
-    db.refresh(absence)
+    if absence:
+        for key, value in data.model_dump(exclude_unset=True).items():
+            setattr(absence, key, value)
+        db.commit()
+        db.refresh(absence)
     return absence
 
-def delete_absence(db: Session, absence_id: int):
-    """
-    Supprime une absence par son ID.
-    """
+def delete_absence(db: Session, absence_id: int) -> bool:
     absence = get_absence_by_id(db, absence_id)
-    db.delete(absence)
-    db.commit()
+    if absence:
+        db.delete(absence)
+        db.commit()
+        return True
+    return False

@@ -48,6 +48,8 @@ class Machine(Base):
     pointages = relationship("Pointage", back_populates="machine")
     metrics = relationship("MetricsMachine", back_populates="machine")
     outils = relationship("Outil", secondary="machine_outil", back_populates="machines")
+    postes = relationship("Poste", back_populates="machine", cascade="all, delete")
+    utilisateurs = relationship("Utilisateur", back_populates="machine", cascade="all, delete")
 
     __table_args__ = (
         CheckConstraint(

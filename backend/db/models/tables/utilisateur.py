@@ -30,6 +30,11 @@ class Utilisateur(Base):
     epis = relationship("EPIUtilisateur", back_populates="utilisateur")
     affectations = relationship("AffectationMachine", back_populates="utilisateur")
     finances = relationship("Finance", back_populates="utilisateur")
+    poste = relationship("Poste", back_populates="utilisateur", uselist=False)
+    machine = relationship("Machine", back_populates="utilisateurs", uselist=False)
+    pointages = relationship("Pointage", back_populates="utilisateur")
+    ordres = relationship("OrdreFabrication", back_populates="utilisateur")
+    plannings = relationship("PlanningEmploye", back_populates="utilisateur")
     documents = relationship("DocumentRH", back_populates="utilisateur")
     audits_realises = relationship(
         "AuditQualite", back_populates="responsable_utilisateur"

@@ -38,6 +38,13 @@ from controllers.usinage_controller import router as usinage_router
 from controllers.securite.securite_controller import router as securite_router
 from controllers.ia.copilot_controller import router as copilot_router
 from controllers.formation.formation_controller import router as formation_router
+from controllers.absence.absence_controller import router as absence_router
+from controllers.epi.epi_controller import router as epi_router
+from controllers.ordre_fabrication.ordre_fabrication_controller import router as of_router
+
+
+
+
 
 app = FastAPI(
     title="API Gestion Usinage",
@@ -86,6 +93,11 @@ app.include_router(usinage_router)
 app.include_router(securite_router)
 app.include_router(copilot_router)
 app.include_router(formation_router)
+app.include_router(absence_router)
+app.include_router(epi_router)
+app.include_router(of_router)
+
+
 
 # Test de vie de l’API
 #@app.get("/")

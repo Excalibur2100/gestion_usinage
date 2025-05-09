@@ -1,34 +1,30 @@
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field
+from datetime import date
 
 class OutilBase(BaseModel):
-    """
-    Schéma de base pour un outil.
-    """
     nom: str = Field(..., description="Nom de l'outil")
-    type_outil: str = Field(..., description="Type de l'outil (ex: fraise, foret)")
-    description: Optional[str] = Field(None, description="Description de l'outil")
+    type: str = Field(..., description="Type d'outil (foret, fraise, clé...)")
+    etat: Optional[str] = Field("bon", description="État : bon, usé, cassé")
+    emplacement: Optional[str] = Field(None, description="Emplacement de l'outil dans l’atelier")
+    date_maintenance: Optional[date] = Field(None, description="Date de dernière maintenance")
+    statut: Optional[str] = Field("actif", description="Statut : actif, inactif, en maintenance")
+    description: Optional[str] = Field(None, description="Description complémentaire")
 
 class OutilCreate(OutilBase):
-    """
-    Schéma pour la création d'un outil.
-    """
     pass
 
+class OutilUpdate(BaseModel):
+    nom: Optional[str] = None
+    type: Optional[str] = None
+    etat: Optional[str] = None
+    emplacement: Optional[str] = None
+    date_maintenance: Optional[date] = None
+    statut: Optional[str] = None
+    description: Optional[str] = None
+
 class OutilRead(OutilBase):
-    """
-    Schéma pour la lecture d'un outil.
-    """
     id: int = Field(..., description="ID unique de l'outil")
 
-    model_config = ConfigDict(from_attributes=True)
-
-class OutilUpdate(BaseModel):
-    """
-    Schéma pour la mise à jour d'un outil.
-    """
-    nom: Optional[str] = Field(None, description="Nom de l'outil")
-    type_outil: Optional[str] = Field(None, description="Type de l'outil (ex: fraise, foret)")
-    description: Optional[str] = Field(None, description="Description de l'outil")
-
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        model_config = ConfigDict(from_attributes=True)
