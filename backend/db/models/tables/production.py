@@ -1,95 +1,70 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    DateTime,
-    ForeignKey,
-    CheckConstraint,
-)
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from db.models.base import Base
 
-
-# ========================= PRODUCTION =========================
 class Production(Base):
     """
-    Classe Production représentant une production dans le système.
-
-    Attributs :
-        - piece_id : ID de la pièce produite.
-        - machine_id : ID de la machine utilisée pour la production.
-        - employe_id : ID de l'employé responsable de la production.
-        - date_debut : Date de début de la production.
-        - date_fin : Date de fin de la production (optionnelle).
-        - statut : Statut de la production (en cours, terminée, annulée).
-        - description : Description de la production (optionnelle).
+    Table des cycles de production sur pièce par opérateur et machine.
     """
     __tablename__ = "production"
     __table_args__ = (
         CheckConstraint(
             "statut IN ('en cours', 'terminée', 'annulée')",
-            name="check_statut_production",
+            name="check_statut_production"
         ),
-        {
-            "comment": "Table des productions",
-            "extend_existing": True,
-        },
+        {"comment": "Table des productions"},
     )
 
     id = Column(Integer, primary_key=True)
+
     piece_id = Column(
         Integer,
         ForeignKey("pieces.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="ID de la pièce produite",
+        comment="Pièce produite"
     )
+
     machine_id = Column(
         Integer,
         ForeignKey("machines.id", ondelete="SET NULL"),
         nullable=True,
-        comment="ID de la machine utilisée pour la production",
+        comment="Machine de production"
     )
-    id = Column(Integer, primary_key=True)
+
     employe_id = Column(
         Integer,
-        ForeignKey("employes.id", ondelete="SET NULL"),  # Assure-toi que le nom de la table est correct
+        ForeignKey("employes.id", ondelete="SET NULL"),
         nullable=True,
-        comment="ID de l'employé responsable de la production",
+        comment="Opérateur affecté"
     )
+
     date_debut = Column(
         DateTime,
         nullable=False,
-        default=datetime.now,  # Définit la date actuelle par défaut
-        comment="Date de début de la production",
+        default=datetime.utcnow,
+        comment="Début de production"
     )
-    date_fin = Column(DateTime, nullable=True, comment="Date de fin de la production")
-    statut = Column(
-        String(50),
-        nullable=False,
-        comment="Statut de la production (en cours, terminée, annulée)",
-    )
+
+    date_fin = Column(DateTime, nullable=True, comment="Fin de production")
+    statut = Column(String(50), nullable=False, default="en cours", comment="Statut : en cours, terminée, annulée")
 
     # Relations
-    piece = relationship("Piece", back_populates="productions")
-    machine = relationship("Machine", back_populates="productions")
-    employe = relationship("Employe", back_populates="productions")
+    piece = relationship("Piece", back_populates="productions", lazy="joined")
+    machine = relationship("Machine", back_populates="productions", lazy="joined")
+    employe = relationship("Employe", back_populates="productions", lazy="joined")
 
-    # Méthodes utilitaires
     def __repr__(self):
-        return f"<Production(id={self.id}, piece_id={self.piece_id}, statut='{self.statut}')>"
+        return f"<Production id={self.id} piece={self.piece_id} statut={self.statut}>"
 
     def is_terminee(self):
-        """Vérifie si la production est terminée."""
         return self.statut == "terminée"
 
     def is_annulee(self):
-        """Vérifie si la production est annulée."""
         return self.statut == "annulée"
 
     def duree_production(self):
-        """Calcule la durée de la production en heures."""
-        if self.date_fin and self.date_debut:
+        if self.date_debut and self.date_fin:
             return (self.date_fin - self.date_debut).total_seconds() / 3600
         return None

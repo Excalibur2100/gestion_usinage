@@ -3,49 +3,23 @@ from sqlalchemy.orm import relationship
 from db.models.base import Base
 from datetime import datetime
 
-
-# ========================= ANALYSE FICHIERS =========================
 class AnalyseFichier(Base):
     __tablename__ = "analyse_fichiers"
 
     id = Column(Integer, primary_key=True)
-    type_fichier = Column(
-        String(100),
-        nullable=False,
-        comment="Type du fichier analysé (ex: CSV, JSON, XML)",
-    )
-    contenu = Column(
-        Text,
-        nullable=False,
-        comment="Contenu brut ou résultat de l'analyse du fichier",
-    )
-    date_analyse = Column(
-        DateTime,
-        default=datetime.utcnow,
-        nullable=False,
-        comment="Date de l'analyse",
-    )
-    machine_id = Column(
-        Integer,
-        ForeignKey("machines.id", ondelete="SET NULL"),
-        nullable=True,
-        comment="ID de la machine associée (si applicable)",
-    )
-    piece_id = Column(
-        Integer,
-        ForeignKey("pieces.id", ondelete="SET NULL"),
-        nullable=True,
-        comment="ID de la pièce associée (si applicable)",
-    )
-    programme_id = Column(
-        Integer,
-        ForeignKey("programme_pieces.id", ondelete="SET NULL"),
-        nullable=True,
-        comment="ID du programme associé (si applicable)",
-    )
+
+    type_fichier = Column(String(100), nullable=False, comment="Type du fichier analysé (CSV, JSON, XML, etc.)")
+    contenu = Column(Text, nullable=False, comment="Contenu brut ou transformé du fichier")
+    date_analyse = Column(DateTime, default=datetime.utcnow, nullable=False, comment="Date de l'analyse")
+
+    machine_id = Column(Integer, ForeignKey("machines.id", ondelete="SET NULL"), nullable=True)
+    piece_id = Column(Integer, ForeignKey("pieces.id", ondelete="SET NULL"), nullable=True)
+    programme_id = Column(Integer, ForeignKey("programme_pieces.id", ondelete="SET NULL"), nullable=True)
 
     # Relations
-    machine = relationship("Machine", back_populates="analyses")
-    piece = relationship("Piece", back_populates="analyses")
-    programme = relationship("ProgrammePiece", back_populates="analyses")
+    machine = relationship("Machine", back_populates="analyses", lazy="joined")
+    piece = relationship("Piece", back_populates="analyses", lazy="joined")
+    programme = relationship("ProgrammePiece", back_populates="analyses", lazy="joined")
 
+    def __repr__(self):
+        return f"<AnalyseFichier type={self.type_fichier} date={self.date_analyse}>"

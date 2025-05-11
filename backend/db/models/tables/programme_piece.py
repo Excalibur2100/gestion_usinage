@@ -3,55 +3,42 @@ from sqlalchemy.orm import relationship
 from db.models.base import Base
 from datetime import datetime
 
-
-# ========================= PROGRAMME PIECE =========================
 class ProgrammePiece(Base):
     __tablename__ = "programme_pieces"
 
-    # Colonnes
-    id = Column(Integer, primary_key=True, index=True, comment="Identifiant unique du programme")
+    id = Column(Integer, primary_key=True, index=True, comment="ID unique du programme")
+
     piece_id = Column(
         Integer,
-        ForeignKey("pieces.id"),
+        ForeignKey("pieces.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
-        comment="ID de la pièce associée",
-    )
-    nom_programme = Column(
-        String(150),
-        nullable=False,
-        comment="Nom du programme",
-    )
-    fichier_path = Column(
-        String(255),
-        nullable=False,
-        comment="Chemin du fichier sur disque",
-    )
-    postprocesseur_id = Column(
-        Integer,
-        ForeignKey("postprocesseurs.id"),
-        nullable=False,
-        index=True,
-        comment="ID du post-processeur associé",
-    )
-    date_import = Column(
-        DateTime,
-        default=datetime.utcnow,
-        nullable=False,
-        comment="Date d'importation du programme",
+        comment="Pièce associée"
     )
 
-    # Contraintes
+    nom_programme = Column(String(150), nullable=False, comment="Nom du fichier FAO/CNC")
+    fichier_path = Column(String(255), nullable=False, comment="Chemin du fichier généré")
+
+    postprocesseur_id = Column(
+        Integer,
+        ForeignKey("postprocesseurs.id", ondelete="SET NULL"),
+        nullable=False,
+        index=True,
+        comment="Post-processeur utilisé"
+    )
+
+    date_import = Column(DateTime, default=datetime.utcnow, nullable=False, comment="Date d'import")
+
+    # Contraintes uniques
     __table_args__ = (
         UniqueConstraint("piece_id", "nom_programme", name="uq_piece_nom_programme"),
     )
 
     # Relations
-    piece = relationship("Piece", back_populates="programmes")
-    postprocesseur = relationship("PostProcesseur", back_populates="programmes")
-    analyses = relationship("AnalyseFichier", back_populates="programme")
+    piece = relationship("Piece", back_populates="programmes", lazy="joined")
+    postprocesseur = relationship("PostProcesseur", back_populates="programmes", lazy="joined")
+    analyses = relationship("AnalyseFichier", back_populates="programme", cascade="all, delete-orphan", lazy="joined")
 
-    # Méthodes utilitaires
     def __repr__(self):
         return (
             f"<ProgrammePiece(id={self.id}, nom_programme='{self.nom_programme}', "

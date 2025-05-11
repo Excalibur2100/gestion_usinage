@@ -1,37 +1,45 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey, Boolean, String, Text
+from sqlalchemy import Column, Integer, DateTime, ForeignKey, Boolean, String, Text, CheckConstraint
 from sqlalchemy.orm import relationship
 from db.models.base import Base
 
-
-# ========================= PLANNING EMPLOYE =========================
 class PlanningEmploye(Base):
     __tablename__ = "planning_employes"
 
     id = Column(Integer, primary_key=True)
+
     utilisateur_id = Column(
         Integer,
-        ForeignKey("utilisateurs.id"),
+        ForeignKey("utilisateurs.id", ondelete="CASCADE"),
         nullable=False,
-        comment="ID de l'utilisateur associé",
+        comment="Opérateur assigné"
     )
+
     machine_id = Column(
         Integer,
-        ForeignKey("machines.id"),
+        ForeignKey("machines.id", ondelete="SET NULL"),
         nullable=True,
-        comment="ID de la machine associée",
+        comment="Machine utilisée"
     )
-    date_debut = Column(DateTime, nullable=False, comment="Date de début de la tâche")
-    date_fin = Column(DateTime, nullable=False, comment="Date de fin de la tâche")
-    tache = Column(Text, nullable=False, comment="Description de la tâche")
+
+    date_debut = Column(DateTime, nullable=False, comment="Début de l'affectation")
+    date_fin = Column(DateTime, nullable=False, comment="Fin de l'affectation")
+    tache = Column(Text, nullable=False, comment="Travail ou mission à effectuer")
+
     statut = Column(
         String(50),
         default="Prévu",
         nullable=False,
-        comment="Statut de la tâche (Prévu, En cours, Terminé)",
-    )
-    affectation_auto = Column(
-        Boolean, default=True, comment="Indique si l'affectation est automatique"
+        comment="Prévu, En cours, Terminé"
     )
 
-    utilisateur = relationship("Utilisateur", back_populates="plannings")
-    machine = relationship("Machine", back_populates="plannings_employes")
+    affectation_auto = Column(Boolean, default=True, comment="Affectation IA automatique ?")
+
+    utilisateur = relationship("Utilisateur", back_populates="plannings", lazy="joined")
+    machine = relationship("Machine", back_populates="plannings_employes", lazy="joined")
+
+    __table_args__ = (
+        CheckConstraint("statut IN ('Prévu', 'En cours', 'Terminé')", name="check_statut_planning"),
+    )
+
+    def __repr__(self):
+        return f"<PlanningEmploye utilisateur={self.utilisateur_id} statut={self.statut} tâche={self.tache[:20]}...>"
