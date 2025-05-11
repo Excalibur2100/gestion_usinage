@@ -38,6 +38,8 @@ class GammeProduction(Base):
     machine = relationship("Machine", back_populates="gammes", lazy="joined")
     materiau = relationship("Materiau", back_populates="gammes")
     plannings = relationship("PlanningMachine", back_populates="gamme", cascade="all, delete-orphan", lazy="joined")
+    tracabilites = relationship("Tracabilite", back_populates="gamme", cascade="all, delete-orphan")
+
 
 
     __table_args__ = (
@@ -46,3 +48,4 @@ class GammeProduction(Base):
 
     def __repr__(self):
         return f"<GammeProduction piece={self.piece_id} op={self.operation} t={self.temps_estime}h>"
+    

@@ -28,7 +28,7 @@ class Machine(Base):
     pointages = relationship("Pointage", back_populates="machine", cascade="all, delete-orphan")
     metrics = relationship("MetricsMachine", back_populates="machine", cascade="all, delete-orphan", lazy="joined")
     outils = relationship("Outil", secondary="machine_outil", back_populates="machines", lazy="joined")
-    postes = relationship("Poste", back_populates="machine", cascade="all, delete", lazy="joined")
+    utilisateurs = relationship("Utilisateur", secondary="machine_utilisateur", back_populates="machines", lazy="joined")
     utilisateurs = relationship("Utilisateur", back_populates="machine", cascade="all, delete", lazy="joined")
     non_conformites = relationship("NonConformite", back_populates="machine/materiau/outil/instrument", cascade="all, delete-orphan")
     materiaux = relationship("Materiau", back_populates="machine", cascade="all, delete-orphan")
@@ -41,6 +41,12 @@ class Machine(Base):
     postes = relationship("Poste", back_populates="machine", cascade="all, delete-orphan")
     productions = relationship("Production", back_populates="machine", cascade="all, delete-orphan")
     statistiques = relationship("StatProduction", back_populates="machine", cascade="all, delete-orphan", lazy="joined")
+    analyses = relationship("AnalyseFichier", back_populates="machine", cascade="all, delete-orphan")
+    pieces = relationship("Piece", back_populates="machine", cascade="all, delete-orphan")
+    pieces_ouvertes = relationship("PieceOuverte", back_populates="machine", cascade="all, delete-orphan")
+    pieces_faites = relationship("PieceFait", back_populates="machine", cascade="all, delete-orphan")
+    pieces_fermetures = relationship("PieceFermeture", back_populates="machine", cascade="all, delete-orphan")
+ 
 
 
 

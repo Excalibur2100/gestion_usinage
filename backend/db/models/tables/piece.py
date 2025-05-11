@@ -24,6 +24,10 @@ class Piece(Base):
     commandes = relationship("CommandePiece", back_populates="piece", cascade="all, delete-orphan", lazy="joined")
     productions = relationship("Production", back_populates="piece", cascade="all, delete-orphan")
     tracabilites = relationship("Tracabilite", back_populates="piece", cascade="all, delete-orphan")
+    analyses = relationship("AnalyseFichier", back_populates="piece", cascade="all, delete-orphan")
+    piece_ouvertes = relationship("PieceOuverte", back_populates="piece", cascade="all, delete-orphan")
+    piece_faites = relationship("PieceFait", back_populates="piece", cascade="all, delete-orphan")
+    piece_fermetures = relationship("PieceFermeture", back_populates="piece", cascade="all, delete-orphan")
 
 
 

@@ -44,6 +44,8 @@ class Tracabilite(Base):
     piece = relationship("Piece", back_populates="tracabilites", lazy="joined")
     utilisateur = relationship("Utilisateur", back_populates="tracabilites", lazy="joined")
     gamme = relationship("GammeProduction", back_populates="tracabilites", lazy="joined")
+    gamme = relationship("GammeProduction", back_populates="tracabilites", lazy="joined")
+
 
     def __repr__(self):
         return f"<Tracabilite piece={self.piece_id} operation='{self.operation}' date={self.date_operation}>"
