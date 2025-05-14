@@ -6,7 +6,7 @@ from .gestion_acces import GestionAcces
 
 # ========================= FINANCES =========================
 from .finance import Finance
-from .gestion_filtrage import GestionFiltrage
+from .qualite.gestion_filtrage import GestionFiltrage
 
 # ========================= RESSOURCES HUMAINES =========================
 from .rh import RH
@@ -14,21 +14,21 @@ from .absence import Absence
 from .formation import Formation
 from .sanction import Sanction
 from .entretien import Entretien
-from .notationrh import NotationRH
-from .document_rh import DocumentRH
+from .rh.notation import NotationRH
+from .ged.document_rh import DocumentRH
 from .employe import Employe
 
 # ========================= CLIENTS ET FOURNISSEURS =========================
-from .clients import Client
-from .fournisseurs import Fournisseur
+from .crm.clients import Client
+from .achat.fournisseurs import Fournisseur
 from .evaluations_fournisseur import EvaluationFournisseur
 
 # ========================= DEVIS ET COMMANDES =========================
 from .devis import Devis
-from .commandes import Commande
+from .achat.commandes import Commande
 from .commande_pieces import CommandePiece
 from .factures import Facture
-from .ligne_factures import LigneFacture
+from .finance.ligne_factures import LigneFacture
 
 # ========================= PRODUCTION =========================
 from .piece import Piece
@@ -36,21 +36,21 @@ from .programme_piece import ProgrammePiece
 from .postprocesseur import PostProcesseur
 from .machine import Machine
 from .metrics_machines import MetricsMachine
-from .maintenance import Maintenance
+from .gmao.maintenance import Maintenance
 from .gammes_production import GammeProduction
-from .tracabilite import Tracabilite
+from .traceabilite.tracabilite import Tracabilite
 from .production import Production
 
 # ========================= STOCK =========================
 from .outils import Outil
-from .materiau import Materiau
-from .emplacement_stock import EmplacementStock
+from .stock.materiau import Materiau
+from .stock.emplacement_stock import EmplacementStock
 
 # ========================= PLANNING =========================
-from .planning_employe import PlanningEmploye
-from .planning_machine import PlanningMachine
-from .affectation_machine import AffectationMachine
-from .pointages import Pointage
+from .planning.planning_employe import PlanningEmploye
+from .planning.planning_machine import PlanningMachine
+from .planning.affectation_machine import AffectationMachine
+from .planning.pointages import Pointage
 
 # ========================= QHSE =========================
 from .instrument_controle import InstrumentControle
@@ -60,7 +60,7 @@ from .epi_utilisateur import EPIUtilisateur
 from .audit_qualite import AuditQualite
 from .non_conformites import NonConformite
 from .documents_qualite import DocumentQualite
-from .documents_reglementaires import DocumentsReglementaires
+from .ged.documents_reglementaires import DocumentsReglementaires
 
 # ========================= ANALYSE ET LOGS =========================
 from .analyse_fichiers import AnalyseFichier
@@ -70,7 +70,7 @@ from .ia_logs import IALogs
 from .robotique import Robotique
 from .controle_robot import ControleRobot
 from .surveillance_cameras import SurveillanceCamera
-from .QrCodeObjet import QrCodeObjet
+from .traceabilite.QrCodeObjet import QrCodeObjet
 
 # ========================= ASSOCIATIONS =========================
 from .liaison import machine_outil

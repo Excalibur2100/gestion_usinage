@@ -6,26 +6,26 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from controllers.utilisateur.utilisateur_controller import router as utilisateur_router
+from backend.controllers.securite.utilisateur_controller import router as utilisateur_router
 from controllers.rh.rh_controller import router as rh_router
-from controllers.client.client_controller import router as client_router
+from backend.controllers.crm.client_controller import router as client_router
 from controllers.fournisseur.fournisseur_controller import router as fournisseur_router
 from controllers.commande.commande_controller import router as commande_router
-from controllers.devis.devis_controller import router as devis_router
+from backend.controllers.finance.devis_controller import router as devis_router
 from controllers.piece.piece_controller import router as piece_router
-from controllers.machine.machine_controller import router as machine_router
+from backend.controllers.production.machine_controller import router as machine_router
 from controllers.outil.outil_controller import router as outil_router
 from controllers.materiau.materiau_controller import router as materiau_router
 from controllers.commandepiece.commande_piece_controller import router as commande_piece_router
-from controllers.programmepiece.programme_piece_controller import router as programme_router
-from controllers.gammeproduction.gamme_production_controller import router as gamme_router
+from backend.controllers.production.programme_piece_controller import router as programme_router
+from backend.controllers.production.gamme_production_controller import router as gamme_router
 from controllers.gestion_acces.gestion_acces_controllers import router as gestion_acces_router
-from controllers.planningemploye.planning_employe_controller import router as planning_employe_router
-from controllers.planningmachine.planning_machine_controller import router as planning_machine_router
+from backend.controllers.planning.planning_employe_controller import router as planning_employe_router
+from backend.controllers.planning.planning_machine_controller import router as planning_machine_router
 from controllers.gestion_filtrage.gestion_filtrage_controller import router as gestion_filtrage_router
-from controllers.pointage.pointage_controller import router as pointage_router
-from controllers.maintenance.maintenance_controller import router as maintenance_router
-from controllers.charges_machines.charges_machine_controller import router as charge_machine_router
+from backend.controllers.planning.pointage_controller import router as pointage_router
+from backend.controllers.gmao.maintenance_controller import router as maintenance_router
+from backend.controllers.production.charges_machine_controller import router as charge_machine_router
 from controllers.surveillancecamera.surveillance_camera_controller import router as surveillance_camera_router
 from controllers.controlerobot.controle_robot_controller import router as controle_robot_router
 from controllers.ia.assistant_ia_controller import router as assistant_ia_router
@@ -37,7 +37,7 @@ from controllers.analyse_fichier_controller.analyse_fichier_controller import ro
 from controllers.usinage_controller import router as usinage_router
 from controllers.securite.securite_controller import router as securite_router
 from controllers.ia.copilot_controller import router as copilot_router
-from controllers.formation.formation_controller import router as formation_router
+from backend.controllers.rh.formation_controller import router as formation_router
 from controllers.absence.absence_controller import router as absence_router
 from controllers.epi.epi_controller import router as epi_router
 from controllers.ordre_fabrication.ordre_fabrication_controller import router as of_router
@@ -61,7 +61,7 @@ app = FastAPI(
 )
 
 # Inclusion des routeurs
-app.include_router(utilisateur_router)
+app.include_r   outer(utilisateur_router)
 app.include_router(rh_router)
 app.include_router(client_router)
 app.include_router(fournisseur_router)

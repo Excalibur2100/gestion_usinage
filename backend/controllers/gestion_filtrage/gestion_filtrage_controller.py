@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from backend.db.schemas.gestion_filtrage_schemas.gestion_filtrage_schemas import GestionFiltrageCreate, GestionFiltrageRead
 from db.models.database import get_db
-from services.gestionfiltrage.gestionfiltrage_service import (
+from backend.services.qualite.gestionfiltrage_service import (
     creer_filtrage,
     get_tous_filtrages,
     get_filtrage_par_id,

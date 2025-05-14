@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.tables import RH
-from backend.db.schemas.rh_schemas.rh_schemas import RHCreate, RHUpdate
+from backend.db.schemas.rh.rh_schemas import RHCreate, RHUpdate
 from typing import List, Optional
 
 # ========== CRÉATION ==========
