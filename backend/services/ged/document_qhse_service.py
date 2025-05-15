@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from backend.db.models.tables.ged.document_rh import DocumentRH
+from backend.db.models.table.ged.document_rh import DocumentRH
 from backend.db.schemas.ged.documents_rh_schemas import DocumentRHCreate, DocumentRHUpdate
 from fastapi import HTTPException
 

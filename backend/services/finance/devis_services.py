@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.tables import Devis
+from db.models.table import Devis
 from backend.db.schemas.finance.devis_schemas import DevisCreate
 from typing import List, Optional
 from backend.db.schemas.finance.devis_schemas import DevisCreate, DevisUpdate

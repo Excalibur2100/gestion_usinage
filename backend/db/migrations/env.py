@@ -15,10 +15,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from db.models.base import Base
 import importlib
 import pkgutil
-import db.models.tables
+import db.models.table
 
 # Import dynamique de tous les fichiers de db.models.tables
-for _, module_name, _ in pkgutil.iter_modules(db.models.tables.__path__):
+for _, module_name, _ in pkgutil.iter_modules(db.models.table.__path__):
     importlib.import_module(f"db.models.tables.{module_name}")
 
 # Configuration Alembic

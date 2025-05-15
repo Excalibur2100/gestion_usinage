@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from backend.controllers.securite.utilisateur_controller import router as utilisateur_router
 from controllers.rh.rh_controller import router as rh_router
-from backend.controllers.crm.client_controller import router as client_router
+from backend.controllers.crm import client_controller
 from controllers.fournisseur.fournisseur_controller import router as fournisseur_router
 from controllers.commande.commande_controller import router as commande_router
 from backend.controllers.finance.devis_controller import router as devis_router
@@ -41,6 +41,7 @@ from backend.controllers.rh.formation_controller import router as formation_rout
 from controllers.absence.absence_controller import router as absence_router
 from controllers.epi.epi_controller import router as epi_router
 from controllers.ordre_fabrication.ordre_fabrication_controller import router as of_router
+from backend.controllers.systeme import version_systeme_controller
 
 
 
@@ -61,9 +62,9 @@ app = FastAPI(
 )
 
 # Inclusion des routeurs
-app.include_r   outer(utilisateur_router)
+app.include_router(utilisateur_router)
 app.include_router(rh_router)
-app.include_router(client_router)
+app.include_router(client_controller.router)
 app.include_router(fournisseur_router)
 app.include_router(commande_router)
 app.include_router(devis_router)
@@ -96,6 +97,7 @@ app.include_router(formation_router)
 app.include_router(absence_router)
 app.include_router(epi_router)
 app.include_router(of_router)
+app.include_router(version_systeme_controller.router)
 
 
 

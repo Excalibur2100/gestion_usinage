@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.tables import Commande
+from db.models.table import Commande
 from db.schemas.schemas import CommandeCreate
 from typing import List, Optional
 

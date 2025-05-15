@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Session
+ from sqlalchemy.orm import Session
 from typing import List, Optional
-from db.models.tables import PlanningMachine
+from db.models.table import PlanningMachine
 from db.schemas.schemas import PlanningMachineCreate
 
 # ========== CRÉATION ==========

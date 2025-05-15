@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.tables.analyse_fichiers import AnalyseFichier
+from backend.db.models.table.ia.analyse_fichiers import AnalyseFichier
 from backend.db.schemas.analyse_fichier_schemas.analyse_fichier_schemas import AnalyseFichierCreate, AnalyseFichierUpdate
 from fastapi import HTTPException
 

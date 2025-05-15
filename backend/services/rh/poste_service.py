@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from backend.db.models.tables.rh.poste import Poste
+from backend.db.models.table.rh.poste import Poste
 from backend.db.schemas.rh.poste_schemas import PosteCreate, PosteUpdate
 
 def create_poste(db: Session, data: PosteCreate) -> Poste:

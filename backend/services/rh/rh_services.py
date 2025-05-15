@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.tables import RH
+from db.models.table import RH
 from backend.db.schemas.rh.rh_schemas import RHCreate, RHUpdate
 from typing import List, Optional
 

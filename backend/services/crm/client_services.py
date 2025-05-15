@@ -1,58 +1,36 @@
 from sqlalchemy.orm import Session
-from backend.db.models.tables.crm.clients import Client
-from backend.db.schemas.crm.client_schemas import ClientCreate, ClientRead
-from typing import List, Optional
-from fastapi import HTTPException
+from db.models.tables.crm.client import Client
+from db.schemas.crm.client_schemas import ClientCreate, ClientUpdate
 
-# ========== CRÉATION ==========
-def creer_client(db: Session, client_data: ClientCreate) -> Client:
-    """
-    Crée un nouveau client.
-    """
+def create_client(db: Session, client_data: ClientCreate):
     client = Client(**client_data.dict())
     db.add(client)
     db.commit()
     db.refresh(client)
     return client
 
-# ========== TOUS ==========
-def get_tous_clients(db: Session) -> List[Client]:
-    """
-    Récupère tous les clients.
-    """
-    return db.query(Client).all()
+def get_all_clients(db: Session):
+    return db.query(Client).order_by(Client.nom_entreprise).all()
 
-# ========== PAR ID ==========
-def get_client_par_id(db: Session, client_id: int) -> Optional[Client]:
-    """
-    Récupère un client par son ID.
-    """
-    client = db.query(Client).filter(Client.id == client_id).first()
-    if not client:
-        raise HTTPException(status_code=404, detail="Client non trouvé")
-    return client
+def get_client_by_id(db: Session, client_id: int):
+    return db.query(Client).filter(Client.id == client_id).first()
 
-# ========== MISE À JOUR ==========
-def update_client(db: Session, client_id: int, client_data: ClientCreate) -> Optional[Client]:
-    """
-    Met à jour un client existant.
-    """
-    client = db.query(Client).filter(Client.id == client_id).first()
+def update_client(db: Session, client_id: int, update_data: ClientUpdate):
+    client = get_client_by_id(db, client_id)
     if not client:
-        raise HTTPException(status_code=404, detail="Client non trouvé")
-    for key, value in client_data.dict().items():
-        setattr(client, key, value)
+        return None
+    for field, value in update_data.dict(exclude_unset=True).items():
+        setattr(client, field, value)
     db.commit()
     db.refresh(client)
     return client
 
-# ========== SUPPRESSION ==========
-def supprimer_client(db: Session, client_id: int) -> None:
-    """
-    Supprime un client par son ID.
-    """
-    client = db.query(Client).filter(Client.id == client_id).first()
-    if not client:
-        raise HTTPException(status_code=404, detail="Client non trouvé")
-    db.delete(client)
-    db.commit()
+def delete_client(db: Session, client_id: int):
+    client = get_client_by_id(db, client_id)
+    if client:
+        db.delete(client)
+        db.commit()
+    return client
+
+def search_clients(db: Session, query: str):
+    return db.query(Client).filter(Client.nom_entreprise.ilike(f"%{query}%")).all()

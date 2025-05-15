@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from backend.db.models.tables.planning.affectation_machine import AffectationMachine
+from backend.db.models.table.planning.affectation_machine import AffectationMachine
 from backend.db.schemas.planning.affectation_machine_schemas import AffectationMachineCreate, AffectationMachineUpdate
 from fastapi import HTTPException
 

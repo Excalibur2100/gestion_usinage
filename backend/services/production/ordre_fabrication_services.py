@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from backend.db.models.tables.production.ordre_fabrication import OrdreFabrication
+from backend.db.models.table.production.ordre_fabrication import OrdreFabrication
 from db.schemas.ordre_fabrication_schemas.ordre_fabrication_schemas import OFCreate, OFUpdate
 
 def create_of(db: Session, data: OFCreate) -> OrdreFabrication:

@@ -1,52 +1,48 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.models.database import get_db
-from backend.services.crm.client_services import (
-    creer_client,
-    get_tous_clients,
-    get_client_par_id,
-    update_client,
-    supprimer_client,
+from db.config.database import get_db
+from db.schemas.crm.client_schemas import (
+    ClientCreate, ClientRead, ClientUpdate, ClientDelete, ClientList,
+    ClientSearch, ClientSearchResults
 )
-from backend.db.schemas.crm.client_schemas import ClientCreate, ClientRead
-
-router = APIRouter(
-    prefix="/clients",
-    tags=["Clients"]
+from db.services.crm.client_service import (
+    create_client, get_all_clients, get_client_by_id,
+    update_client, delete_client, search_clients
 )
 
-@router.get("/", response_model=list[ClientRead])
-def list_clients(db: Session = Depends(get_db)):
-    """
-    Endpoint pour récupérer tous les clients.
-    """
-    return get_tous_clients(db)
-
-@router.get("/{client_id}", response_model=ClientRead)
-def get_client(client_id: int, db: Session = Depends(get_db)):
-    """
-    Endpoint pour récupérer un client spécifique par son ID.
-    """
-    return get_client_par_id(db, client_id)
+router = APIRouter(prefix="/clients", tags=["Client"])
 
 @router.post("/", response_model=ClientRead)
-def create_client(client: ClientCreate, db: Session = Depends(get_db)):
-    """
-    Endpoint pour créer un nouveau client.
-    """
-    return creer_client(db, client)
+def create(client: ClientCreate, db: Session = Depends(get_db)):
+    return create_client(db, client)
+
+@router.get("/", response_model=ClientList)
+def list_clients(db: Session = Depends(get_db)):
+    clients = get_all_clients(db)
+    return {"clients": clients}
+
+@router.get("/{client_id}", response_model=ClientRead)
+def read_client(client_id: int, db: Session = Depends(get_db)):
+    client = get_client_by_id(db, client_id)
+    if not client:
+        raise HTTPException(status_code=404, detail="Client non trouvé")
+    return client
 
 @router.put("/{client_id}", response_model=ClientRead)
-def update_client_endpoint(client_id: int, client: ClientCreate, db: Session = Depends(get_db)):
-    """
-    Endpoint pour mettre à jour un client existant.
-    """
-    return update_client(db, client_id, client)
+def update(client_id: int, client_data: ClientUpdate, db: Session = Depends(get_db)):
+    updated = update_client(db, client_id, client_data)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Client non trouvé")
+    return updated
 
-@router.delete("/{client_id}")
-def delete_client(client_id: int, db: Session = Depends(get_db)):
-    """
-    Endpoint pour supprimer un client par son ID.
-    """
-    supprimer_client(db, client_id)
-    return {"message": f"Client avec l'ID {client_id} supprimé avec succès"}
+@router.delete("/{client_id}", response_model=ClientDelete)
+def delete(client_id: int, db: Session = Depends(get_db)):
+    deleted = delete_client(db, client_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Client non trouvé")
+    return {"id": client_id}
+
+@router.post("/search", response_model=ClientSearchResults)
+def search(search: ClientSearch, db: Session = Depends(get_db)):
+    results = search_clients(db, search.query)
+    return {"results": results}

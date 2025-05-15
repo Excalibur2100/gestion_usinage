@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from db.models.tables import MetricsMachine, Machine
+from db.models.table import MetricsMachine, Machine
 
 def add_metric(db: Session, machine_id: int, temperature: float, vibration: float):
     # Vérifie si la machine existe

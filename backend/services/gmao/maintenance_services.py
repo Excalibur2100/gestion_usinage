@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.db.models.tables.gmao.maintenance import Maintenance
+from backend.db.models.table.gmao.maintenance import Maintenance
 from backend.db.schemas.gmao.maintenance_schemas import MaintenanceCreate, MaintenanceUpdate
 
 def creer_maintenance(db: Session, maintenance_data: MaintenanceCreate) -> Maintenance:

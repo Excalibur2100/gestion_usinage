@@ -1,6 +1,6 @@
- from sqlalchemy.orm import Session
+   from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.db.models.tables.qualite.gestion_filtrage import GestionFiltrage
+from backend.db.models.table.qualite.gestion_filtrage import GestionFiltrage
 from backend.db.schemas.gestion_filtrage_schemas.gestion_filtrage_schemas import GestionFiltrageCreate
 
 def creer_filtrage(db: Session, data: GestionFiltrageCreate) -> GestionFiltrage:
