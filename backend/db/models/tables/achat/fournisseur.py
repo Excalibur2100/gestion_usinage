@@ -25,6 +25,10 @@ class Fournisseur(Base):
     evaluations = relationship("EvaluationFournisseur", back_populates="fournisseur", cascade="all, delete-orphan", lazy="joined")
     finances = relationship("Finance", back_populates="fournisseur", cascade="all, delete-orphan", lazy="joined")
     filtres = relationship("GestionFiltrage", back_populates="commande", cascade="all, delete-orphan")
+    factures = relationship("FactureFournisseur", back_populates="fournisseur", cascade="all, delete-orphan")
+    avoirs = relationship("AvoirFournisseur", back_populates="fournisseur", cascade="all, delete-orphan")
+
+
 
 
     def __repr__(self):

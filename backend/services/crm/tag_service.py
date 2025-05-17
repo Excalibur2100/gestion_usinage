@@ -1,0 +1,1 @@
+# tag_service.py - contenu à injecter complet

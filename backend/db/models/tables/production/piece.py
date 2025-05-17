@@ -28,6 +28,8 @@ class Piece(Base):
     piece_ouvertes = relationship("PieceOuverte", back_populates="piece", cascade="all, delete-orphan")
     piece_faites = relationship("PieceFait", back_populates="piece", cascade="all, delete-orphan")
     piece_fermetures = relationship("PieceFermeture", back_populates="piece", cascade="all, delete-orphan")
+    commandes = relationship("CommandePiece", back_populates="piece", cascade="all, delete-orphan", lazy="joined")
+
 
 
 
@@ -37,3 +39,4 @@ class Piece(Base):
 
     def get_programmes(self):
         return [programme.nom for programme in self.programmes]
+

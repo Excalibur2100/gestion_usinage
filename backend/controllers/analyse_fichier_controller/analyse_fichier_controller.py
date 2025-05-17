@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db.models.database import get_db
-from services.analyse_fichiers.analyse_fichiers_services import (
+from backend.services.ia.analyse_fichiers_services import (
     get_analyses_fichiers,
     get_analyse_fichier_by_id,
     create_analyse_fichier,
     update_analyse_fichier,
     delete_analyse_fichier,
 )
-from backend.db.schemas.analyse_fichier_schemas.analyse_fichier_schemas import AnalyseFichierCreate, AnalyseFichierUpdate
+from backend.db.schemas.ia.analyse_fichier_schemas import AnalyseFichierCreate, AnalyseFichierUpdate
 
 router = APIRouter(prefix="/analyse_fichier", tags=["Analyse Fichier"])
 

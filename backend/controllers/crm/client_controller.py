@@ -5,7 +5,7 @@ from db.schemas.crm.client_schemas import (
     ClientCreate, ClientRead, ClientUpdate, ClientDelete, ClientList,
     ClientSearch, ClientSearchResults
 )
-from db.services.crm.client_service import (
+from services.crm.client_services import (
     create_client, get_all_clients, get_client_by_id,
     update_client, delete_client, search_clients
 )
