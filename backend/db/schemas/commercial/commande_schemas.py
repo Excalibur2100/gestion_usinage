@@ -5,7 +5,7 @@ from datetime import datetime
 class CommandeBase(BaseModel):
     code_commande: str
     statut: Optional[str] = "en cours"
-    date_validation: Optional[datetime] = None
+    date_validation: Optional[datetime]
     commentaire: Optional[str]
     client_id: int
     devis_id: Optional[int]

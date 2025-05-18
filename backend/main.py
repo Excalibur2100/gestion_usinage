@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from backend.controllers.securite.utilisateur_controller import router as utilisateur_router
 from backend.controllers.rh.rh_controller import router as rh_router
 from backend.controllers.crm.client_controller import router as client_router
-from backend.controllers.fournisseur.fournisseur_controller import router as fournisseur_router
+from backend.controllers.achat.fournisseur_controller import router as fournisseur_router
 from backend.controllers.achat.commande_fournisseur_controller import router as commande_fournisseur_router
 from backend.controllers.finance.devis_controller import router as devis_router
 from backend.controllers.piece.piece_controller import router as piece_router
@@ -39,7 +39,7 @@ from backend.controllers.controlerobot.controle_robot_controller import router a
 from backend.controllers.ia.assistant_ia_controller import router as assistant_ia_router
 from backend.controllers.codegen_controller import router as codegen_router
 from backend.controllers.ia.metrics_controller import router as metrics_router
-from backend.controllers.analyse_fichier_controller.analyse_fichier_controller import router as analyse_fichier_router
+from backend.controllers.ia.analyse_fichier_controller import router as analyse_fichier_router
 from backend.controllers.production.usinage_controller import router as usinage_router
 from backend.controllers.securite.securite_controller import router as securite_router
 from backend.controllers.ia.copilot_controller import router as copilot_router
@@ -61,13 +61,13 @@ from backend.controllers.achat.facture_fournisseur_controller import router as f
 from backend.controllers.achat.avoir_fournisseur_controller import router as avoir_fournisseur_router
 from backend.controllers.achat.evaluation_fournisseur_controller import router as evaluation_fournisseur_router
 from backend.controllers.achat.reception_controller import router as reception_router
-
-
-
-
-
-
-
+from backend.controllers.achat.type_fournisseur_controller import router as type_fournisseur_router
+from backend.controllers.achat.suivi_reglement_fournisseur_controller import router as suivi_reglement_fournisseur_router
+from backend.controllers.commercial.action_commerciale_controller import router as action_commerciale_router
+from backend.controllers.commercial.campagne_commerciale_controller import router as campagne_commerciale_router
+from backend.controllers.commercial.commande_piece_controller import router as commande_piece_router
+from backend.controllers.commercial.condition_paiement_controller import router as condition_paiement_router
+from backend.controllers.commercial.historique_prix_client_controller import router as historique_prix_client_router
 
 
 
@@ -100,7 +100,6 @@ app.include_router(piece_router)
 app.include_router(machine_router)
 app.include_router(outil_router)
 app.include_router(materiau_router)
-app.include_router(commande_piece_router)
 app.include_router(programme_router)
 app.include_router(gamme_router)
 app.include_router(gestion_acces_router)
@@ -137,6 +136,15 @@ app.include_router(facture_fournisseur_router)
 app.include_router(avoir_fournisseur_router)
 app.include_router(evaluation_fournisseur_router)
 app.include_router(reception_router)
+app.include_router(type_fournisseur_router)
+app.include_router(suivi_reglement_fournisseur_router)
+app.include_router(action_commerciale_router)
+app.include_router(campagne_commerciale_router)
+app.include_router(commande_piece_router)
+app.include_router(condition_paiement_router)
+app.include_router(historique_prix_client_router)
+
+
 
 
 

@@ -4,6 +4,7 @@ from db.models.base import Base
 
 class CommandePiece(Base):
     __tablename__ = "commande_pieces"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True)
 
@@ -20,21 +21,12 @@ class CommandePiece(Base):
         comment="ID de la pièce associée",
     )
 
-    designation = Column(String(100), nullable=False, comment="Nom ou désignation visible même si pièce supprimée")
+    designation = Column(String(100), nullable=False, comment="Nom ou désignation même si pièce supprimée")
     quantite = Column(Integer, nullable=False, comment="Quantité commandée")
     prix_unitaire = Column(Float, nullable=False, comment="Prix unitaire de la pièce")
 
-    commande = relationship("Commande", back_populates="pieces", lazy="joined")
-    piece = relationship("Piece", back_populates="commandes", lazy="joined")
+    commande = relationship("Commande", back_populates="pieces")
+    piece = relationship("Piece", back_populates="commandes")
 
     def __repr__(self):
         return f"<CommandePiece commande={self.commande_id} x{self.quantite} - {self.designation}>"
-#             comment="Vérification du statut de la commande",
-#         ),
-#         CheckConstraint(
-#             "date_validation >= date_creation",
-#             name="check_date_validation",
-#             comment="La date de validation doit être postérieure à la date de création",
-#         ),
-#     )
-#

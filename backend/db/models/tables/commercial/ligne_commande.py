@@ -22,6 +22,7 @@ class LigneCommande(Base):
     # Relations
     commande = relationship("Commande", back_populates="lignes")
     produit = relationship("Produit", back_populates="lignes_commande")
+    
 
     def __repr__(self):
         return f"<LigneCommande(designation='{self.designation}', qty={self.quantite})>"

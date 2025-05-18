@@ -27,6 +27,8 @@ class FactureFournisseur(Base):
     commande = relationship("CommandeFournisseur", back_populates="facture")
     fournisseur = relationship("Fournisseur", back_populates="factures")
     avoirs = relationship("AvoirFournisseur", back_populates="facture", cascade="all, delete-orphan")
+    reglements = relationship("SuiviReglementFournisseur", back_populates="facture", cascade="all, delete-orphan")
+
 
     def __repr__(self):
         return f"<FactureFournisseur(num={self.numero_facture}, montant_ttc={self.montant_ttc})>"
