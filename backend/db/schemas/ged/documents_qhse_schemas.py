@@ -1,28 +1,34 @@
 from pydantic import BaseModel
+from typing import Optional, List
 from datetime import datetime
-from typing import Optional
 
-class DocumentsQHSEBase(BaseModel):
-    nom: str
-    type_document: str
+class DocumentQHSEBase(BaseModel):
+    entreprise_id: int
+    utilisateur_id: Optional[int]
+    titre: str
+    categorie: str
     chemin_fichier: str
-    date_creation: Optional[datetime] = None
-    description: Optional[str] = None
-    actif: Optional[str] = "actif"
-
-class DocumentsQHSECreate(DocumentsQHSEBase):
-    pass
-
-class DocumentsQHSEUpdate(BaseModel):
-    nom: Optional[str] = None
-    type_document: Optional[str] = None
-    chemin_fichier: Optional[str] = None
-    date_creation: Optional[datetime] = None
-    description: Optional[str] = None
-    actif: Optional[str] = None
-
-class DocumentsQHSEResponse(DocumentsQHSEBase):
-    id: int
+    description: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class DocumentQHSECreate(DocumentQHSEBase):
+    pass
+
+class DocumentQHSEUpdate(BaseModel):
+    titre: Optional[str]
+    categorie: Optional[str]
+    chemin_fichier: Optional[str]
+    description: Optional[str]
+
+class DocumentQHSERead(DocumentQHSEBase):
+    id: int
+    date_ajout: datetime
+
+class DocumentQHSESearch(BaseModel):
+    entreprise_id: Optional[int]
+    categorie: Optional[str]
+
+class DocumentQHSESearchResults(BaseModel):
+    results: List[DocumentQHSERead]

@@ -1,38 +1,39 @@
-from fastapi import APIRouter
-from typing import List
-from services.ia.assistant_ia_service import (
-    AssistantIAService,
-    IAModuleCheckResult,
-    IAModule,
-)
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from db.models.database import get_db
+from db.schemas.ia.assistant_ia_schemas import *
+from services.ia.assistant_ia_service import *
 
-router = APIRouter(prefix="/assistant-ia", tags=["Assistant IA"])
-ia_service = AssistantIAService()
+router = APIRouter(prefix="/assistants-ia", tags=["Assistant IA"])
 
-@router.post("/analyse-modules", response_model=IAModuleCheckResult)
-def analyse_modules_endpoint(modules: List[IAModule]):
-    return ia_service.analyse_modules(modules)
+@router.post("/", response_model=AssistantIARead)
+def create(data: AssistantIACreate, db: Session = Depends(get_db)):
+    return create_session(db, data)
 
-@router.post("/generer-manquants", response_model=List[str])
-def generer_fichiers_manquants():
-    return ia_service.generer_composants_manquants()
+@router.get("/", response_model=List[AssistantIARead])
+def read_all(db: Session = Depends(get_db)):
+    return get_all_sessions(db)
 
-@router.post("/organiser-composants", response_model=List[str])
-def organiser_fichiers_et_modules():
-    try:
-        chemins_crees = ia_service.organiser_et_structurer_modules()
-        return chemins_crees
-    except Exception as e:
-        return [f"Erreur pendant l'organisation : {str(e)}"]
+@router.get("/{id_}", response_model=AssistantIARead)
+def read(id_: int, db: Session = Depends(get_db)):
+    obj = get_session(db, id_)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Session non trouvée")
+    return obj
 
-@router.get("/historique-generation", response_model=List[dict])
-def afficher_historique_generation():
-    return ia_service.lire_historique_generation()
+@router.put("/{id_}", response_model=AssistantIARead)
+def update(id_: int, data: AssistantIAUpdate, db: Session = Depends(get_db)):
+    obj = update_session(db, id_, data)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Session non trouvée")
+    return obj
 
-@router.get("/suggestions-modules", response_model=str)
-def suggestions_modules():
-    return ia_service.suggestion_markdown_modules()
+@router.delete("/{id_}")
+def delete(id_: int, db: Session = Depends(get_db)):
+    if not delete_session(db, id_):
+        raise HTTPException(status_code=404, detail="Session non trouvée")
+    return {"ok": True}
 
-@router.get("/ping-modules", response_model=List[str])
-def ping_modules():
-    return ia_service.ping_modules()
+@router.post("/search", response_model=AssistantIASearchResults)
+def search(data: AssistantIASearch, db: Session = Depends(get_db)):
+    return {"results": search_sessions(db, data)}

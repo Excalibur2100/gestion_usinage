@@ -3,16 +3,16 @@ from typing import Optional, List
 from datetime import datetime
 
 class FactureFournisseurBase(BaseModel):
-    numero_facture: str
-    date_facture: Optional[datetime] = None
-    date_echeance: Optional[datetime]
-    montant_ht: float
-    montant_tva: float
-    montant_ttc: float
-    statut: Optional[str] = "non payé"
-    commentaire: Optional[str]
-    commande_id: Optional[int]
+    code_facture: str
+    commande_fournisseur_id: Optional[int]
     fournisseur_id: int
+    entreprise_id: Optional[int]
+    date_facture: Optional[datetime]
+    date_echeance: Optional[datetime]
+    total_ht: float
+    total_ttc: float
+    statut: Optional[str] = "en attente"
+    commentaire: Optional[str]
 
     class Config:
         from_attributes = True
@@ -21,23 +21,24 @@ class FactureFournisseurCreate(FactureFournisseurBase):
     pass
 
 class FactureFournisseurUpdate(BaseModel):
-    numero_facture: Optional[str]
+    code_facture: Optional[str]
+    commande_fournisseur_id: Optional[int]
+    fournisseur_id: Optional[int]
+    entreprise_id: Optional[int]
     date_facture: Optional[datetime]
     date_echeance: Optional[datetime]
-    montant_ht: Optional[float]
-    montant_tva: Optional[float]
-    montant_ttc: Optional[float]
+    total_ht: Optional[float]
+    total_ttc: Optional[float]
     statut: Optional[str]
     commentaire: Optional[str]
-    commande_id: Optional[int]
-    fournisseur_id: Optional[int]
 
 class FactureFournisseurRead(FactureFournisseurBase):
     id: int
 
 class FactureFournisseurSearch(BaseModel):
-    numero_facture: Optional[str]
+    code_facture: Optional[str]
     fournisseur_id: Optional[int]
+    entreprise_id: Optional[int]
     statut: Optional[str]
 
 class FactureFournisseurSearchResults(BaseModel):

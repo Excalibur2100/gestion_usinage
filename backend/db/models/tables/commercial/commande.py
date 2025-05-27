@@ -23,6 +23,9 @@ class Commande(Base):
     client_id = Column(Integer, ForeignKey("clients.id", ondelete="CASCADE"), nullable=False)
     devis_id = Column(Integer, ForeignKey("devis.id", ondelete="SET NULL"), nullable=True)
     condition_paiement_id = Column(Integer, ForeignKey("conditions_paiement.id", ondelete="SET NULL"), nullable=True)
+    entreprise_id = Column(Integer, ForeignKey("entreprises.id", ondelete="SET NULL"), nullable=True)
+
+
 
 
 
@@ -34,6 +37,7 @@ class Commande(Base):
     pieces = relationship("CommandePiece", back_populates="commande", cascade="all, delete-orphan")
     facture = relationship("Facture", back_populates="commande", uselist=False)
     condition_paiement = relationship("ConditionPaiement", back_populates="commandes")
+    entreprise = relationship("Entreprise", back_populates="commandes_client")
 
     def __repr__(self):
         return f"<Commande(code={self.code_commande}, client={self.client_id})>"

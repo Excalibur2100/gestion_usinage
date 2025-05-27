@@ -1,59 +1,45 @@
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from db.models.tables.crm.fichier_client import FichierClient
-from schemas.crm.fichier_client_schemas import FichierClientCreate, FichierClientUpdate
+from db.schemas.crm.fichier_client_schemas import *
 
-def create_fichier(db: Session, data: FichierClientCreate):
-    fichier = FichierClient(**data.dict())
-    db.add(fichier)
+def create_fichier(db: Session, data: FichierClientCreate) -> FichierClient:
+    obj = FichierClient(**data.dict())
+    db.add(obj)
     db.commit()
-    db.refresh(fichier)
-    return fichier
+    db.refresh(obj)
+    return obj
 
-def get_all_fichiers(db: Session):
-    return db.query(FichierClient).order_by(FichierClient.date_upload.desc()).all()
+def get_fichier(db: Session, id_: int) -> Optional[FichierClient]:
+    return db.query(FichierClient).filter(FichierClient.id == id_).first()
 
-def get_fichiers_by_client(db: Session, client_id: int):
-    return db.query(FichierClient).filter(FichierClient.client_id == client_id).all()
+def get_all_fichiers(db: Session) -> List[FichierClient]:
+    return db.query(FichierClient).all()
 
-def get_fichier_by_id(db: Session, fichier_id: int):
-    return db.query(FichierClient).filter(FichierClient.id == fichier_id).first()
-
-def update_fichier(db: Session, fichier_id: int, update_data: FichierClientUpdate):
-    fichier = get_fichier_by_id(db, fichier_id)
-    if not fichier:
+def update_fichier(db: Session, id_: int, data: FichierClientUpdate) -> Optional[FichierClient]:
+    obj = get_fichier(db, id_)
+    if not obj:
         return None
-    for field, value in update_data.dict(exclude_unset=True).items():
-        setattr(fichier, field, value)
+    for key, value in data.dict(exclude_unset=True).items():
+        setattr(obj, key, value)
     db.commit()
-    db.refresh(fichier)
-    return fichier
+    db.refresh(obj)
+    return obj
 
-def delete_fichier(db: Session, fichier_id: int):
-    fichier = get_fichier_by_id(db, fichier_id)
-    if fichier:
-        db.delete(fichier)
+def delete_fichier(db: Session, id_: int) -> bool:
+    obj = get_fichier(db, id_)
+    if obj:
+        db.delete(obj)
         db.commit()
-    return fichier
+        return True
+    return False
 
-def search_fichiers(db: Session, query: str, page: int = 1, per_page: int = 10):
-    offset = (page - 1) * per_page
-    return (
-        db.query(FichierClient)
-        .filter(FichierClient.nom_fichier.ilike(f"%{query}%"))
-        .order_by(FichierClient.date_upload.desc())
-        .offset(offset)
-        .limit(per_page)
-        .all()
-    )
-def count_fichiers(db: Session, query: str):
-    return (
-        db.query(FichierClient)
-        .filter(FichierClient.nom_fichier.ilike(f"%{query}%"))
-        .count()
-    )
-def count_fichiers_by_client(db: Session, client_id: int):
-    return (
-        db.query(FichierClient)
-        .filter(FichierClient.client_id == client_id)
-        .count()
-    )
+def search_fichiers(db: Session, search_data: FichierClientSearch) -> List[FichierClient]:
+    query = db.query(FichierClient)
+    if search_data.client_id:
+        query = query.filter(FichierClient.client_id == search_data.client_id)
+    if search_data.type_fichier:
+        query = query.filter(FichierClient.type_fichier == search_data.type_fichier)
+    if search_data.nom_fichier:
+        query = query.filter(FichierClient.nom_fichier.ilike(f"%{search_data.nom_fichier}%"))
+    return query.all()

@@ -1,28 +1,35 @@
 from pydantic import BaseModel
+from typing import Optional, List
 from datetime import datetime
-from typing import Optional
 
 class DocumentRHBase(BaseModel):
-    nom: str
+    employe_id: int
+    utilisateur_id: Optional[int]
+    entreprise_id: Optional[int]
     type_document: str
+    titre: str
+    description: Optional[str]
     chemin_fichier: str
-    date_creation: Optional[datetime] = None
-    description: Optional[str] = None
-    actif: Optional[str] = "actif"
+
+    class Config:
+        from_attributes = True
 
 class DocumentRHCreate(DocumentRHBase):
     pass
 
 class DocumentRHUpdate(BaseModel):
-    nom: Optional[str] = None
-    type_document: Optional[str] = None
-    chemin_fichier: Optional[str] = None
-    date_creation: Optional[datetime] = None
-    description: Optional[str] = None
-    actif: Optional[str] = None
+    type_document: Optional[str]
+    titre: Optional[str]
+    description: Optional[str]
+    chemin_fichier: Optional[str]
 
-class DocumentRHResponse(DocumentRHBase):
+class DocumentRHRead(DocumentRHBase):
     id: int
+    date_creation: datetime
 
-    class Config:
-        orm_mode = True
+class DocumentRHSearch(BaseModel):
+    employe_id: Optional[int]
+    type_document: Optional[str]
+
+class DocumentRHSearchResults(BaseModel):
+    results: List[DocumentRHRead]

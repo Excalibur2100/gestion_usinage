@@ -1,5 +1,5 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from pydantic import BaseModel, EmailStr
+from typing import Optional, List
 from datetime import datetime
 
 class EntrepriseBase(BaseModel):
@@ -23,8 +23,20 @@ class EntrepriseBase(BaseModel):
 class EntrepriseCreate(EntrepriseBase):
     pass
 
-class EntrepriseUpdate(EntrepriseBase):
-    pass
+class EntrepriseUpdate(BaseModel):
+    nom: Optional[str]
+    raison_sociale: Optional[str]
+    type_entreprise: Optional[str]
+    siret: Optional[str]
+    tva_intra: Optional[str]
+    email: Optional[EmailStr]
+    telephone: Optional[str]
+    adresse: Optional[str]
+    pays: Optional[str]
+    site_web: Optional[str]
+    logo: Optional[str]
+    description: Optional[str]
+    actif: Optional[bool]
 
 class EntrepriseRead(EntrepriseBase):
     id: int
@@ -39,4 +51,4 @@ class EntrepriseSearch(BaseModel):
     pays: Optional[str]
 
 class EntrepriseSearchResults(BaseModel):
-    results: list[EntrepriseRead]
+    results: List[EntrepriseRead]

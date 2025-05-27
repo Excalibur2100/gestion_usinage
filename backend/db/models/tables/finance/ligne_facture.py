@@ -1,31 +1,24 @@
-from sqlalchemy import Column, Integer, Float, Text, ForeignKey, CheckConstraint
+from sqlalchemy import Column, Integer, Float, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from db.models.base import Base
 
 class LigneFacture(Base):
-    __tablename__ = "ligne_factures"
+    __tablename__ = "lignes_facture"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True)
 
-    facture_id = Column(
-        Integer,
-        ForeignKey("factures.id", ondelete="CASCADE"),
-        nullable=False,
-        comment="Facture concernée"
-    )
+    facture_id = Column(Integer, ForeignKey("factures.id", ondelete="CASCADE"), nullable=False)
+    piece_id = Column(Integer, ForeignKey("pieces.id", ondelete="SET NULL"), nullable=True)
 
-    description = Column(Text, nullable=False, comment="Détail de la ligne")
-    quantite = Column(Integer, nullable=False, comment="Quantité")
-    prix_unitaire = Column(Float, nullable=False, comment="Prix unitaire")
-    total = Column(Float, nullable=False, comment="Montant total de cette ligne")
+    designation = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    quantite = Column(Integer, nullable=False, default=1)
+    prix_unitaire = Column(Float, nullable=False)
+    remise = Column(Float, default=0.0)
 
-    facture = relationship("Facture", back_populates="lignes", lazy="joined")
-
-    __table_args__ = (
-        CheckConstraint("quantite >= 0", name="check_quantite_ligne"),
-        CheckConstraint("prix_unitaire >= 0", name="check_prix_ligne"),
-        CheckConstraint("total >= 0", name="check_total_ligne"),
-    )
+    facture = relationship("Facture", back_populates="lignes")
+    piece = relationship("Piece", back_populates="lignes_facture")
 
     def __repr__(self):
-        return f"<LigneFacture facture_id={self.facture_id} total={self.total}>"
+        return f"<LigneFacture(facture={self.facture_id}, designation='{self.designation}')>"

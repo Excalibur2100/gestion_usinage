@@ -1,55 +1,47 @@
-from sqlalchemy.orm import Session
-from db.models.table import Devis
-from backend.db.schemas.finance.devis_schemas import DevisCreate
 from typing import List, Optional
-from backend.db.schemas.finance.devis_schemas import DevisCreate, DevisUpdate
+from sqlalchemy.orm import Session
+from db.models.tables.finance.devis import Devis
+from db.schemas.finance.devis_schemas import *
 
-
-
-# ========== CRÉATION ==========
-def creer_devis(db: Session, devis_data: DevisCreate) -> Devis:
-    devis = Devis(**devis_data.dict())
-    db.add(devis)
+def create_devis(db: Session, data: DevisCreate) -> Devis:
+    obj = Devis(**data.dict())
+    db.add(obj)
     db.commit()
-    db.refresh(devis)
-    return devis
+    db.refresh(obj)
+    return obj
 
-# ========== TOUS ==========
-def get_tous_devis(db: Session) -> List[Devis]:
+def get_devis(db: Session, id_: int) -> Optional[Devis]:
+    return db.query(Devis).filter(Devis.id == id_).first()
+
+def get_all_devis(db: Session) -> List[Devis]:
     return db.query(Devis).all()
 
-# ========== PAR ID ==========
-def get_devis_par_id(db: Session, devis_id: int) -> Optional[Devis]:
-    return db.query(Devis).filter(Devis.id == devis_id).first()
+def update_devis(db: Session, id_: int, data: DevisUpdate) -> Optional[Devis]:
+    obj = get_devis(db, id_)
+    if not obj:
+        return None
+    for key, value in data.dict(exclude_unset=True).items():
+        setattr(obj, key, value)
+    db.commit()
+    db.refresh(obj)
+    return obj
 
-# ========== MISE À JOUR ==========
-def update_devis(db: Session, devis_id: int, devis_data: DevisCreate) -> Optional[Devis]:
-    devis = db.query(Devis).filter(Devis.id == devis_id).first()
-    if devis:
-        for key, value in devis_data.dict().items():
-            setattr(devis, key, value)
+def delete_devis(db: Session, id_: int) -> bool:
+    obj = get_devis(db, id_)
+    if obj:
+        db.delete(obj)
         db.commit()
-        db.refresh(devis)
-    return devis
+        return True
+    return False
 
-# ========== SUPPRESSION ==========
-def supprimer_devis(db: Session, devis_id: int) -> None:
-    devis = db.query(Devis).filter(Devis.id == devis_id).first()
-    if devis:
-        db.delete(devis)
-        db.commit()
-
-
-
-# ========== MISE À JOUR ==========
-def update_devis(db: Session, devis_id: int, devis_data: DevisUpdate) -> Optional[Devis]:
-    """
-    Met à jour un devis existant.
-    """
-    devis = db.query(Devis).filter(Devis.id == devis_id).first()
-    if devis:
-        for key, value in devis_data.dict(exclude_unset=True).items():
-            setattr(devis, key, value)
-        db.commit()
-        db.refresh(devis)
-    return devis
+def search_devis(db: Session, search_data: DevisSearch) -> List[Devis]:
+    query = db.query(Devis)
+    if search_data.code_devis:
+        query = query.filter(Devis.code_devis.ilike(f"%{search_data.code_devis}%"))
+    if search_data.client_id:
+        query = query.filter(Devis.client_id == search_data.client_id)
+    if search_data.entreprise_id:
+        query = query.filter(Devis.entreprise_id == search_data.entreprise_id)
+    if search_data.statut:
+        query = query.filter(Devis.statut == search_data.statut)
+    return query.all()

@@ -25,6 +25,8 @@ class Outil(Base):
     gammes = relationship("GammeProduction", back_populates="outil", cascade="all, delete-orphan", lazy="joined")
     non_conformites = relationship("NonConformite", back_populates="outil", cascade="all, delete-orphan", lazy="joined")
     machines = relationship("Machine", secondary="machine_outil", back_populates="outils", lazy="joined")
+    conditions_coupe = relationship("ConditionsCoupe", back_populates="outil", cascade="all, delete-orphan")
+    suggestions_ia = relationship("SuggestionOutil", back_populates="outil", cascade="all, delete-orphan")
 
     __table_args__ = (
         CheckConstraint("etat IN ('neuf', 'utilisé', 'cassé')", name="check_etat_outil"),

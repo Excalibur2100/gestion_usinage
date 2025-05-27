@@ -1,28 +1,28 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from db.models.base import Base
-from datetime import datetime
 
 class DocumentRH(Base):
     __tablename__ = "documents_rh"
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True)
 
-    utilisateur_id = Column(
-        Integer,
-        ForeignKey("utilisateurs.id", ondelete="CASCADE"),
-        nullable=False,
-        comment="Utilisateur concerné par ce document RH"
-    )
+    employe_id = Column(Integer, ForeignKey("employes.id", ondelete="CASCADE"), nullable=False)
+    utilisateur_id = Column(Integer, ForeignKey("utilisateurs.id", ondelete="SET NULL"), nullable=True)
+    entreprise_id = Column(Integer, ForeignKey("entreprises.id", ondelete="SET NULL"), nullable=True)
 
-    nom_document = Column(String(150), nullable=False, comment="Nom du document (ex : Contrat CDI)")
-    type_document = Column(String(100), nullable=False, comment="Type : Contrat, Certificat, Attestation...")
-    date_creation = Column(DateTime, default=datetime.utcnow, nullable=False, comment="Date d'ajout du document")
-    date_expiration = Column(DateTime, nullable=True, comment="Date d'expiration si applicable")
-    fichier = Column(String(255), nullable=True, comment="Chemin vers le fichier stocké ou URL")
-    commentaire = Column(Text, nullable=True, comment="Observations, contexte RH")
+    type_document = Column(String(100), nullable=False, comment="contrat, entretien, certificat…")
+    titre = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    chemin_fichier = Column(Text, nullable=False)
 
-    utilisateur = relationship("Utilisateur", back_populates="documents", lazy="joined")
+    date_creation = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    employe = relationship("Employe", back_populates="documents_rh")
+    utilisateur = relationship("Utilisateur", back_populates="documents_rh")
+    entreprise = relationship("Entreprise", back_populates="documents_rh")
 
     def __repr__(self):
-        return f"<DocumentRH {self.nom_document} utilisateur={self.utilisateur_id}>"
+        return f"<DocumentRH(employe={self.employe_id}, type='{self.type_document}')>"

@@ -1,30 +1,39 @@
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.models.tables.crm.adresse_client import AdresseClient
-from schemas.crm.adresse_client_schemas import AdresseClientCreate, AdresseClientUpdate
+from db.models.database import get_db
+from db.schemas.crm.adresse_client_schemas import *
+from services.crm.adresse_client_service import *
 
-def create_adresse(db: Session, data: AdresseClientCreate):
-    adresse = AdresseClient(**data.dict())
-    db.add(adresse)
-    db.commit()
-    db.refresh(adresse)
-    return adresse
+router = APIRouter(prefix="/adresses-client", tags=["Adresses Client"])
 
-def get_adresses_by_client(db: Session, client_id: int):
-    return db.query(AdresseClient).filter(AdresseClient.client_id == client_id).all()
+@router.post("/", response_model=AdresseClientRead)
+def create(data: AdresseClientCreate, db: Session = Depends(get_db)):
+    return create_adresse(db, data)
 
-def update_adresse(db: Session, adresse_id: int, update_data: AdresseClientUpdate):
-    adresse = db.query(AdresseClient).filter(AdresseClient.id == adresse_id).first()
-    if not adresse:
-        return None
-    for key, value in update_data.dict(exclude_unset=True).items():
-        setattr(adresse, key, value)
-    db.commit()
-    db.refresh(adresse)
-    return adresse
+@router.get("/", response_model=List[AdresseClientRead])
+def read_all(db: Session = Depends(get_db)):
+    return get_all_adresses(db)
 
-def delete_adresse(db: Session, adresse_id: int):
-    adresse = db.query(AdresseClient).filter(AdresseClient.id == adresse_id).first()
-    if adresse:
-        db.delete(adresse)
-        db.commit()
-    return adresse
+@router.get("/{id_}", response_model=AdresseClientRead)
+def read(id_: int, db: Session = Depends(get_db)):
+    obj = get_adresse(db, id_)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Adresse non trouvée")
+    return obj
+
+@router.put("/{id_}", response_model=AdresseClientRead)
+def update(id_: int, data: AdresseClientUpdate, db: Session = Depends(get_db)):
+    obj = update_adresse(db, id_, data)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Adresse non trouvée")
+    return obj
+
+@router.delete("/{id_}")
+def delete(id_: int, db: Session = Depends(get_db)):
+    if not delete_adresse(db, id_):
+        raise HTTPException(status_code=404, detail="Adresse non trouvée")
+    return {"ok": True}
+
+@router.post("/search", response_model=AdresseClientSearchResults)
+def search(data: AdresseClientSearch, db: Session = Depends(get_db)):
+    return {"results": search_adresses(db, data)}

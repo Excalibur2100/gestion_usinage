@@ -24,7 +24,7 @@ class Fournisseur(Base):
 
     # Relations
     type_fournisseur = relationship("TypeFournisseur", back_populates="fournisseurs")
-
+    factures_fournisseur = relationship("FactureFournisseur", back_populates="entreprise", cascade="all, delete-orphan")
     commandes = relationship("CommandeFournisseur", back_populates="fournisseur", cascade="all, delete-orphan")
     factures = relationship("FactureFournisseur", back_populates="fournisseur", cascade="all, delete-orphan")
     avoirs = relationship("AvoirFournisseur", back_populates="fournisseur", cascade="all, delete-orphan")

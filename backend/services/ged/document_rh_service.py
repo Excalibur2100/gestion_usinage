@@ -1,48 +1,43 @@
+from typing import List, Optional
 from sqlalchemy.orm import Session
-from db.models.tables.documents_qhse import DocumentsQHSE
-from backend.db.schemas.ged.documents_qhse_schemas import DocumentsQHSECreate, DocumentsQHSEUpdate
-from fastapi import HTTPException
+from db.models.tables.ged.document_rh import DocumentRH
+from db.schemas.ged.documents_rh_schemas import *
 
-def get_documents_qhse(db: Session, skip: int = 0, limit: int = 10):
-    """
-    Récupère une liste paginée des documents QHSE.
-    """
-    return db.query(DocumentsQHSE).offset(skip).limit(limit).all()
-
-def get_document_qhse_by_id(db: Session, document_id: int):
-    """
-    Récupère un document QHSE par son ID.
-    """
-    document = db.query(DocumentsQHSE).filter(DocumentsQHSE.id == document_id).first()
-    if not document:
-        raise HTTPException(status_code=404, detail="Document QHSE non trouvé")
-    return document
-
-def create_document_qhse(db: Session, document_data: DocumentsQHSECreate):
-    """
-    Crée un nouveau document QHSE.
-    """
-    document = DocumentsQHSE(**document_data.dict())
-    db.add(document)
+def create_document(db: Session, data: DocumentRHCreate) -> DocumentRH:
+    obj = DocumentRH(**data.dict())
+    db.add(obj)
     db.commit()
-    db.refresh(document)
-    return document
+    db.refresh(obj)
+    return obj
 
-def update_document_qhse(db: Session, document_id: int, document_data: DocumentsQHSEUpdate):
-    """
-    Met à jour un document QHSE existant.
-    """
-    document = get_document_qhse_by_id(db, document_id)
-    for key, value in document_data.dict(exclude_unset=True).items():
-        setattr(document, key, value)
-    db.commit()
-    db.refresh(document)
-    return document
+def get_document(db: Session, id_: int) -> Optional[DocumentRH]:
+    return db.query(DocumentRH).filter(DocumentRH.id == id_).first()
 
-def delete_document_qhse(db: Session, document_id: int):
-    """
-    Supprime un document QHSE par son ID.
-    """
-    document = get_document_qhse_by_id(db, document_id)
-    db.delete(document)
+def get_all_documents(db: Session) -> List[DocumentRH]:
+    return db.query(DocumentRH).all()
+
+def update_document(db: Session, id_: int, data: DocumentRHUpdate) -> Optional[DocumentRH]:
+    obj = get_document(db, id_)
+    if not obj:
+        return None
+    for key, value in data.dict(exclude_unset=True).items():
+        setattr(obj, key, value)
     db.commit()
+    db.refresh(obj)
+    return obj
+
+def delete_document(db: Session, id_: int) -> bool:
+    obj = get_document(db, id_)
+    if obj:
+        db.delete(obj)
+        db.commit()
+        return True
+    return False
+
+def search_documents(db: Session, search_data: DocumentRHSearch) -> List[DocumentRH]:
+    query = db.query(DocumentRH)
+    if search_data.employe_id:
+        query = query.filter(DocumentRH.employe_id == search_data.employe_id)
+    if search_data.type_document:
+        query = query.filter(DocumentRH.type_document == search_data.type_document)
+    return query.all()

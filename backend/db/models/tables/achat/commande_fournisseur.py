@@ -32,8 +32,8 @@ class CommandeFournisseur(Base):
     facture = relationship("FactureFournisseur", back_populates="commande", uselist=False)
     receptions = relationship("Reception", back_populates="commande", cascade="all, delete-orphan")
     evaluations = relationship("EvaluationFournisseur", back_populates="commande")
-    # TODO: à activer quand EvaluationFournisseur sera créé
-    # 
+    facture = relationship("FactureFournisseur", back_populates="commande_fournisseur", uselist=False)
+
 
     def __repr__(self):
         return f"<CommandeFournisseur(code={self.code_commande}, statut={self.statut})>"

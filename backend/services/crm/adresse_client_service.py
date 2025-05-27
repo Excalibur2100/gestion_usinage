@@ -1,32 +1,47 @@
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from db.models.tables.crm.adresse_client import AdresseClient
-from schemas.crm.adresse_client_schemas import AdresseClientCreate, AdresseClientUpdate
+from db.schemas.crm.adresse_client_schemas import *
 
-def create_adresse(db: Session, data: AdresseClientCreate):
-    adresse = AdresseClient(**data.dict())
-    db.add(adresse)
+def create_adresse(db: Session, data: AdresseClientCreate) -> AdresseClient:
+    obj = AdresseClient(**data.dict())
+    db.add(obj)
     db.commit()
-    db.refresh(adresse)
-    return adresse
+    db.refresh(obj)
+    return obj
 
-def get_adresses_by_client(db: Session, client_id: int):
-    return db.query(AdresseClient).filter(AdresseClient.client_id == client_id).all()
+def get_adresse(db: Session, id_: int) -> Optional[AdresseClient]:
+    return db.query(AdresseClient).filter(AdresseClient.id == id_).first()
 
-def update_adresse(db: Session, adresse_id: int, update_data: AdresseClientUpdate):
-    adresse = db.query(AdresseClient).filter(AdresseClient.id == adresse_id).first()
-    if not adresse:
+def get_all_adresses(db: Session) -> List[AdresseClient]:
+    return db.query(AdresseClient).all()
+
+def update_adresse(db: Session, id_: int, data: AdresseClientUpdate) -> Optional[AdresseClient]:
+    obj = get_adresse(db, id_)
+    if not obj:
         return None
-    for key, value in update_data.dict(exclude_unset=True).items():
-        setattr(adresse, key, value)
+    for key, value in data.dict(exclude_unset=True).items():
+        setattr(obj, key, value)
     db.commit()
-    db.refresh(adresse)
-    return adresse
+    db.refresh(obj)
+    return obj
 
-def delete_adresse(db: Session, adresse_id: int):
-    adresse = db.query(AdresseClient).filter(AdresseClient.id == adresse_id).first()
-    if adresse:
-        db.delete(adresse)
+def delete_adresse(db: Session, id_: int) -> bool:
+    obj = get_adresse(db, id_)
+    if obj:
+        db.delete(obj)
         db.commit()
-    return adresse
-def get_adresse_by_id(db: Session, adresse_id: int):
-    return db.query(AdresseClient).filter(AdresseClient.id == adresse_id).first()
+        return True
+    return False
+
+def search_adresses(db: Session, search_data: AdresseClientSearch) -> List[AdresseClient]:
+    query = db.query(AdresseClient)
+    if search_data.client_id:
+        query = query.filter(AdresseClient.client_id == search_data.client_id)
+    if search_data.type_adresse:
+        query = query.filter(AdresseClient.type_adresse.ilike(f"%{search_data.type_adresse}%"))
+    if search_data.ville:
+        query = query.filter(AdresseClient.ville.ilike(f"%{search_data.ville}%"))
+    if search_data.principale is not None:
+        query = query.filter(AdresseClient.principale == search_data.principale)
+    return query.all()

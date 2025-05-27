@@ -1,17 +1,11 @@
-from pydantic import BaseModel
-from datetime import datetime
-from typing import Optional
+from sqlalchemy import Column, Integer, String, DateTime, Text
+from sqlalchemy.sql import func
+from db.models.base import Base
 
-class VersionSystemeBase(BaseModel):
-    version: str
-    description: Optional[str] = None
+class VersionSysteme(Base):
+    __tablename__ = "version_systeme"
 
-class VersionSystemeCreate(VersionSystemeBase):
-    pass
-
-class VersionSystemeRead(VersionSystemeBase):
-    id: int
-    date_appliquee: datetime
-
-    class Config:
-        orm_mode = True
+    id = Column(Integer, primary_key=True, index=True)
+    version = Column(String(20), nullable=False, unique=True, comment="Numéro de version ex: 1.0.0")
+    description = Column(Text, nullable=True, comment="Résumé des changements")
+    date_appliquee = Column(DateTime(timezone=True), server_default=func.now(), comment="Date d'application")

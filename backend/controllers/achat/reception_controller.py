@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.database import get_db
+from db.models.database import get_db
 from db.schemas.achat.reception_schemas import *
-from db.services.achat.reception_service import *
+from services.achat.reception_service import *
 
 router = APIRouter(prefix="/receptions", tags=["Réceptions"])
 

@@ -1,48 +1,39 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.config.database import get_db
-from db.schemas.crm.client_schemas import (
-    ClientCreate, ClientRead, ClientUpdate, ClientDelete, ClientList,
-    ClientSearch, ClientSearchResults
-)
-from services.crm.client_services import (
-    create_client, get_all_clients, get_client_by_id,
-    update_client, delete_client, search_clients
-)
+from db.models.database import get_db
+from db.schemas.crm.client_schemas import *
+from backend.services.crm.client_service import *
 
-router = APIRouter(prefix="/clients", tags=["Client"])
+router = APIRouter(prefix="/clients", tags=["Clients"])
 
 @router.post("/", response_model=ClientRead)
-def create(client: ClientCreate, db: Session = Depends(get_db)):
-    return create_client(db, client)
+def create(data: ClientCreate, db: Session = Depends(get_db)):
+    return create_client(db, data)
 
-@router.get("/", response_model=ClientList)
-def list_clients(db: Session = Depends(get_db)):
-    clients = get_all_clients(db)
-    return {"clients": clients}
+@router.get("/", response_model=List[ClientRead])
+def read_all(db: Session = Depends(get_db)):
+    return get_all_clients(db)
 
 @router.get("/{client_id}", response_model=ClientRead)
-def read_client(client_id: int, db: Session = Depends(get_db)):
-    client = get_client_by_id(db, client_id)
-    if not client:
+def read(client_id: int, db: Session = Depends(get_db)):
+    obj = get_client(db, client_id)
+    if not obj:
         raise HTTPException(status_code=404, detail="Client non trouvé")
-    return client
+    return obj
 
 @router.put("/{client_id}", response_model=ClientRead)
-def update(client_id: int, client_data: ClientUpdate, db: Session = Depends(get_db)):
-    updated = update_client(db, client_id, client_data)
-    if not updated:
+def update(client_id: int, data: ClientUpdate, db: Session = Depends(get_db)):
+    obj = update_client(db, client_id, data)
+    if not obj:
         raise HTTPException(status_code=404, detail="Client non trouvé")
-    return updated
+    return obj
 
-@router.delete("/{client_id}", response_model=ClientDelete)
+@router.delete("/{client_id}")
 def delete(client_id: int, db: Session = Depends(get_db)):
-    deleted = delete_client(db, client_id)
-    if not deleted:
+    if not delete_client(db, client_id):
         raise HTTPException(status_code=404, detail="Client non trouvé")
-    return {"id": client_id}
+    return {"ok": True}
 
 @router.post("/search", response_model=ClientSearchResults)
-def search(search: ClientSearch, db: Session = Depends(get_db)):
-    results = search_clients(db, search.query)
-    return {"results": results}
+def search(data: ClientSearch, db: Session = Depends(get_db)):
+    return {"results": search_clients(db, data)}

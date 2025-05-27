@@ -46,6 +46,8 @@ class Machine(Base):
     pieces_ouvertes = relationship("PieceOuverte", back_populates="machine", cascade="all, delete-orphan")
     pieces_faites = relationship("PieceFait", back_populates="machine", cascade="all, delete-orphan")
     pieces_fermetures = relationship("PieceFermeture", back_populates="machine", cascade="all, delete-orphan")
+    optimisations_ai = relationship("OptimisationProductionAI", back_populates="machine", cascade="all, delete-orphan")
+    predictions_ia = relationship("PredictionMaintenanceAI", back_populates="machine", cascade="all, delete-orphan")
  
 
 

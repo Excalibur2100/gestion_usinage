@@ -1,45 +1,39 @@
-from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from db.models.tables.achat.facture_fournisseur import FactureFournisseur
+from db.models.database import get_db
 from db.schemas.achat.facture_fournisseur_schemas import *
+from services.achat.facture_fournisseur_service import *
 
-def create_facture(db: Session, data: FactureFournisseurCreate) -> FactureFournisseur:
-    obj = FactureFournisseur(**data.dict())
-    db.add(obj)
-    db.commit()
-    db.refresh(obj)
-    return obj
+router = APIRouter(prefix="/factures-fournisseur", tags=["Factures Fournisseur"])
 
-def get_facture(db: Session, facture_id: int) -> Optional[FactureFournisseur]:
-    return db.query(FactureFournisseur).filter(FactureFournisseur.id == facture_id).first()
+@router.post("/", response_model=FactureFournisseurRead)
+def create(data: FactureFournisseurCreate, db: Session = Depends(get_db)):
+    return create_facture_fournisseur(db, data)
 
-def get_all_factures(db: Session) -> List[FactureFournisseur]:
-    return db.query(FactureFournisseur).all()
+@router.get("/", response_model=List[FactureFournisseurRead])
+def read_all(db: Session = Depends(get_db)):
+    return get_all_factures_fournisseur(db)
 
-def update_facture(db: Session, facture_id: int, data: FactureFournisseurUpdate) -> Optional[FactureFournisseur]:
-    obj = get_facture(db, facture_id)
+@router.get("/{id_}", response_model=FactureFournisseurRead)
+def read(id_: int, db: Session = Depends(get_db)):
+    obj = get_facture_fournisseur(db, id_)
     if not obj:
-        return None
-    for key, value in data.dict(exclude_unset=True).items():
-        setattr(obj, key, value)
-    db.commit()
-    db.refresh(obj)
+        raise HTTPException(status_code=404, detail="Facture fournisseur non trouvée")
     return obj
 
-def delete_facture(db: Session, facture_id: int) -> bool:
-    obj = get_facture(db, facture_id)
-    if obj:
-        db.delete(obj)
-        db.commit()
-        return True
-    return False
+@router.put("/{id_}", response_model=FactureFournisseurRead)
+def update(id_: int, data: FactureFournisseurUpdate, db: Session = Depends(get_db)):
+    obj = update_facture_fournisseur(db, id_, data)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Facture fournisseur non trouvée")
+    return obj
 
-def search_factures(db: Session, search_data: FactureFournisseurSearch) -> List[FactureFournisseur]:
-    query = db.query(FactureFournisseur)
-    if search_data.numero_facture:
-        query = query.filter(FactureFournisseur.numero_facture.ilike(f"%{search_data.numero_facture}%"))
-    if search_data.fournisseur_id:
-        query = query.filter(FactureFournisseur.fournisseur_id == search_data.fournisseur_id)
-    if search_data.statut:
-        query = query.filter(FactureFournisseur.statut == search_data.statut)
-    return query.all()
+@router.delete("/{id_}")
+def delete(id_: int, db: Session = Depends(get_db)):
+    if not delete_facture_fournisseur(db, id_):
+        raise HTTPException(status_code=404, detail="Facture fournisseur non trouvée")
+    return {"ok": True}
+
+@router.post("/search", response_model=FactureFournisseurSearchResults)
+def search(data: FactureFournisseurSearch, db: Session = Depends(get_db)):
+    return {"results": search_factures_fournisseur(db, data)}

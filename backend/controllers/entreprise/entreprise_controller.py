@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from db.models.database import get_db
+from db.schemas.entreprise.entreprise_schemas import *
 from services.entreprise.entreprise_service import *
-from backend.db.schemas.entreprise.entreprise_schemas import *
-from backend.db.models.database import get_db
-
 
 router = APIRouter(prefix="/entreprises", tags=["Entreprises"])
 
@@ -11,27 +10,27 @@ router = APIRouter(prefix="/entreprises", tags=["Entreprises"])
 def create(data: EntrepriseCreate, db: Session = Depends(get_db)):
     return create_entreprise(db, data)
 
-@router.get("/", response_model=list[EntrepriseRead])
+@router.get("/", response_model=List[EntrepriseRead])
 def read_all(db: Session = Depends(get_db)):
     return get_all_entreprises(db)
 
-@router.get("/{entreprise_id}", response_model=EntrepriseRead)
-def read(entreprise_id: int, db: Session = Depends(get_db)):
-    entreprise = get_entreprise(db, entreprise_id)
+@router.get("/{id_}", response_model=EntrepriseRead)
+def read(id_: int, db: Session = Depends(get_db)):
+    entreprise = get_entreprise(db, id_)
     if not entreprise:
         raise HTTPException(status_code=404, detail="Entreprise non trouvée")
     return entreprise
 
-@router.put("/{entreprise_id}", response_model=EntrepriseRead)
-def update(entreprise_id: int, data: EntrepriseUpdate, db: Session = Depends(get_db)):
-    entreprise = update_entreprise(db, entreprise_id, data)
+@router.put("/{id_}", response_model=EntrepriseRead)
+def update(id_: int, data: EntrepriseUpdate, db: Session = Depends(get_db)):
+    entreprise = update_entreprise(db, id_, data)
     if not entreprise:
         raise HTTPException(status_code=404, detail="Entreprise non trouvée")
     return entreprise
 
-@router.delete("/{entreprise_id}")
-def delete(entreprise_id: int, db: Session = Depends(get_db)):
-    if not delete_entreprise(db, entreprise_id):
+@router.delete("/{id_}")
+def delete(id_: int, db: Session = Depends(get_db)):
+    if not delete_entreprise(db, id_):
         raise HTTPException(status_code=404, detail="Entreprise non trouvée")
     return {"ok": True}
 
