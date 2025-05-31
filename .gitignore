@@ -1,3 +1,23 @@
-venv/
-config.env
-node_modules
+# Env Python
+.venv/
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS / logs
+.DS_Store
+*.log
+*.zone.identifier
+
+# Alembic / build
+alembic/
+*.egg-info/
+build/
+dist/
+
+# Cache pip
+pip-wheel-metadata/
+.cache/
