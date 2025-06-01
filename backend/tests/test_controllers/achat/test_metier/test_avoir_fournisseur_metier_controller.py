@@ -1,3 +1,5 @@
+# backend/tests/test_metier/achat/test_avoir_fournisseur_metier_controller.py
+
 import pytest
 from fastapi.testclient import TestClient
 from main import app
@@ -11,10 +13,16 @@ def test_api_calcul_montant_ttc():
     assert float(response.json()) == 120.0
 
 
-def test_api_detect_type():
-    response = client.get("/api/v1/metier/avoirs-fournisseur/detect-type", params={"reference": "RET-001", "motif": "retour de marchandise"})
+@pytest.mark.parametrize("reference,motif,expected_type", [
+    ("RET-001", "retour produit", "retour_marchandise"),
+    ("REM-2024", "remise exceptionnelle", "remise_commerciale"),
+    ("GESTE-01", "geste client", "geste_commercial"),
+    ("XXXX", "autre", "autre"),
+])
+def test_api_detect_type(reference, motif, expected_type):
+    response = client.get("/api/v1/metier/avoirs-fournisseur/detect-type", params={"reference": reference, "motif": motif})
     assert response.status_code == 200
-    assert response.json() in ["retour_marchandise", "remise_commerciale", "geste_commercial", "autre"]
+    assert response.json() == expected_type
 
 
 def test_api_suggere_avoir_auto():

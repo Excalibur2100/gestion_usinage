@@ -40,7 +40,6 @@ def test_get_avoir_detail():
     }
     creation = client.post("/api/v1/avoirs-fournisseur/", json=payload)
     avoir_id = creation.json()["id"]
-
     response = client.get(f"/api/v1/avoirs-fournisseur/{avoir_id}")
     assert response.status_code == 200
     assert response.json()["reference"] == "AVF-DETAIL-001"
@@ -58,7 +57,6 @@ def test_update_avoir():
     }
     creation = client.post("/api/v1/avoirs-fournisseur/", json=payload)
     avoir_id = creation.json()["id"]
-
     update_data = {
         "commentaire": "Modifié via test",
         "motif": "Mis à jour"
@@ -80,7 +78,6 @@ def test_delete_avoir():
     }
     creation = client.post("/api/v1/avoirs-fournisseur/", json=payload)
     avoir_id = creation.json()["id"]
-
     response = client.delete(f"/api/v1/avoirs-fournisseur/{avoir_id}")
     assert response.status_code == 200
     assert "supprimé" in response.json()["detail"]
@@ -101,8 +98,8 @@ def test_search_avoirs():
     search = {"reference": "AVF-SEARCH"}
     response = client.post("/api/v1/avoirs-fournisseur/search", json=search)
     assert response.status_code == 200
-    assert response.json()["total"] >= 1
     assert isinstance(response.json()["results"], list)
+    assert response.json()["total"] >= 1
 
 
 def test_export_csv():
@@ -123,14 +120,13 @@ def test_bulk_create_and_delete():
                 "taux_tva": 20.0,
                 "montant_ttc": 12.0 * i,
                 "motif": "Bulk test"
-            }
-            for i in range(1, 4)
+            } for i in range(1, 4)
         ]
     }
     create_response = client.post("/api/v1/avoirs-fournisseur/bulk", json=payload)
     assert create_response.status_code == 200
-    ids = [a["id"] for a in create_response.json()]
 
+    ids = [a["id"] for a in create_response.json()]
     delete_payload = {"ids": ids}
     delete_response = client.request(
         method="DELETE",

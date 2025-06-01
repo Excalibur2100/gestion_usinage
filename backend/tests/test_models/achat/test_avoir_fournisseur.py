@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker, clear_mappers
+
 from backend.db.models.base import Base
 from backend.db.models.tables.achat.avoir_fournisseur import AvoirFournisseur, StatutAvoir
 
@@ -34,7 +35,7 @@ def test_create_valid_avoir(db):
 
     assert avoir.id is not None
     assert float(getattr(avoir, "montant_ttc")) == 120.0
-    assert str(avoir.statut) == str(StatutAvoir.brouillon)
+    assert str(avoir.statut) == StatutAvoir.brouillon.value
 
 
 def test_enum_statut(db):
@@ -53,7 +54,7 @@ def test_enum_statut(db):
     db.commit()
     db.refresh(avoir)
 
-    assert str(avoir.statut) == str(StatutAvoir.valide)
+    assert str(avoir.statut) == StatutAvoir.valide.value
 
 
 def test_constraint_montant_ht_negative(db):

@@ -1,11 +1,13 @@
 import pytest
 from datetime import datetime
+
 from backend.core.ia.avoir_fournisseur_engine import (
     calculer_montant_ttc,
     detecter_type_avoir,
     statut_automatique_si_montant,
     suggere_avoir_auto
 )
+
 from backend.db.schemas.achat.avoir_fournisseur_schemas import StatutAvoir, TypeAvoir
 
 
@@ -38,6 +40,7 @@ def test_suggere_avoir_auto():
         montant_ht=100.0,
         taux_tva=20.0
     )
+
     assert avoir.reference == "AVF-AUTO-001"
     assert avoir.fournisseur_id == 1
     assert avoir.montant_ht == 100.0

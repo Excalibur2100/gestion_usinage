@@ -12,9 +12,8 @@ from backend.db.schemas.achat.commande_fournisseur_schemas import (
     CommandeFournisseurSearch,
     CommandeFournisseurSearchResults,
     CommandeFournisseurBulkCreate,
-    CommandeFournisseurBulkDelete,
+    CommandeFournisseurBulkDelete
 )
-
 from backend.services.achat import commande_fournisseur_service
 
 router = APIRouter(
@@ -22,23 +21,19 @@ router = APIRouter(
     tags=["Commandes Fournisseur"]
 )
 
-
 @router.post("/", response_model=CommandeFournisseurRead, summary="Créer une commande fournisseur")
 def create_commande(commande: CommandeFournisseurCreate, db: Session = Depends(get_db)):
     """
-    Crée une commande fournisseur sans logique métier.  
-    Utilise uniquement le service CRUD standard.
+    Crée une commande fournisseur.
     """
-    return commande_fournisseur_service.create_commande(db, commande)
+    return commande_fournisseur_service.creer_commande(db, commande)
 
-
-@router.get("/", response_model=List[CommandeFournisseurRead], summary="Lister toutes les commandes fournisseur")
+@router.get("/", response_model=List[CommandeFournisseurRead], summary="Lister les commandes fournisseur")
 def list_commandes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """
     Liste paginée des commandes fournisseur.
     """
-    return commande_fournisseur_service.search_commandes(db, CommandeFournisseurSearch(), skip, limit)
-
+    return commande_fournisseur_service.list_commandes(db, skip, limit)
 
 @router.get("/{commande_id}", response_model=CommandeFournisseurDetail, summary="Récupérer une commande fournisseur")
 def get_commande(commande_id: int, db: Session = Depends(get_db)):
@@ -47,51 +42,49 @@ def get_commande(commande_id: int, db: Session = Depends(get_db)):
     """
     return commande_fournisseur_service.get_commande(db, commande_id)
 
-
 @router.put("/{commande_id}", response_model=CommandeFournisseurRead, summary="Mettre à jour une commande fournisseur")
 def update_commande(commande_id: int, update: CommandeFournisseurUpdate, db: Session = Depends(get_db)):
     """
-    Met à jour une commande fournisseur (aucune règle de statut ici).
+    Met à jour une commande fournisseur si son statut est brouillon.
     """
     return commande_fournisseur_service.update_commande(db, commande_id, update)
-
 
 @router.delete("/{commande_id}", response_model=dict, summary="Supprimer une commande fournisseur")
 def delete_commande(commande_id: int, db: Session = Depends(get_db)):
     """
-    Supprime une commande fournisseur (peu importe son statut).
+    Supprime une commande fournisseur si son statut est brouillon.
     """
     return commande_fournisseur_service.delete_commande(db, commande_id)
-
 
 @router.post("/search", response_model=CommandeFournisseurSearchResults, summary="Rechercher des commandes fournisseur")
 def search_commandes(filters: CommandeFournisseurSearch, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """
-    Recherche filtrée des commandes fournisseur par numéro, statut, dates, etc.
+    Recherche multi-critères sur les commandes fournisseur.
     """
-    results = commande_fournisseur_service.search_commandes(db, filters)
+    results = commande_fournisseur_service.search_commandes(db, filters, skip, limit)
     return {"total": len(results), "results": results}
 
-
-@router.get("/export", response_class=StreamingResponse, summary="Exporter les commandes fournisseur en CSV")
+@router.get("/export", response_class=StreamingResponse, summary="Exporter les commandes fournisseur (CSV)")
 def export_csv(db: Session = Depends(get_db)):
     """
-    Exporte toutes les commandes fournisseur au format CSV.
+    Exporte toutes les commandes fournisseur en CSV.
     """
-    return commande_fournisseur_service.export_commandes_csv(db)
+    buffer = commande_fournisseur_service.export_commandes_csv(db)
+    return StreamingResponse(buffer, media_type="text/csv", headers={
+        "Content-Disposition": "attachment; filename=commandes_fournisseur.csv"
+    })
 
-
-@router.post("/bulk", response_model=List[CommandeFournisseurRead], summary="Création en masse de commandes")
+@router.post("/bulk", response_model=List[CommandeFournisseurRead], summary="Création en lot de commandes")
 def bulk_create(payload: CommandeFournisseurBulkCreate, db: Session = Depends(get_db)):
     """
-    Crée plusieurs commandes en une seule requête.
+    Crée plusieurs commandes fournisseur en une seule requête.
     """
     return commande_fournisseur_service.bulk_create_commandes(db, payload.commandes)
 
-
-@router.delete("/bulk", response_model=dict, summary="Suppression en masse de commandes")
+@router.delete("/bulk", response_model=dict, summary="Suppression en lot de commandes")
 def bulk_delete(payload: CommandeFournisseurBulkDelete, db: Session = Depends(get_db)):
     """
-    Supprime plusieurs commandes en une seule requête.
+    Supprime plusieurs commandes fournisseur si leur statut est brouillon.
     """
-    return commande_fournisseur_service.bulk_delete_commandes(db, payload.ids)
+    count = commande_fournisseur_service.bulk_delete_commandes(db, payload.ids)
+    return {"detail": f"{count} commandes supprimées."}

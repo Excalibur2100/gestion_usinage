@@ -29,7 +29,7 @@ def create_commande(commande: CommandeFournisseurCreate, db: Session = Depends(g
     Crée une commande fournisseur sans logique métier.  
     Utilise uniquement le service CRUD standard.
     """
-    return commande_fournisseur_service.create_commande(db, commande)
+    return commande_fournisseur_service.creer_commande(db, commande)
 
 
 @router.get("/", response_model=List[CommandeFournisseurRead], summary="Lister toutes les commandes fournisseur")

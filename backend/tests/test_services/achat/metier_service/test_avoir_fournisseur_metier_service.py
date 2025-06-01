@@ -21,6 +21,10 @@ def test_calcul_montant_ttc():
     assert ttc == 120.0
 
 
+def test_calcul_montant_ttc_zero_tva():
+    assert calcul_montant_ttc(100.0, 0.0) == 100.0
+
+
 def test_statut_automatique_si_montant():
     assert statut_automatique_si_montant(100.0) == StatutAvoir.brouillon
     assert statut_automatique_si_montant(0.0) == StatutAvoir.annule

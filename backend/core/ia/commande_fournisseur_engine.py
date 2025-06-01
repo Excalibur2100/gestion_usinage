@@ -1,41 +1,61 @@
+# backend/core/ia/commande_fournisseur_engine.py
+
 from datetime import datetime
+from typing import List, Tuple
+
 from backend.db.schemas.achat.commande_fournisseur_schemas import (
     CommandeFournisseurCreate,
     StatutCommandeFournisseur
 )
 
-def generer_numero_commande(annee: int, compteur: int) -> str:
+
+def calcul_montant_total_commande(lignes: List[Tuple[str, int, float]]) -> float:
     """
-    Génère un numéro de commande unique basé sur l'année et un compteur.
+    Calcule le montant total à partir des lignes de commande :
+    (reference_produit, quantité, prix_unitaire)
     """
-    return f"CMD-{annee}-{str(compteur).zfill(4)}"
+    return round(sum(qte * prix for _, qte, prix in lignes), 2)
 
 
-def detecter_retard(date_prevue: datetime, date_effective: datetime) -> bool:
+def generer_numero_commande_auto() -> str:
     """
-    Retourne True si la livraison est en retard.
+    Génère un numéro de commande automatique unique.
     """
-    return date_effective > date_prevue
+    return f"CMD-AUTO-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
 
 
-def statut_auto(depuis_livraison: bool, livree: bool) -> StatutCommandeFournisseur:
+def statut_auto_commande(date_livraison_prevue: datetime) -> StatutCommandeFournisseur:
     """
-    Détermine le statut automatiquement selon livraison.
+    Déduit un statut automatique en fonction de la date prévue de livraison.
     """
-    if livree:
+    if date_livraison_prevue < datetime.utcnow():
         return StatutCommandeFournisseur.livree
-    if depuis_livraison:
-        return StatutCommandeFournisseur.partiellement_livree
     return StatutCommandeFournisseur.envoyee
 
 
-def suggere_commande_auto(fournisseur_id: int, montant: float) -> CommandeFournisseurCreate:
+def suggestion_commande_auto(
+    fournisseur_id: int,
+    lignes: List[Tuple[str, int, float]],
+    cree_par: int
+) -> CommandeFournisseurCreate:
     """
-    Simule la génération automatique d'une commande.
+    Génère automatiquement une commande fournisseur basée sur une suggestion simple.
     """
+    montant = calcul_montant_total_commande(lignes)
+    date_commande = datetime.utcnow()
+    date_livraison = date_commande.replace(day=date_commande.day + 3)
+    statut = statut_auto_commande(date_livraison)
+
     return CommandeFournisseurCreate(
-        numero_commande="AUTO-CMD-0001",
+        numero_commande=generer_numero_commande_auto(),
+        reference_externe=None,
         fournisseur_id=fournisseur_id,
+        utilisateur_id=None,
+        commentaire="Commande générée automatiquement",
+        statut=statut,
+        date_commande=date_commande,
+        date_livraison_prevue=date_livraison,
         montant_total=montant,
-        devise="EUR"
+        devise="EUR",
+        cree_par=cree_par
     )

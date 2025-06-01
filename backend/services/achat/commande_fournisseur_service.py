@@ -1,39 +1,47 @@
-from typing import List
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from sqlalchemy import select, and_, func
-from starlette.responses import StreamingResponse
-import io
+from typing import List
 import csv
+import io
 
-from backend.db.models.tables.achat.commande_fournisseur import CommandeFournisseur
+from backend.db.models.tables.achat.commande_fournisseur import (
+    CommandeFournisseur,
+    StatutCommandeFournisseur,
+)
 from backend.db.schemas.achat.commande_fournisseur_schemas import (
     CommandeFournisseurCreate,
     CommandeFournisseurUpdate,
-    CommandeFournisseurSearch
+    CommandeFournisseurSearch,
 )
 
 
 # -------- CRUD --------
-def create_commande(db: Session, data: CommandeFournisseurCreate) -> CommandeFournisseur:
-    new_commande = CommandeFournisseur(**data.model_dump())
-    db.add(new_commande)
+
+def creer_commande(db: Session, data: CommandeFournisseurCreate) -> CommandeFournisseur:
+    commande = CommandeFournisseur(**data.model_dump())
+    db.add(commande)
     db.commit()
-    db.refresh(new_commande)
-    return new_commande
+    db.refresh(commande)
+    return commande
 
 
 def get_commande(db: Session, commande_id: int) -> CommandeFournisseur:
-    commande = db.get(CommandeFournisseur, commande_id)
+    commande = db.query(CommandeFournisseur).filter_by(id=commande_id).first()
     if not commande:
-        raise HTTPException(status_code=404, detail="Commande non trouvée.")
+        raise HTTPException(status_code=404, detail="Commande introuvable")
     return commande
+
+
+def list_commandes(db: Session, skip: int = 0, limit: int = 50) -> List[CommandeFournisseur]:
+    return db.query(CommandeFournisseur).offset(skip).limit(limit).all()
 
 
 def update_commande(db: Session, commande_id: int, data: CommandeFournisseurUpdate) -> CommandeFournisseur:
     commande = get_commande(db, commande_id)
-    for key, value in data.model_dump(exclude_unset=True).items():
-        setattr(commande, key, value)
+    if commande.statut.value != StatutCommandeFournisseur.brouillon.value:
+        raise HTTPException(status_code=400, detail="Seules les commandes en brouillon peuvent être modifiées.")
+    for field, value in data.model_dump(exclude_unset=True).items():
+        setattr(commande, field, value)
     db.commit()
     db.refresh(commande)
     return commande
@@ -41,45 +49,64 @@ def update_commande(db: Session, commande_id: int, data: CommandeFournisseurUpda
 
 def delete_commande(db: Session, commande_id: int) -> dict:
     commande = get_commande(db, commande_id)
+    if commande.statut.value != StatutCommandeFournisseur.brouillon.value:
+        raise HTTPException(status_code=400, detail="Seules les commandes en brouillon peuvent être supprimées.")
     db.delete(commande)
     db.commit()
     return {"detail": "Commande supprimée avec succès."}
 
 
 # -------- SEARCH --------
-def search_commandes(
-    db: Session,
-    filters: CommandeFournisseurSearch,
-    skip: int = 0,
-    limit: int = 100
-) -> List[CommandeFournisseur]:
 
-    query = select(CommandeFournisseur)
-    conditions = []
+def search_commandes(db: Session, filters: CommandeFournisseurSearch, skip: int = 0, limit: int = 50):
+    query = db.query(CommandeFournisseur)
 
     if filters.numero_commande:
-        conditions.append(CommandeFournisseur.numero_commande.ilike(f"%{filters.numero_commande}%"))
+        query = query.filter(CommandeFournisseur.numero_commande.ilike(f"%{filters.numero_commande}%"))
     if filters.fournisseur_id:
-        conditions.append(CommandeFournisseur.fournisseur_id == filters.fournisseur_id)
+        query = query.filter(CommandeFournisseur.fournisseur_id == filters.fournisseur_id)
     if filters.statut:
-        conditions.append(CommandeFournisseur.statut == filters.statut)
+        query = query.filter(CommandeFournisseur.statut == filters.statut)
     if filters.date_min:
-        conditions.append(CommandeFournisseur.date_commande >= filters.date_min)
+        query = query.filter(CommandeFournisseur.date_commande >= filters.date_min)
     if filters.date_max:
-        conditions.append(CommandeFournisseur.date_commande <= filters.date_max)
+        query = query.filter(CommandeFournisseur.date_commande <= filters.date_max)
+    if filters.min_montant:
+        query = query.filter(CommandeFournisseur.montant_total >= filters.min_montant)
+    if filters.max_montant:
+        query = query.filter(CommandeFournisseur.montant_total <= filters.max_montant)
     if filters.is_archived is not None:
-        conditions.append(CommandeFournisseur.is_archived == filters.is_archived)
+        query = query.filter(CommandeFournisseur.is_archived == filters.is_archived)
 
-    if conditions:
-        query = query.where(and_(*conditions))
-
-    query = query.order_by(CommandeFournisseur.date_commande.desc())
-    query = query.offset(skip).limit(limit)
-
-    return list(db.scalars(query))
+    total = query.count()
+    results = query.order_by(CommandeFournisseur.date_commande.desc()).offset(skip).limit(limit).all()
+    return {"total": total, "results": results}
 
 
-# -------- BULK --------
+# -------- EXPORT --------
+
+def export_commandes_csv(db: Session) -> io.StringIO:
+    buffer = io.StringIO()
+    writer = csv.writer(buffer)
+    writer.writerow([
+        "ID", "Numéro", "Fournisseur", "Montant", "Statut", "Date", "Devise"
+    ])
+    for c in db.query(CommandeFournisseur).all():
+        writer.writerow([
+            c.id,
+            c.numero_commande,
+            c.fournisseur_id,
+            c.montant_total,
+            c.statut.value,
+            c.date_commande.strftime("%Y-%m-%d") if getattr(c, "date_commande", None) is not None else "",
+            c.devise
+        ])
+    buffer.seek(0)
+    return buffer
+
+
+# -------- BULK CREATE --------
+
 def bulk_create_commandes(db: Session, data: List[CommandeFournisseurCreate]) -> List[CommandeFournisseur]:
     objets = [CommandeFournisseur(**item.model_dump()) for item in data]
     db.bulk_save_objects(objets)
@@ -87,27 +114,14 @@ def bulk_create_commandes(db: Session, data: List[CommandeFournisseurCreate]) ->
     return objets
 
 
-def bulk_delete_commandes(db: Session, ids: List[int]) -> dict:
-    db.query(CommandeFournisseur).filter(CommandeFournisseur.id.in_(ids)).delete(synchronize_session=False)
-    db.commit()
-    return {"detail": f"{len(ids)} commandes supprimées"}
+# -------- BULK DELETE --------
 
-
-# -------- EXPORT --------
-def export_commandes_csv(db: Session) -> StreamingResponse:
-    commandes = db.scalars(select(CommandeFournisseur)).all()
-    buffer = io.StringIO()
-    writer = csv.writer(buffer)
-    writer.writerow(["ID", "Numéro", "Fournisseur", "Statut", "Montant", "Date", "Devise"])
+def bulk_delete_commandes(db: Session, ids: List[int]) -> int:
+    commandes = db.query(CommandeFournisseur).filter(CommandeFournisseur.id.in_(ids)).all()
+    count = 0
     for c in commandes:
-        writer.writerow([
-            c.id,
-            c.numero_commande,
-            c.fournisseur_id,
-            c.statut,
-            c.montant_total,
-            c.date_commande.strftime("%Y-%m-%d") if c.date_commande is not None else "",
-            c.devise
-        ])
-    buffer.seek(0)
-    return StreamingResponse(buffer, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=commandes.csv"})
+        if getattr(c, "statut", None) == StatutCommandeFournisseur.brouillon:
+            db.delete(c)
+            count += 1
+    db.commit()
+    return count

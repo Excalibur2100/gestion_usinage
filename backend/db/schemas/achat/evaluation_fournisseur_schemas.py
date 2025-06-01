@@ -3,13 +3,16 @@ from typing import Optional, List
 from datetime import datetime
 from enum import Enum
 
+
 # -------- ENUM --------
+
 class StatutEvaluation(str, Enum):
     excellent = "excellent"
     bon = "bon"
     moyen = "moyen"
     faible = "faible"
     critique = "critique"
+
 
 class TypeEvaluation(str, Enum):
     ponctuelle = "ponctuelle"
@@ -19,6 +22,7 @@ class TypeEvaluation(str, Enum):
 
 
 # -------- BASE --------
+
 class EvaluationFournisseurBase(BaseModel):
     fournisseur_id: int
     utilisateur_id: Optional[int] = None
@@ -66,6 +70,7 @@ class EvaluationFournisseurBase(BaseModel):
 
 
 # -------- CREATE --------
+
 class EvaluationFournisseurCreate(EvaluationFournisseurBase):
     @model_validator(mode="after")
     def check_notes(self):
@@ -75,6 +80,7 @@ class EvaluationFournisseurCreate(EvaluationFournisseurBase):
 
 
 # -------- UPDATE --------
+
 class EvaluationFournisseurUpdate(BaseModel):
     commentaire: Optional[str] = None
     recommandation: Optional[str] = None
@@ -88,8 +94,18 @@ class EvaluationFournisseurUpdate(BaseModel):
     is_archived: Optional[bool] = None
     modifie_par: Optional[int] = None
 
+    @model_validator(mode="after")
+    def check_globale_if_present(self):
+        if self.note_globale is not None and (self.note_globale < 0 or self.note_globale > 100):
+            raise ValueError("La note globale mise à jour doit être entre 0 et 100.")
+        return self
+
+    class Config:
+        from_attributes = True
+
 
 # -------- READ --------
+
 class EvaluationFournisseurRead(EvaluationFournisseurBase):
     id: int
     uuid: Optional[str] = None
@@ -98,6 +114,7 @@ class EvaluationFournisseurRead(EvaluationFournisseurBase):
 
 
 # -------- DETAIL --------
+
 class EvaluationFournisseurDetail(EvaluationFournisseurRead):
     fournisseur_nom: Optional[str] = None
     auteur_nom: Optional[str] = None
@@ -105,6 +122,7 @@ class EvaluationFournisseurDetail(EvaluationFournisseurRead):
 
 
 # -------- LIST --------
+
 class EvaluationFournisseurList(BaseModel):
     id: int
     fournisseur_id: int
@@ -117,7 +135,21 @@ class EvaluationFournisseurList(BaseModel):
         from_attributes = True
 
 
+# -------- READ MINIMAL --------
+
+class EvaluationFournisseurReadMinimal(BaseModel):
+    id: int
+    fournisseur_id: int
+    note_globale: float
+    statut: StatutEvaluation
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
+
 # -------- SEARCH --------
+
 class EvaluationFournisseurSearch(BaseModel):
     fournisseur_id: Optional[int] = None
     statut: Optional[StatutEvaluation] = None
@@ -128,20 +160,24 @@ class EvaluationFournisseurSearch(BaseModel):
 
 
 # -------- RESPONSE --------
+
 class EvaluationFournisseurResponse(BaseModel):
     message: str
     evaluation: Optional[EvaluationFournisseurRead]
 
 
 # -------- BULK --------
+
 class EvaluationFournisseurBulkCreate(BaseModel):
     evaluations: List[EvaluationFournisseurCreate]
+
 
 class EvaluationFournisseurBulkDelete(BaseModel):
     ids: List[int]
 
 
 # -------- SEARCH RESULTS --------
+
 class EvaluationFournisseurSearchResults(BaseModel):
     total: int
     results: List[EvaluationFournisseurRead]

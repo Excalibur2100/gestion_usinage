@@ -15,7 +15,7 @@ class StatutCommandeFournisseur(str, Enum):
 
 # -------- BASE --------
 class CommandeFournisseurBase(BaseModel):
-    numero_commande: str = Field(..., min_length=5)
+    numero_commande: str = Field(..., min_length=5, json_schema_extra={"example": "CMD-2024-001"})
     reference_externe: Optional[str] = None
     fournisseur_id: int
     utilisateur_id: Optional[int] = None
@@ -26,8 +26,8 @@ class CommandeFournisseurBase(BaseModel):
     date_livraison_prevue: Optional[datetime] = None
     date_livraison_effective: Optional[datetime] = None
 
-    montant_total: float = Field(..., ge=0)
-    devise: Optional[str] = "EUR"
+    montant_total: float = Field(..., ge=0, json_schema_extra={"example": 1250.50})
+    devise: Optional[str] = Field(default="EUR")
 
     cree_par: Optional[int] = None
     modifie_par: Optional[int] = None
@@ -37,6 +37,7 @@ class CommandeFournisseurBase(BaseModel):
     uuid: Optional[str] = None
 
     class Config:
+        orm_mode = True
         from_attributes = True
         title = "CommandeFournisseurBase"
         schema_extra = {
@@ -53,7 +54,7 @@ class CommandeFournisseurBase(BaseModel):
 # -------- CREATE --------
 class CommandeFournisseurCreate(CommandeFournisseurBase):
     @model_validator(mode="after")
-    def verifier_montant(self):
+    def verifier_montant_et_format(self):
         if self.montant_total < 0:
             raise ValueError("Le montant total ne peut pas être négatif.")
         if not self.numero_commande.startswith("CMD-"):
