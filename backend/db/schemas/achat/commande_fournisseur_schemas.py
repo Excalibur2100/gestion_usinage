@@ -15,7 +15,7 @@ class StatutCommandeFournisseur(str, Enum):
 
 # -------- BASE --------
 class CommandeFournisseurBase(BaseModel):
-    numero_commande: str = Field(...)
+    numero_commande: str = Field(..., min_length=5)
     reference_externe: Optional[str] = None
     fournisseur_id: int
     utilisateur_id: Optional[int] = None
@@ -26,7 +26,7 @@ class CommandeFournisseurBase(BaseModel):
     date_livraison_prevue: Optional[datetime] = None
     date_livraison_effective: Optional[datetime] = None
 
-    montant_total: float
+    montant_total: float = Field(..., ge=0)
     devise: Optional[str] = "EUR"
 
     cree_par: Optional[int] = None
@@ -34,9 +34,9 @@ class CommandeFournisseurBase(BaseModel):
     version: Optional[int] = 1
     etat_synchronisation: Optional[str] = "non_synchro"
     is_archived: Optional[bool] = False
+    uuid: Optional[str] = None
 
     class Config:
-        orm_mode = True
         from_attributes = True
         title = "CommandeFournisseurBase"
         schema_extra = {
@@ -56,6 +56,8 @@ class CommandeFournisseurCreate(CommandeFournisseurBase):
     def verifier_montant(self):
         if self.montant_total < 0:
             raise ValueError("Le montant total ne peut pas être négatif.")
+        if not self.numero_commande.startswith("CMD-"):
+            raise ValueError("Le numéro de commande doit commencer par 'CMD-'")
         return self
 
 
@@ -66,12 +68,17 @@ class CommandeFournisseurUpdate(BaseModel):
     date_livraison_effective: Optional[datetime] = None
     is_archived: Optional[bool] = None
     modifie_par: Optional[int] = None
+    montant_total: Optional[float] = Field(None, ge=0)
+    etat_synchronisation: Optional[str] = None
+    version: Optional[int] = None
+
+    class Config:
+        from_attributes = True
 
 
 # -------- READ --------
 class CommandeFournisseurRead(CommandeFournisseurBase):
     id: int
-    uuid: Optional[str] = None
     timestamp_creation: Optional[datetime] = None
     timestamp_modification: Optional[datetime] = None
 
@@ -94,7 +101,6 @@ class CommandeFournisseurList(BaseModel):
     date_commande: datetime
 
     class Config:
-        orm_mode = True
         from_attributes = True
 
 
@@ -105,24 +111,27 @@ class CommandeFournisseurSearch(BaseModel):
     statut: Optional[StatutCommandeFournisseur] = None
     date_min: Optional[datetime] = None
     date_max: Optional[datetime] = None
+    min_montant: Optional[float] = None
+    max_montant: Optional[float] = None
     is_archived: Optional[bool] = None
-
-
-# -------- RESPONSE --------
-class CommandeFournisseurResponse(BaseModel):
-    message: str
-    commande: Optional[CommandeFournisseurRead]
-
-
-# -------- BULK --------
-class CommandeFournisseurBulkCreate(BaseModel):
-    commandes: List[CommandeFournisseurCreate]
-
-class CommandeFournisseurBulkDelete(BaseModel):
-    ids: List[int]
 
 
 # -------- SEARCH RESULTS --------
 class CommandeFournisseurSearchResults(BaseModel):
     total: int
     results: List[CommandeFournisseurRead]
+
+
+# -------- BULK --------
+class CommandeFournisseurBulkCreate(BaseModel):
+    commandes: List[CommandeFournisseurCreate]
+
+
+class CommandeFournisseurBulkDelete(BaseModel):
+    ids: List[int]
+
+
+# -------- RESPONSE --------
+class CommandeFournisseurResponse(BaseModel):
+    message: str
+    commande: Optional[CommandeFournisseurRead]

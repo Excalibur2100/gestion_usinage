@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_
 from fastapi import HTTPException
-from typing import List
+from typing import List, Dict
 import csv
 import io
 
@@ -11,6 +10,7 @@ from backend.db.schemas.achat.avoir_fournisseur_schemas import (
     AvoirFournisseurUpdate,
     AvoirFournisseurSearch
 )
+
 
 # -------- CRUD --------
 
@@ -39,21 +39,19 @@ def list_avoirs(db: Session, skip: int = 0, limit: int = 50) -> List[AvoirFourni
 def update_avoir(db: Session, avoir_id: int, data: AvoirFournisseurUpdate) -> AvoirFournisseur:
     """Mettre à jour un avoir fournisseur uniquement s’il est en brouillon."""
     avoir = get_avoir(db, avoir_id)
-    if avoir.statut not in [StatutAvoir.brouillon]:
+    if str(avoir.statut) != str(StatutAvoir.brouillon):
         raise HTTPException(status_code=400, detail="Seuls les avoirs en brouillon peuvent être modifiés.")
-
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(avoir, field, value)
-
     db.commit()
     db.refresh(avoir)
     return avoir
 
 
-def delete_avoir(db: Session, avoir_id: int) -> dict:
+def delete_avoir(db: Session, avoir_id: int) -> Dict[str, str]:
     """Supprimer un avoir fournisseur uniquement s’il est en brouillon."""
     avoir = get_avoir(db, avoir_id)
-    if avoir.statut not in [StatutAvoir.brouillon]:
+    if str(avoir.statut) != str(StatutAvoir.brouillon):
         raise HTTPException(status_code=400, detail="Seuls les avoirs en brouillon peuvent être supprimés.")
     db.delete(avoir)
     db.commit()
@@ -62,7 +60,9 @@ def delete_avoir(db: Session, avoir_id: int) -> dict:
 
 # -------- SEARCH --------
 
-def search_avoirs(db: Session, filters: AvoirFournisseurSearch, skip: int = 0, limit: int = 50):
+from typing import Any
+
+def search_avoirs(db: Session, filters: AvoirFournisseurSearch, skip: int = 0, limit: int = 50) -> Dict[str, Any]:
     """Recherche multi-critères sur les avoirs fournisseurs."""
     query = db.query(AvoirFournisseur)
 
@@ -95,7 +95,6 @@ def export_avoirs_csv(db: Session) -> io.StringIO:
     writer.writerow([
         "ID", "Référence", "Fournisseur", "Montant TTC", "Statut", "Date émission", "Devise"
     ])
-
     for a in db.query(AvoirFournisseur).all():
         writer.writerow([
             a.id,
@@ -127,7 +126,7 @@ def bulk_delete_avoirs(db: Session, ids: List[int]) -> int:
     avoirs = db.query(AvoirFournisseur).filter(AvoirFournisseur.id.in_(ids)).all()
     count = 0
     for a in avoirs:
-        if a.statut in [StatutAvoir.brouillon]:
+        if str(a.statut) == str(StatutAvoir.brouillon):
             db.delete(a)
             count += 1
     db.commit()

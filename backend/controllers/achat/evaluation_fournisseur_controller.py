@@ -1,39 +1,72 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from db.models.database import get_db
-from db.schemas.achat.evaluation_fournisseur_schemas import *
-from services.achat.evaluation_fournisseur_service import *
+from typing import List
+from fastapi.responses import StreamingResponse
 
-router = APIRouter(prefix="/evaluations-fournisseur", tags=["Evaluations Fournisseur"])
+from backend.dependencies import get_db
+from backend.db.schemas.achat.evaluation_fournisseur_schemas import (
+    EvaluationFournisseurCreate,
+    EvaluationFournisseurUpdate,
+    EvaluationFournisseurRead,
+    EvaluationFournisseurDetail,
+    EvaluationFournisseurSearch,
+    EvaluationFournisseurSearchResults,
+    EvaluationFournisseurBulkCreate,
+    EvaluationFournisseurBulkDelete
+)
+from backend.services.achat import evaluation_fournisseur_service
 
-@router.post("/", response_model=EvaluationFournisseurRead)
-def create(data: EvaluationFournisseurCreate, db: Session = Depends(get_db)):
-    return create_evaluation(db, data)
+router = APIRouter(
+    prefix="/api/v1/evaluations-fournisseur",
+    tags=["Évaluations Fournisseur"]
+)
 
-@router.get("/", response_model=List[EvaluationFournisseurRead])
-def read_all(db: Session = Depends(get_db)):
-    return get_all_evaluations(db)
+@router.post("/", response_model=EvaluationFournisseurRead, summary="Créer une évaluation fournisseur")
+def create_evaluation(evaluation: EvaluationFournisseurCreate, db: Session = Depends(get_db)):
+    return evaluation_fournisseur_service.creer_evaluation(db, evaluation)
 
-@router.get("/{evaluation_id}", response_model=EvaluationFournisseurRead)
-def read(evaluation_id: int, db: Session = Depends(get_db)):
-    obj = get_evaluation(db, evaluation_id)
-    if not obj:
-        raise HTTPException(status_code=404, detail="Évaluation non trouvée")
-    return obj
 
-@router.put("/{evaluation_id}", response_model=EvaluationFournisseurRead)
-def update(evaluation_id: int, data: EvaluationFournisseurUpdate, db: Session = Depends(get_db)):
-    obj = update_evaluation(db, evaluation_id, data)
-    if not obj:
-        raise HTTPException(status_code=404, detail="Évaluation non trouvée")
-    return obj
+@router.get("/", response_model=List[EvaluationFournisseurRead], summary="Lister toutes les évaluations")
+def list_evaluations(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return evaluation_fournisseur_service.list_evaluations(db, skip, limit)
 
-@router.delete("/{evaluation_id}")
-def delete(evaluation_id: int, db: Session = Depends(get_db)):
-    if not delete_evaluation(db, evaluation_id):
-        raise HTTPException(status_code=404, detail="Évaluation non trouvée")
-    return {"ok": True}
 
-@router.post("/search", response_model=EvaluationFournisseurSearchResults)
-def search(data: EvaluationFournisseurSearch, db: Session = Depends(get_db)):
-    return {"results": search_evaluations(db, data)}
+@router.get("/{evaluation_id}", response_model=EvaluationFournisseurDetail, summary="Obtenir une évaluation par ID")
+def get_evaluation(evaluation_id: int, db: Session = Depends(get_db)):
+    return evaluation_fournisseur_service.get_evaluation(db, evaluation_id)
+
+
+@router.put("/{evaluation_id}", response_model=EvaluationFournisseurRead, summary="Mettre à jour une évaluation")
+def update_evaluation(evaluation_id: int, update: EvaluationFournisseurUpdate, db: Session = Depends(get_db)):
+    return evaluation_fournisseur_service.update_evaluation(db, evaluation_id, update)
+
+
+@router.delete("/{evaluation_id}", response_model=dict, summary="Supprimer une évaluation fournisseur")
+def delete_evaluation(evaluation_id: int, db: Session = Depends(get_db)):
+    return evaluation_fournisseur_service.delete_evaluation(db, evaluation_id)
+
+
+@router.post("/search", response_model=EvaluationFournisseurSearchResults, summary="Rechercher des évaluations")
+def search_evaluations(filters: EvaluationFournisseurSearch, skip: int = 0, limit: int = 50, db: Session = Depends(get_db)):
+    return evaluation_fournisseur_service.search_evaluations(db, filters, skip, limit)
+
+
+@router.get("/export", response_class=StreamingResponse, summary="Exporter les évaluations au format CSV")
+def export_evaluations(db: Session = Depends(get_db)):
+    buffer = evaluation_fournisseur_service.export_evaluations_csv(db)
+    return StreamingResponse(
+        buffer,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=evaluations_fournisseur.csv"}
+    )
+
+
+@router.post("/bulk", response_model=List[EvaluationFournisseurRead], summary="Créer plusieurs évaluations")
+def bulk_create(payload: EvaluationFournisseurBulkCreate, db: Session = Depends(get_db)):
+    return evaluation_fournisseur_service.bulk_create_evaluations(db, payload.evaluations)
+
+
+@router.delete("/bulk", response_model=dict, summary="Supprimer plusieurs évaluations")
+def bulk_delete(payload: EvaluationFournisseurBulkDelete, db: Session = Depends(get_db)):
+    count = evaluation_fournisseur_service.bulk_delete_evaluations(db, payload.ids)
+    return {"detail": f"{count} évaluations supprimées"}

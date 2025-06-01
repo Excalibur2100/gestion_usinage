@@ -12,7 +12,7 @@ class StatutCommandeFournisseur(str, enum.Enum):
     envoyee = "envoyee"
     partiellement_livree = "partiellement_livree"
     livree = "livree"
-    annulée = "annulee"
+    annulee = "annulee"
 
 
 class CommandeFournisseur(Base):
@@ -23,7 +23,7 @@ class CommandeFournisseur(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     uuid = Column(String(64), unique=True, index=True, nullable=True)
-    numero_commande = Column(String(50), unique=True, nullable=False)
+    numero_commande = Column(String(50), unique=True, nullable=False, index=True)
     reference_externe = Column(String(50), nullable=True)
 
     fournisseur_id = Column(Integer, ForeignKey("fournisseurs.id"), nullable=False)
@@ -35,10 +35,9 @@ class CommandeFournisseur(Base):
     date_livraison_prevue = Column(DateTime, nullable=True)
     date_livraison_effective = Column(DateTime, nullable=True)
 
-    statut = Column(Enum(StatutCommandeFournisseur), default=StatutCommandeFournisseur.brouillon)
+    statut = Column(Enum(StatutCommandeFournisseur), default=StatutCommandeFournisseur.brouillon, nullable=False)
     commentaire = Column(Text, nullable=True)
     devise = Column(String(10), default="EUR", nullable=False)
-
     montant_total = Column(Float, nullable=False, default=0.0)
 
     is_archived = Column(Boolean, default=False)
@@ -53,9 +52,8 @@ class CommandeFournisseur(Base):
     auteur_creation = relationship("Utilisateur", foreign_keys=[cree_par], lazy="joined")
     auteur_modification = relationship("Utilisateur", foreign_keys=[modifie_par], lazy="joined")
 
-    # Prévision future : lignes de commande (non implémentées encore)
     lignes_commande = relationship(
-        "LigneCommandeFournisseur",  # à créer plus tard
+        "LigneCommandeFournisseur",  # table à venir
         back_populates="commande",
         cascade="all, delete-orphan",
         lazy="joined"

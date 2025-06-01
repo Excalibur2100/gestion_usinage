@@ -21,7 +21,7 @@ class TypeAvoir(str, Enum):
 # -------- BASE --------
 class AvoirFournisseurBase(BaseModel):
     reference: str = Field(..., alias="reference")
-    reference_externe: Optional[str] = Field(None, alias="reference_externe")
+    reference_externe: Optional[str] = None
     fournisseur_id: int
     utilisateur_id: Optional[int] = None
     commande_id: Optional[int] = None
@@ -39,7 +39,7 @@ class AvoirFournisseurBase(BaseModel):
     montant_ttc: float = Field(..., ge=0)
     ecart_montant: Optional[float] = None
 
-    devise: str = Field(default="EUR", json_schema_extra={"example": "EUR"})
+    devise: str = Field(default="EUR")
     montant_devise_origine: Optional[float] = None
     taux_conversion: Optional[float] = None
 
@@ -94,11 +94,6 @@ class AvoirFournisseurUpdate(BaseModel):
     is_archived: Optional[bool] = None
     modifie_par: Optional[int] = None
 
-    @model_validator(mode="after")
-    def verify_statut_allowed(self):
-        # Vérification métier à adapter si besoin
-        return self
-
 
 # -------- READ --------
 class AvoirFournisseurRead(AvoirFournisseurBase):
@@ -141,14 +136,15 @@ class AvoirFournisseurSearch(BaseModel):
     is_archived: Optional[bool] = None
 
 
-# -------- GENERIC PAGINATION --------
+# -------- PAGINATED RESPONSE --------
 T = TypeVar("T")
+
 class PaginatedResponse(BaseModel, Generic[T]):
     total: int
     results: List[T]
 
 
-# -------- SEARCH RESULT --------
+# -------- SEARCH RESULTS --------
 class AvoirFournisseurSearchResults(PaginatedResponse[AvoirFournisseurList]):
     pass
 

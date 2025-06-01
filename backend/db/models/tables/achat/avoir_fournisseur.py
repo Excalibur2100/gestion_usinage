@@ -6,13 +6,11 @@ from sqlalchemy.orm import relationship
 from backend.db.models.base import Base
 import enum
 
-
 class StatutAvoir(str, enum.Enum):
     brouillon = "brouillon"
     valide = "valide"
     rembourse = "rembourse"
     annule = "annule"
-
 
 class TypeAvoir(str, enum.Enum):
     retour = "retour_marchandise"

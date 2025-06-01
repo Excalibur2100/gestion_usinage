@@ -1,54 +1,82 @@
-from typing import List, Optional
 from backend.db.schemas.achat.avoir_fournisseur_schemas import (
     AvoirFournisseurCreate,
+    StatutAvoir,
     TypeAvoir
 )
+from datetime import datetime
 
-def calculer_montant_ttc(montant_ht: float, taux_tva: float) -> float:
+
+def calculer_montant_ttc(montant_ht: float, taux_tva: float = 20.0) -> float:
     """
-    Calcule le montant TTC à partir du HT et du taux de TVA.
+    Calcule le montant TTC à partir du montant HT et du taux de TVA.
     """
     return round(montant_ht * (1 + taux_tva / 100), 2)
 
 
-def detecter_type_avoir(reference: str = "", motif: Optional[str] = "") -> TypeAvoir:
+def detecter_type_avoir(reference: str, motif: str) -> TypeAvoir:
     """
-    Déduit automatiquement le type d'avoir en analysant la référence ou le motif.
+    Détecte automatiquement le type d’avoir en fonction du texte.
     """
-    ref = reference.lower() if reference else ""
-    motif = motif.lower() if motif else ""
+    texte = (reference or "") + " " + (motif or "")
+    texte = texte.lower()
 
-    if "retour" in motif or "marchandise" in motif or "retourné" in ref:
+    if "retour" in texte:
         return TypeAvoir.retour
-    elif "remise" in motif or "rabais" in motif:
+    elif "remise" in texte:
         return TypeAvoir.remise
-    elif "geste" in motif or "commercial" in motif:
+    elif "geste" in texte:
         return TypeAvoir.geste
-    return TypeAvoir.autre
+    else:
+        return TypeAvoir.autre
+
+
+def statut_automatique_si_montant(montant: float) -> StatutAvoir:
+    """
+    Détermine automatiquement un statut en fonction du montant.
+    """
+    return StatutAvoir.brouillon if montant > 0 else StatutAvoir.annule
 
 
 def suggere_avoir_auto(
-    facture_id: int,
-    total_rembourse: float,
-    raison: Optional[str] = None,
-    fournisseur_id: int = 1
+    reference: str,
+    fournisseur_id: int,
+    montant_ht: float,
+    taux_tva: float = 20.0,
+    motif: str = "Avoir généré automatiquement"
 ) -> AvoirFournisseurCreate:
     """
-    Génère automatiquement une suggestion d'avoir fournisseur.
+    Génère automatiquement un objet AvoirFournisseurCreate intelligent.
     """
-    montant_ht = round(total_rembourse / 1.2, 2)
-    tva = 20.0
+    montant_ttc = calculer_montant_ttc(montant_ht, taux_tva)
+    statut = statut_automatique_si_montant(montant_ttc)
+    type_avoir = detecter_type_avoir(reference, motif)
+
     return AvoirFournisseurCreate(
-        reference=f"SUGG-AVF-{facture_id}",
+        reference=reference,
+        reference_externe=None,
         fournisseur_id=fournisseur_id,
         utilisateur_id=None,
-        facture_id=facture_id,
-        reference_externe=None,
+        commande_id=None,
+        facture_id=None,
+        document_lie_id=None,
+        type_avoir=type_avoir,
+        motif=motif,
+        commentaire=None,
+        categorie=None,
+        tag=None,
         montant_ht=montant_ht,
-        taux_tva=tva,
-        montant_ttc=calculer_montant_ttc(montant_ht, tva),
-        type_avoir=detecter_type_avoir("", raison),
-        commentaire="Suggestion IA automatique",
-        motif=raison,
-        cree_par=0
+        taux_tva=taux_tva,
+        montant_ttc=montant_ttc,
+        ecart_montant=None,
+        devise="EUR",
+        montant_devise_origine=None,
+        taux_conversion=None,
+        statut=statut,
+        date_emission=datetime.utcnow(),
+        date_remboursement=None,
+        cree_par=None,
+        modifie_par=None,
+        version=1,
+        etat_synchronisation="non_synchro",
+        is_archived=False
     )

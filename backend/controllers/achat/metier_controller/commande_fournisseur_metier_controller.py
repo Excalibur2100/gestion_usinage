@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List
 from fastapi.responses import StreamingResponse
 
 from backend.dependencies import get_db
@@ -33,43 +33,11 @@ def create_commande(commande: CommandeFournisseurCreate, db: Session = Depends(g
 
 
 @router.get("/", response_model=List[CommandeFournisseurRead], summary="Lister toutes les commandes fournisseur")
-def list_commandes(
-    skip: int = 0,
-    limit: int = 100,
-    numero_commande: Optional[str] = Query(None),
-    statut: Optional[str] = Query(None),
-    fournisseur_id: Optional[int] = Query(None),
-    date_min: Optional[str] = Query(None),
-    date_max: Optional[str] = Query(None),
-    is_archived: Optional[bool] = Query(None),
-    db: Session = Depends(get_db)
-):
+def list_commandes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """
-    Liste paginée et filtrée des commandes fournisseur.
+    Liste paginée des commandes fournisseur.
     """
-    from datetime import datetime
-
-    date_min_dt = datetime.fromisoformat(date_min) if date_min else None
-    date_max_dt = datetime.fromisoformat(date_max) if date_max else None
-
-    from backend.db.schemas.achat.commande_fournisseur_schemas import StatutCommandeFournisseur
-
-    statut_enum = None
-    if statut is not None:
-        try:
-            statut_enum = StatutCommandeFournisseur(statut)
-        except ValueError:
-            raise HTTPException(status_code=400, detail=f"Statut '{statut}' invalide.")
-
-    filters = CommandeFournisseurSearch(
-        numero_commande=numero_commande,
-        statut=statut_enum,
-        fournisseur_id=fournisseur_id,
-        date_min=date_min_dt,
-        date_max=date_max_dt,
-        is_archived=is_archived
-    )
-    return commande_fournisseur_service.search_commandes(db, filters, skip, limit)
+    return commande_fournisseur_service.search_commandes(db, CommandeFournisseurSearch(), skip, limit)
 
 
 @router.get("/{commande_id}", response_model=CommandeFournisseurDetail, summary="Récupérer une commande fournisseur")
@@ -101,7 +69,7 @@ def search_commandes(filters: CommandeFournisseurSearch, skip: int = 0, limit: i
     """
     Recherche filtrée des commandes fournisseur par numéro, statut, dates, etc.
     """
-    results = commande_fournisseur_service.search_commandes(db, filters, skip, limit)
+    results = commande_fournisseur_service.search_commandes(db, filters)
     return {"total": len(results), "results": results}
 
 
