@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from db.models.tables.achat.suivi_reglement_fournisseur import SuiviReglementFournisseur
+from backend.db.models.tables.achat.suivis_reglement_fournisseur import SuiviReglementFournisseur
 from db.schemas.achat.suivi_reglement_fournisseur_schemas import *
 
 def create_reglement(db: Session, data: SuiviReglementFournisseurCreate) -> SuiviReglementFournisseur:

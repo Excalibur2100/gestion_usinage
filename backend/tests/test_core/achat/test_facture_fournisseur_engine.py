@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 
-from backend.core.ia.facture_fournisseur_engine import (
+from backend.core.ia.achat.facture_fournisseur_engine import (
     calcul_montant_ttc,
     generer_numero_facture_auto,
     statut_automatique,

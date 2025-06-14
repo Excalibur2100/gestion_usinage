@@ -5,7 +5,7 @@ from backend.db.schemas.achat.evaluation_fournisseur_schemas import (
     EvaluationFournisseurCreate,
     StatutEvaluation,
 )
-from backend.core.ia.evaluation_fournisseur_engine import (
+from backend.core.ia.achat.evaluation_fournisseur_engine import (
     calculer_note_globale_pondérée,
     statut_automatique,
     generer_recommandation,

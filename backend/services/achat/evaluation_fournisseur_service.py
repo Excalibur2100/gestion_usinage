@@ -4,7 +4,7 @@ from typing import List
 import csv
 import io
 
-from backend.db.models.tables.achat.evaluation_fournisseur import EvaluationFournisseur, StatutEvaluation, TypeEvaluation
+from backend.db.models.tables.achat.evaluations_fournisseur import EvaluationFournisseur, StatutEvaluation, TypeEvaluation
 from backend.db.schemas.achat.evaluation_fournisseur_schemas import (
     EvaluationFournisseurCreate,
     EvaluationFournisseurUpdate,

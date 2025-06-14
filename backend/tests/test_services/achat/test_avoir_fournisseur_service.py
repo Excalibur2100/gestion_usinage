@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from backend.db.models.base import Base
-from backend.db.models.tables.achat.avoir_fournisseur import AvoirFournisseur, StatutAvoir
+from backend.db.models.tables.achat.avoirs_fournisseur import AvoirFournisseur, StatutAvoir
 from backend.services.achat import avoir_fournisseur_service
 from backend.db.schemas.achat.avoir_fournisseur_schemas import AvoirFournisseurCreate, AvoirFournisseurBulkCreate, AvoirFournisseurBulkDelete
 

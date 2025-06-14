@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 
-from backend.core.ia.commande_fournisseur_engine import (
+from backend.core.ia.achat.commande_fournisseur_engine import (
     calcul_montant_total_commande,
     generer_numero_commande_auto,
     statut_auto_commande,

@@ -4,7 +4,7 @@ from typing import List, Dict
 import csv
 import io
 
-from backend.db.models.tables.achat.avoir_fournisseur import AvoirFournisseur, StatutAvoir
+from backend.db.models.tables.achat.avoirs_fournisseur import AvoirFournisseur, StatutAvoir
 from backend.db.schemas.achat.avoir_fournisseur_schemas import (
     AvoirFournisseurCreate,
     AvoirFournisseurUpdate,

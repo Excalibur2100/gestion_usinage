@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker, clear_mappers
 
 from backend.db.models.base import Base
-from backend.db.models.tables.achat.avoir_fournisseur import AvoirFournisseur, StatutAvoir
+from backend.db.models.tables.achat.avoirs_fournisseur import AvoirFournisseur, StatutAvoir
 
 
 @pytest.fixture

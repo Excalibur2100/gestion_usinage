@@ -2,7 +2,7 @@ from fastapi import APIRouter, Query
 from typing import Annotated
 
 from backend.db.schemas.achat.facture_fournisseur_schemas import FactureFournisseurCreate
-from backend.core.ia.facture_fournisseur_engine import (
+from backend.core.ia.achat.facture_fournisseur_engine import (
     calcul_montant_ttc,
     statut_automatique,
     generer_numero_facture_auto,

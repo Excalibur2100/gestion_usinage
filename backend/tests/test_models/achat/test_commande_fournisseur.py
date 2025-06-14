@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker, clear_mappers
 from backend.db.models.base import Base
-from backend.db.models.tables.achat.commande_fournisseur import CommandeFournisseur, StatutCommandeFournisseur
+from backend.db.models.tables.achat.commandes_fournisseur import CommandeFournisseur, StatutCommandeFournisseur
 
 
 @pytest.fixture

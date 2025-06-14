@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from backend.core.ia.evaluation_fournisseur_engine import (
+from backend.core.ia.achat.evaluation_fournisseur_engine import (
     calculer_note_globale_pondérée,
     statut_automatique,
     generer_recommandation,

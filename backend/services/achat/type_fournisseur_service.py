@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from db.models.tables.achat.type_fournisseur import TypeFournisseur
+from backend.db.models.tables.achat.types_fournisseur import TypeFournisseur
 from db.schemas.achat.type_fournisseur_schemas import *
 
 def create_type(db: Session, data: TypeFournisseurCreate) -> TypeFournisseur:

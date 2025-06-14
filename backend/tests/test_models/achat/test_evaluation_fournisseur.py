@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker, clear_mappers
 
 from backend.db.models.base import Base
-from backend.db.models.tables.achat.evaluation_fournisseur import (
+from backend.db.models.tables.achat.evaluations_fournisseur import (
     EvaluationFournisseur,
     StatutEvaluation,
     TypeEvaluation,

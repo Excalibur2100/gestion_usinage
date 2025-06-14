@@ -4,7 +4,7 @@ from typing import List
 import csv
 import io
 
-from backend.db.models.tables.achat.facture_fournisseur import (
+from backend.db.models.tables.achat.factures_fournisseur import (
     FactureFournisseur,
     StatutFactureFournisseur
 )

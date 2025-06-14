@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 
-from backend.core.ia.avoir_fournisseur_engine import (
+from backend.core.ia.achat.avoir_fournisseur_engine import (
     calculer_montant_ttc,
     detecter_type_avoir,
     statut_automatique_si_montant,

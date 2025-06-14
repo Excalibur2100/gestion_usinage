@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-from backend.core.ia.avoir_fournisseur_engine import (
+from backend.core.ia.achat.avoir_fournisseur_engine import (
     calculer_montant_ttc,
     detecter_type_avoir,
     suggere_avoir_auto
